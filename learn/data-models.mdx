@@ -1,0 +1,274 @@
+---
+title: 'Data Models'
+description: 'Understanding the data structures used in Trusset security tokens'
+---
+
+# Data Models
+
+The Trusset security token platform uses several data structures to organize token information, ownership, and configuration. This guide explains these data models and how they're used.
+
+## Core Data Structures
+
+### AssetCore
+
+Stores the fundamental properties of a security token.
+
+```solidity
+struct AssetCore {
+    bytes32 name;              // Token name
+    bytes32 symbol;            // Token symbol
+    uint32 maxSupply;          // Maximum total supply
+    uint32 totalSupply;        // Current supply
+    uint32 maxPerWallet;       // Maximum per wallet
+    uint32 flags;              // Feature flags
+    uint32 mintFee;            // Fee for minting in basis points
+    uint32 burnFee;            // Fee for burning in basis points
+    uint32 txFee;              // Fee for transfers in basis points
+    address creator;           // Token creator
+    uint8 fractions;           // Fractional units (0-10)
+    AssetType assetType;       // Type of asset
+    uint32 monthlyTransferLimit; // Transfer limit per month
+}
+```
+
+### AssetExtras
+
+Stores additional token properties.
+
+```solidity
+struct AssetExtras {
+    address authority;        // Authority address
+    address manager;          // Manager address
+    address feeReceiver;      // Fee recipient
+    string headerImage;       // Token image URL
+    bytes32 description;      // Short description
+    uint256 feeBalance;       // Accumulated fees
+    uint32 burnedSupply;      // Number of burned tokens
+    uint32 pauseEnd;          // End of pause period
+    bool docsConcealed;       // Are docs hidden
+}
+```
+
+### Batch
+
+Represents a batch of shares with the same owner.
+
+```solidity
+struct Batch {
+    uint32 start;            // Starting share ID
+    uint32 size;             // Number of shares
+    address owner;           // Owner address
+    uint32 timestamp;        // Creation timestamp
+}
+```
+
+### Transfer
+
+Records transfer rate limiting information.
+
+```solidity
+struct Transfer {
+    uint32 count;            // Transfer count
+    uint32 resetTime;        // Time when count resets
+}
+```
+
+### ShareRecord (in AssetRegister)
+
+Records ownership history of individual shares.
+
+```solidity
+struct ShareRecord {
+    address owner;           // Current owner
+    bool burned;             // Burned status
+    uint256 timestamp;       // Last update time
+}
+```
+
+### Asset (in AssetRegister)
+
+Stores asset information in the register.
+
+```solidity
+struct Asset {
+    uint32 id;               // Asset ID
+    uint32 totalSupply;      // Total supply
+    uint32 burnedSupply;     // Burned supply
+    address issuer;          // Issuer address
+    uint256 createdAt;       // Creation timestamp
+    mapping(uint32 => ShareRecord) shareRecords; // Share records
+}
+```
+
+### Price (in TokenOracle)
+
+Stores price information.
+
+```solidity
+struct Price {
+    uint256 value;           // Asset value
+    uint8 risk;              // Risk rating (1-20)
+    uint256 timestamp;       // Price timestamp
+    uint256 expiry;          // Price expiry
+    address provider;        // Oracle provider
+}
+```
+
+### AssetSummary (in TokenFetch)
+
+Summarized asset information for frontend.
+
+```solidity
+struct AssetSummary {
+    uint32 assetId;          // Asset ID
+    bytes32 name;            // Token name
+    bytes32 symbol;          // Token symbol
+    uint32 totalSupply;      // Total supply
+    uint32 burnedSupply;     // Burned supply
+    AssetType assetType;     // Type of asset
+    uint256 verifiedValue;   // Verified value
+    string headerImage;      // Token image URL
+}
+```
+
+## Primary Mappings
+
+The platform uses various mappings to organize and retrieve data efficiently:
+
+### BaseStorage Mappings
+
+```solidity
+// Core mappings
+mapping(uint32 => AssetCore) public assetCore;          // Asset ID → Core data
+mapping(uint32 => AssetExtras) public assetExtras;      // Asset ID → Extra data
+mapping(uint32 => uint256) public balances;             // Asset ID → Total balance
+mapping(uint32 => mapping(address => uint256)) public ownerBalance;  // Asset ID → Owner → Balance
+
+// Compliance mappings
+mapping(uint32 => mapping(address => uint256)) public whitelist;     // Asset ID → Address → Status
+mapping(uint32 => mapping(address => uint256)) public blacklist;     // Asset ID → Address → Status
+mapping(uint32 => mapping(address => uint256)) public frozen;        // Asset ID → Address → Status
+
+// Document and tag mappings
+mapping(uint32 => mapping(bytes32 => bool)) public tags;             // Asset ID → Tag → Status
+mapping(uint32 => string[]) public assetDocs;                        // Asset ID → Documents
+mapping(uint32 => mapping(uint32 => string[])) public linkedDocs;    // Asset ID → Share ID → Documents
+mapping(uint32 => mapping(uint32 => bytes32[])) public shareTags;    // Asset ID → Share ID → Tags
+
+// Ownership and batch mappings
+mapping(uint32 => Batch[]) public batches;                           // Asset ID → Batches
+mapping(uint32 => mapping(address => Transfer)) public transfers;    // Asset ID → Address → Transfer data
+mapping(address => uint32[]) public userAssets;                      // User → Asset IDs
+mapping(address => mapping(uint32 => bool)) public userHasShares;    // User → Asset ID → Has shares
+mapping(address => uint32[]) public creatorAssets;                   // Creator → Asset IDs
+mapping(bytes32 => uint32[]) public taggedAssets;                    // Tag → Asset IDs
+```
+
+### AssetRegister Mappings
+
+```solidity
+mapping(uint32 => Asset) private assets;                            // Asset ID → Asset
+mapping(uint32 => bool) public assetExists;                         // Asset ID → Exists
+mapping(address => uint32[]) public issuerAssets;                   // Issuer → Asset IDs
+mapping(address => mapping(uint32 => bool)) private holderAssets;   // Holder → Asset ID → Has shares
+mapping(address => uint32[]) public holderAssetsList;               // Holder → Asset IDs
+mapping(uint32 => mapping(address => uint32)) private ownerShareCount; // Asset ID → Owner → Share count
+```
+
+### TokenOracle Mappings
+
+```solidity
+mapping(address => ExternalProvider) public providers;              // Provider address → Provider data
+mapping(uint32 => Request) public requests;                         // Asset ID → Request
+mapping(address => uint256) public providerFees;                    // Provider → Fee balance
+mapping(uint32 => Price[]) public priceHistory;                     // Asset ID → Price history
+mapping(uint32 => Price) public latestPrices;                       // Asset ID → Latest price
+```
+
+## Asset Types
+
+The platform supports various types of security tokens:
+
+```solidity
+enum AssetType { 
+    EQUITY,          // Company ownership shares
+    ETF,             // Exchange Traded Funds
+    BONDS,           // Debt instruments
+    STOCKS,          // Traditional stocks
+    REAL_ESTATE,     // Property tokens
+    CASH_EQUIVALENT, // Cash-like instruments
+    DEBT,            // General debt instruments
+    OTHER            // Custom asset types
+}
+```
+
+## Data Relationships
+
+<img src="/images/data-relationships.svg" alt="Data Relationships Diagram" />
+
+## Batch Ownership Model
+
+The platform uses a batch-based ownership model for efficient storage:
+
+1. Each token has a continuous ID range from 0 to totalSupply-1
+2. Tokens are grouped in batches with the same owner
+3. When a token is transferred, batches are split as needed
+
+Example of batch handling during a transfer:
+
+```
+Before transfer (Share ID 5):
+Batch 1: start=0, size=10, owner=Alice
+
+After transfer to Bob:
+Batch 1: start=0, size=5, owner=Alice
+Batch 2: start=5, size=1, owner=Bob
+Batch 3: start=6, size=4, owner=Alice
+```
+
+This model optimizes gas costs for bulk operations while maintaining individual token identities.
+
+## Document Linking
+
+Documents can be linked at two levels:
+
+1. **Global documents**: Apply to the entire token
+   ```solidity
+   assetDocs[assetId] = ["ipfs://document1", "https://example.com/document2"];
+   ```
+
+2. **Share-specific documents**: Apply to specific shares
+   ```solidity
+   linkedDocs[assetId][shareId] = ["ipfs://document3", "https://example.com/document4"];
+   ```
+
+## Tag System
+
+Tags provide a flexible way to add metadata and rights to tokens:
+
+1. **Asset tags**: Apply to the entire token
+   ```solidity
+   tags[assetId][keccak256("preferred")] = true;
+   ```
+
+2. **Share tags**: Apply to specific shares
+   ```solidity
+   shareTags[assetId][shareId] = [keccak256("voting"), keccak256("dividend")];
+   ```
+
+Tags can represent any property or right, making the system highly customizable.
+
+## Data Validation
+
+The platform implements various validation rules:
+
+- Supply limits: `totalSupply + amount <= maxSupply`
+- Wallet limits: `ownerBalance[id][to] + amount <= maxPerWallet`
+- Transfer limits: `transfers[id][from].count <= monthlyTransferLimit`
+- Compliance checks on transfers (KYC, whitelist, blacklist, frozen status)
+
+## Next Steps
+
+- [Understand token flags](/learn/token-flags)
+- [Explore contract architecture](/learn/contract-architecture)
+- [Learn about platform integration](/learn/integration)

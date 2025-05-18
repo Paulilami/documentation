@@ -1,0 +1,239 @@
+---
+title: 'Compliance Features'
+description: 'Understand and implement regulatory compliance for security tokens'
+---
+
+# Compliance Features
+
+Trusset's platform includes robust compliance tools designed to meet regulatory requirements for security tokens. This guide explains the available compliance features and how to implement them.
+
+## Available Compliance Features
+
+<AccordionGroup>
+  <Accordion title="KYC Verification" defaultOpen={true}>
+    Require Know Your Customer verification for token holders.
+    
+    **How it works**: When enabled, only addresses that have passed KYC verification can hold or transfer the token.
+    
+    **When to use**: Required for most regulated securities, especially when dealing with retail investors.
+  </Accordion>
+  
+  <Accordion title="Whitelisting">
+    Maintain a list of approved addresses that can hold the token.
+    
+    **How it works**: Only addresses on the whitelist can receive token transfers.
+    
+    **When to use**: For private offerings, investor qualification, or geographic restrictions.
+  </Accordion>
+  
+  <Accordion title="Blacklisting">
+    Prevent specific addresses from holding the token.
+    
+    **How it works**: Addresses on the blacklist cannot receive token transfers.
+    
+    **When to use**: To enforce legal orders, address regulatory concerns, or manage sanctions compliance.
+  </Accordion>
+  
+  <Accordion title="Account Freezing">
+    Temporarily suspend an account's ability to transfer tokens.
+    
+    **How it works**: Frozen accounts cannot send or receive tokens until unfrozen.
+    
+    **When to use**: During investigations, legal disputes, or to mitigate security incidents.
+  </Accordion>
+  
+  <Accordion title="Transfer Limits">
+    Restrict the number of transfers an address can make within a time period.
+    
+    **How it works**: Set a maximum number of transfers per month per address.
+    
+    **When to use**: To prevent market manipulation or follow specific regulatory requirements.
+  </Accordion>
+  
+  <Accordion title="Maximum Per Wallet">
+    Limit how many tokens can be held by a single wallet.
+    
+    **How it works**: Transfers that would exceed the wallet's limit are rejected.
+    
+    **When to use**: To ensure broad distribution and prevent concentration of ownership.
+  </Accordion>
+  
+  <Accordion title="Document Management">
+    Attach regulatory and compliance documents to tokens.
+    
+    **How it works**: Documents can be linked to the entire token or to specific shares.
+    
+    **When to use**: For disclosure requirements, terms of service, investor agreements, etc.
+  </Accordion>
+  
+  <Accordion title="Forced Transfers">
+    Allow authorized addresses to move tokens between accounts.
+    
+    **How it works**: Authorized addresses can execute transfers without the sender's signature.
+    
+    **When to use**: For legal enforcement, court orders, or regulatory actions.
+  </Accordion>
+</AccordionGroup>
+
+## Enabling Compliance Features
+
+Compliance features are enabled when creating the token:
+
+1. When using `createComplianceAsset`:
+   ```typescript
+   createComplianceAsset(
+     name,
+     symbol,
+     initialSupply,
+     headerImage,
+     maxSupply,
+     authority,
+     enableKYC,          // Set to true to enable KYC
+     enableBlacklist,    // Set to true to enable blacklisting
+     enableWhitelist,    // Set to true to enable whitelisting
+     enableFreeze,       // Set to true to enable freezing
+     assetType
+   )
+   ```
+
+2. When using `createFullyConfiguredAsset`, set the appropriate flags:
+   ```typescript
+   const flags = processFlags(
+     canMint,
+     canBurn,
+     hasKYC,             // KYC requirement
+     hasBlacklist,       // Blacklisting
+     hasWhitelist,       // Whitelisting
+     hasFreeze,          // Account freezing
+     hasPause,           // Token pausing
+     hasDocs,            // Document linking
+     hasTags,            // Custom tags
+     hasLinkedDocs,      // Share-specific documents
+     hasMintFee,
+     hasBurnFee,
+     hasTxFee,
+     isDecentralized,
+     hasAuthority,
+     hasForce,           // Forced transfers
+     hasMaxWallet,       // Maximum per wallet
+     registerAsset,
+     burnByOwner,
+     hasMonthlyTransferLimit, // Transfer rate limiting
+     concealDocs
+   )
+   ```
+
+## Managing Compliance
+
+### Whitelist Management
+
+Add or remove addresses from the whitelist:
+
+```typescript
+updateWhitelist(assetId, [address1, address2], [true, false]);
+```
+
+In the UI:
+1. Go to **Compliance** tab
+2. Select **Whitelist Management**
+3. Add or remove addresses
+4. Save changes
+
+### Blacklist Management
+
+Add or remove addresses from the blacklist:
+
+```typescript
+updateBlacklist(assetId, [address1, address2], [true, false]);
+```
+
+In the UI:
+1. Go to **Compliance** tab
+2. Select **Blacklist Management**
+3. Add or remove addresses
+4. Save changes
+
+### Account Freezing
+
+Freeze or unfreeze specific accounts:
+
+```typescript
+freezeAccount(assetId, address, true); // Freeze
+freezeAccount(assetId, address, false); // Unfreeze
+```
+
+In the UI:
+1. Go to **Compliance** tab
+2. Select **Account Management**
+3. Enter address to freeze/unfreeze
+4. Toggle freeze status
+5. Save changes
+
+### Force Transfer
+
+Execute a transfer without the sender's signature:
+
+```typescript
+forceTransfer(
+  assetId,
+  shareIds,
+  recipient,
+  reason
+);
+
+// With document reference
+forceTransferWithDoc(
+  assetId,
+  shareIds,
+  recipient,
+  reason,
+  documentUrl
+);
+```
+
+In the UI:
+1. Go to **Compliance** tab
+2. Select **Force Transfer**
+3. Enter source address
+4. Enter destination address
+5. Select shares to transfer
+6. Provide legal reason and documentation
+7. Execute transfer
+
+## Compliance Requirements by Jurisdiction
+
+While requirements vary by jurisdiction, here are some common compliance considerations:
+
+### United States
+
+- SEC regulations may require KYC, accredited investor verification
+- Transfer restrictions based on investor qualification
+- Document disclosure requirements
+
+### European Union
+
+- MiCA regulations for crypto-assets
+- GDPR implications for personal data
+- Document requirements under prospectus regulation
+
+<Note>
+Always consult with legal counsel for specific regulatory requirements in your jurisdiction. This documentation provides technical guidance but not legal advice.
+</Note>
+
+## Compliance Best Practices
+
+1. **Documentation**: Keep clear records of all compliance actions and decisions
+
+2. **Consistent Enforcement**: Apply compliance rules consistently
+
+3. **Regular Review**: Periodically audit compliance settings and holder status
+
+4. **Transparent Communication**: Clearly communicate compliance requirements to token holders
+
+5. **Legal Review**: Have legal experts review your compliance implementation
+
+## Next Steps
+
+- [Learn about troubleshooting compliance issues](/guides/troubleshooting)
+- [Understand token flags](/learn/token-flags)
+- [Explore contract architecture](/learn/contract-architecture)

@@ -1,0 +1,132 @@
+---
+title: 'Platform Overview'
+description: 'Understand the Trusset Security Token architecture'
+---
+
+# Platform Overview
+
+The Trusset Security Token Demo Platform is a comprehensive infrastructure for creating, managing, and transacting with security tokens on the blockchain. It implements the German Electronic Securities Act (eWpG) requirements within a blockchain environment.
+
+## Core Concepts
+
+### Security Tokens
+
+Security tokens are digital representations of traditional securities on the blockchain. Unlike utility tokens or cryptocurrencies, security tokens:
+
+- Represent ownership of regulated financial instruments
+- Comply with securities regulations
+- Maintain investor protections and compliance controls
+- Enable automated compliance, governance, and lifecycle management
+
+### Asset Register
+
+Central to the Trusset platform is the Asset Register, which:
+
+- Maintains immutable records of token ownership
+- Tracks all transfers and lifecycle events
+- Enables regulatory reporting
+- Provides a complete audit trail
+
+### Key Benefits
+
+<CardGroup cols={2}>
+  <Card title="Regulatory Compliance" icon="shield-check">
+    Built-in tools for KYC, transfer restrictions, and document management
+  </Card>
+  
+  <Card title="Efficiency" icon="bolt">
+    Instant settlement, 24/7 operations, and automated compliance
+  </Card>
+  
+  <Card title="Transparency" icon="eye">
+    Immutable records and complete audit trails
+  </Card>
+  
+  <Card title="Cost Reduction" icon="chart-line-down">
+    Reduced intermediaries and automated operations
+  </Card>
+  
+  <Card title="Flexibility" icon="sliders">
+    Customizable token properties and compliance controls
+  </Card>
+  
+  <Card title="Enhanced Liquidity" icon="water">
+    Broader market access and fractional ownership
+  </Card>
+</CardGroup>
+
+## Platform Architecture
+
+The Trusset platform consists of several interconnected components:
+
+### Contract Layer
+
+The smart contract layer includes:
+
+- **SecurityToken**: Core contract for token operations
+- **AssetFactory**: Creates and configures tokens
+- **AssetRegister**: Maintains ownership records
+- **Compliance**: Manages regulatory requirements
+- **SecurityManagement**: Handles token governance
+- **TokenOracle**: Provides price and valuation services
+
+### Data Layer
+
+The platform stores token data across several structures:
+
+- **AssetCore**: Basic token parameters
+- **AssetExtras**: Extended token configurations
+- **Batches**: Ownership records by token batch
+- **Documents**: Linked legal and compliance documents
+- **Tags**: Custom metadata and rights
+
+### Application Layer
+
+The user-facing application provides:
+
+- Token creation and management interface
+- Compliance management tools
+- Document management
+- Ownership and transfer tools
+- Dashboard and analytics
+
+## Use Cases
+
+The Trusset platform supports various security token applications:
+
+### Corporate Finance
+
+- Equity issuance
+- Corporate bond offerings
+- Employee stock ownership plans
+- Cap table management
+
+### Asset Tokenization
+
+- Real estate fractional ownership
+- Intellectual property rights
+- Revenue sharing agreements
+- Commodity tokenization
+
+### Investment Products
+
+- Tokenized funds
+- Structured products
+- Asset-backed securities
+- Private equity tokens
+
+## Technical Environment
+
+The demo platform operates on:
+
+- **Blockchain**: Ethereum (Sepolia testnet)
+- **Standards**: Compatible with ERC standards
+- **Smart Contracts**: Solidity-based
+- **Frontend**: React with Web3 integration
+
+## Next Steps
+
+- [Learn about token flags](/learn/token-flags)
+- [Explore contract architecture](/learn/contract-architecture)
+- [Understand data models](/learn/data-models)
+- [Start creating tokens](/guides/creating-tokens)

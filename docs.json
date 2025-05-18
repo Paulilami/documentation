@@ -1,13 +1,14 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "theme": "almond",
+  "name": "Trusset Demo Documentation",
+  "description": "Documentation for Trusset's Security Token Demo Platform",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#0070f3",
+    "light": "#3291ff",
+    "dark": "#0761d1"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.png",
   "navigation": {
     "tabs": [
       {
@@ -16,40 +17,41 @@
           {
             "group": "Get Started",
             "pages": [
-              "introduction",
-              "quickstart",
-              "development"
+              "guides/getting-started",
+              "guides/creating-tokens"
             ]
           },
           {
-            "group": "Essentials",
+            "group": "Managing Tokens",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
+              "guides/managing-tokens",
+              "guides/compliance-features"
+            ]
+          },
+          {
+            "group": "Support",
+            "pages": [
+              "guides/troubleshooting"
             ]
           }
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "Learn",
         "groups": [
           {
-            "group": "API Documentation",
+            "group": "Core Concepts",
             "pages": [
-              "api-reference/introduction"
+              "learn/overview",
+              "learn/token-flags"
             ]
           },
           {
-            "group": "Endpoint Examples",
+            "group": "Technical Reference",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "learn/contract-architecture",
+              "learn/data-models",
+              "learn/integration"
             ]
           }
         ]
@@ -58,45 +60,39 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Demo Platform",
+          "href": "https://demo.trusset.org",
+          "icon": "play"
         },
         {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Website",
+          "href": "https://trusset.org",
+          "icon": "globe"
         }
       ]
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/logo/logoDark.png",
+    "dark": "/logo/logo.png"
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "https://www.trusset.org/contact"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Launch Demo",
+      "href": "https://demo.trusset.org"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "website": "https://trusset.org",
+      "linkedin": "https://www.linkedin.com/in/paul-ilami-trusset/"
     }
   }
 }
