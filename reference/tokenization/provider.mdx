@@ -1,0 +1,455 @@
+---
+title: "Providers"
+description: "React providers for managing Trusset SDK state and context"
+---
+
+## Overview
+
+Trusset SDK uses React Context providers to manage blockchain connections, asset state, and events across your application.
+
+## TrussetAppProvider
+
+The main provider that combines all SDK functionality:
+
+```tsx App.tsx
+import { TrussetAppProvider } from 'trusset-sdk';
+
+function App() {
+  return (
+    <TrussetAppProvider 
+      autoConnect={true}
+      config={{
+        defaultNetwork: Network.SEPOLIA,
+        cacheEnabled: true,
+        retryAttempts: 3
+      }}
+    >
+      <YourApplication />
+    </TrussetAppProvider>
+  );
+}
+```
+
+<ParamField path="autoConnect" type="boolean" default="false">
+Automatically connect to Web3 provider if available
+</ParamField>
+
+<ParamField path="config" type="TrussetConfig">
+SDK configuration options
+</ParamField>
+
+<ParamField path="children" type="ReactNode" required>
+Child components that will have access to SDK context
+</ParamField>
+
+## TrussetProvider
+
+Core provider for blockchain connection and client state:
+
+<Tabs>
+<Tab title="Basic Setup">
+
+```tsx
+import { TrussetProvider, useTrussetContext } from 'trusset-sdk';
+
+function App() {
+  return (
+    <TrussetProvider config={{ defaultNetwork: Network.SEPOLIA }}>
+      <WalletConnection />
+    </TrussetProvider>
+  );
+}
+
+function WalletConnection() {
+  const { 
+    connected, 
+    address, 
+    chainId, 
+    connect, 
+    disconnect 
+  } = useTrussetContext();
+  
+  return (
+    <div>
+      {connected ? (
+        <div>
+          <p>Connected: {address}</p>
+          <p>Network: {chainId}</p>
+          <button onClick={disconnect}>Disconnect</button>
+        </div>
+      ) : (
+        <button onClick={() => connectWallet()}>Connect</button>
+      )}
+    </div>
+  );
+}
+```
+
+</Tab>
+<Tab title="With Web3Provider">
+
+```tsx
+import { ethers } from 'ethers';
+
+function connectWallet() {
+  const { connect } = useTrussetContext();
+  
+  const connectToMetaMask = async () => {
+    if (!window.ethereum) return;
+    
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    
+    await connect(provider, signer);
+  };
+  
+  return <button onClick={connectToMetaMask}>Connect MetaMask</button>;
+}
+```
+
+</Tab>
+</Tabs>
+
+### Context Values
+
+<ResponseField name="client" type="TrussetClient | null">
+The initialized Trusset client instance
+</ResponseField>
+
+<ResponseField name="provider" type="providers.Provider | null">
+The Web3 provider instance
+</ResponseField>
+
+<ResponseField name="signer" type="Signer | null">
+The Web3 signer instance
+</ResponseField>
+
+<ResponseField name="address" type="string | null">
+Connected wallet address
+</ResponseField>
+
+<ResponseField name="chainId" type="number | null">
+Current blockchain network ID
+</ResponseField>
+
+<ResponseField name="connected" type="boolean">
+Connection status
+</ResponseField>
+
+<ResponseField name="loading" type="boolean">
+Loading state for connection operations
+</ResponseField>
+
+<ResponseField name="error" type="TrussetError | null">
+Connection error if any
+</ResponseField>
+
+## AssetProvider
+
+Manages asset state and operations:
+
+```tsx AssetManagement.tsx
+import { AssetProvider, useAssetContext } from 'trusset-sdk';
+
+function AssetManagement() {
+  return (
+    <AssetProvider>
+      <AssetList />
+      <AssetCreator />
+    </AssetProvider>
+  );
+}
+
+function AssetList() {
+  const { 
+    assets, 
+    loading, 
+    selectedAsset, 
+    selectAsset,
+    refreshAssets 
+  } = useAssetContext();
+  
+  if (loading) return <div>Loading assets...</div>;
+  
+  return (
+    <div>
+      <button onClick={refreshAssets}>Refresh</button>
+      {assets.map(asset => (
+        <div key={asset.id} onClick={() => selectAsset(asset)}>
+          <h3>{asset.name} ({asset.symbol})</h3>
+          <p>Supply: {asset.totalSupply}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+<Accordion title="Asset Context Values">
+
+<ResponseField name="assets" type="Asset[]">
+Array of user's assets
+</ResponseField>
+
+<ResponseField name="loading" type="boolean">
+Loading state for asset operations
+</ResponseField>
+
+<ResponseField name="error" type="TrussetError | null">
+Asset operation errors
+</ResponseField>
+
+<ResponseField name="selectedAsset" type="Asset | null">
+Currently selected asset
+</ResponseField>
+
+<ResponseField name="selectAsset" type="(asset: Asset | null) => void">
+Function to select an asset
+</ResponseField>
+
+<ResponseField name="refreshAssets" type="() => Promise<void>">
+Function to refresh asset list
+</ResponseField>
+
+</Accordion>
+
+## EventProvider
+
+Real-time blockchain event management:
+
+```tsx EventHandling.tsx
+import { EventProvider, useEventContext } from 'trusset-sdk';
+
+function EventHandling() {
+  return (
+    <EventProvider>
+      <EventFeed />
+      <EventActions />
+    </EventProvider>
+  );
+}
+
+function EventFeed() {
+  const { events, clearEvents } = useEventContext();
+  
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <h3>Recent Events ({events.length})</h3>
+        <button onClick={clearEvents}>Clear</button>
+      </div>
+      
+      {events.map((event, index) => (
+        <div key={index} className="event-item">
+          <strong>{event.event}</strong>
+          <p>Block: {event.blockNumber}</p>
+          <p>Hash: {event.transactionHash}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+## Network Management
+
+Handle network switching and configuration:
+
+<CodeGroup>
+
+```tsx Network Switcher
+import { useTrussetContext, Network } from 'trusset-sdk';
+
+function NetworkSwitcher() {
+  const { chainId, switchNetwork } = useTrussetContext();
+  
+  const networks = [
+    { id: Network.ETHEREUM, name: 'Ethereum Mainnet' },
+    { id: Network.SEPOLIA, name: 'Sepolia Testnet' },
+    { id: Network.POLYGON, name: 'Polygon' }
+  ];
+  
+  return (
+    <select 
+      value={chainId || ''} 
+      onChange={(e) => switchNetwork(Number(e.target.value))}
+    >
+      {networks.map(network => (
+        <option key={network.id} value={network.id}>
+          {network.name}
+        </option>
+      ))}
+    </select>
+  );
+}
+```
+
+```tsx Network Status
+function NetworkStatus() {
+  const { chainId, connected } = useTrussetContext();
+  
+  const getNetworkName = (id: number) => {
+    switch(id) {
+      case 1: return 'Ethereum Mainnet';
+      case 11155111: return 'Sepolia Testnet';
+      case 137: return 'Polygon';
+      default: return 'Unknown Network';
+    }
+  };
+  
+  return (
+    <div className="network-status">
+      {connected ? (
+        <span className="connected">
+          🟢 {getNetworkName(chainId!)}
+        </span>
+      ) : (
+        <span className="disconnected">🔴 Not Connected</span>
+      )}
+    </div>
+  );
+}
+```
+
+</CodeGroup>
+
+## Error Handling
+
+Comprehensive error handling across providers:
+
+```tsx ErrorHandling.tsx
+import { TrussetError } from 'trusset-sdk';
+
+function ErrorDisplay() {
+  const { error } = useTrussetContext();
+  
+  if (!error) return null;
+  
+  const getErrorMessage = (error: TrussetError) => {
+    switch(error.code) {
+      case 'NETWORK_ERROR':
+        return 'Network connection failed. Please check your internet.';
+      case 'CONTRACT_ERROR':
+        return 'Smart contract interaction failed. Please try again.';
+      case 'VALIDATION_ERROR':
+        return 'Invalid input provided. Please check your data.';
+      default:
+        return error.message;
+    }
+  };
+  
+  return (
+    <div className="error-banner">
+      <span className="error-icon">⚠️</span>
+      <span>{getErrorMessage(error)}</span>
+      <button onClick={() => window.location.reload()}>
+        Retry
+      </button>
+    </div>
+  );
+}
+```
+
+## Configuration Options
+
+Advanced provider configuration:
+
+<Tabs>
+<Tab title="Network Configuration">
+
+```tsx
+const config = {
+  networks: {
+    [Network.SEPOLIA]: {
+      chainId: 11155111,
+      name: 'Sepolia Testnet',
+      rpcUrl: 'https://sepolia.infura.io/v3/your-key',
+      contracts: {
+        assetFactory: '0x1Ca9018e56865b1eC3A2B63Af2192f10e1DdBC5E',
+        securityToken: '0xE9C645c2d2Efede5625ec276c324F3d116Bde073'
+      }
+    }
+  },
+  defaultNetwork: Network.SEPOLIA
+};
+```
+
+</Tab>
+<Tab title="Cache Configuration">
+
+```tsx
+const config = {
+  cacheEnabled: true,
+  cacheTTL: 300000, // 5 minutes
+  eventPollingInterval: 5000 // 5 seconds
+};
+```
+
+</Tab>
+<Tab title="Retry Configuration">
+
+```tsx
+const config = {
+  autoRetry: true,
+  retryAttempts: 5,
+  retryDelay: 2000 // 2 seconds
+};
+```
+
+</Tab>
+</Tabs>
+
+## Provider Nesting
+
+Proper provider hierarchy for complex applications:
+
+```tsx ProviderHierarchy.tsx
+function App() {
+  return (
+    <TrussetProvider config={trussetConfig}>
+      <AssetProvider>
+        <EventProvider>
+          <Router>
+            <Routes>
+              <Route path="/assets" element={<AssetDashboard />} />
+              <Route path="/create" element={<AssetCreation />} />
+            </Routes>
+          </Router>
+        </EventProvider>
+      </AssetProvider>
+    </TrussetProvider>
+  );
+}
+```
+
+<Note>
+Use `TrussetAppProvider` as a shorthand that includes all providers automatically.
+</Note>
+
+## TypeScript Support
+
+Full TypeScript integration:
+
+```typescript types.ts
+import type { 
+  TrussetContextValue,
+  AssetContextValue,
+  EventContextValue,
+  TrussetConfig 
+} from 'trusset-sdk';
+
+// Extend context values
+interface CustomTrussetContext extends TrussetContextValue {
+  customMethod: () => void;
+}
+
+// Custom hook with typed return
+const useCustomTrusset = (): CustomTrussetContext => {
+  const context = useTrussetContext();
+  
+  return {
+    ...context,
+    customMethod: () => console.log('Custom method')
+  };
+};
+```

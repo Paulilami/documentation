@@ -55,6 +55,42 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "SDK",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "reference/start"
+            ]
+          },
+          {
+            "group": "Tokenization SDK",
+            "pages": [
+              "reference/tokenization/install",
+              "reference/tokenization/hooks",
+              "reference/tokenization/network",
+              "reference/tokenization/utils",
+              "reference/tokenization/test",
+              "reference/tokenization/provider",
+              "reference/tokenization/components"
+            ]
+          },
+          {
+            "group": "DAO SDK",
+            "pages": [
+              "reference/dao/install",
+              "reference/dao/config",
+              "reference/dao/hooks",
+              "reference/dao/commands",
+              "reference/dao/contracts",
+              "reference/dao/components",
+              "reference/dao/theme"
+
+            ]
+          }
+        ]
       }
     ],
     "global": {

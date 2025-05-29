@@ -1,0 +1,302 @@
+---
+title: "Testing"
+description: "Testing utilities and integration tests for the Trusset SDK"
+---
+
+## Overview
+
+The Trusset SDK provides comprehensive testing utilities for integration testing, mocking, and test fixtures to ensure your tokenized assets work correctly.
+
+## CLI Testing
+
+Run integration tests using the Trusset CLI:
+
+<CodeGroup>
+
+```bash Basic Test
+npx trusset test --rpc http://localhost:8545
+```
+
+```bash Custom Configuration
+npx trusset test \
+  --rpc https://sepolia.infura.io/v3/your-key \
+  --wallets 10 \
+  --verbose
+```
+
+</CodeGroup>
+
+## Test Suite
+
+The `TrussetTestSuite` class provides automated testing for your tokenization logic:
+
+```typescript TestSuite.ts
+import { TrussetTestSuite } from 'trusset-sdk';
+
+const testSuite = new TrussetTestSuite('http://localhost:8545');
+
+// Setup test environment
+await testSuite.setup(5); // 5 test wallets
+
+// Run basic tests
+const results = await testSuite.runBasicTests();
+
+// Cleanup
+await testSuite.cleanup();
+```
+
+<Accordion title="Test Results Structure">
+
+```typescript
+interface TestResult {
+  name: string;
+  passed: boolean;
+  message: string;
+}
+```
+
+Each test returns a result with the test name, pass/fail status, and descriptive message.
+
+</Accordion>
+
+## Mock Utilities
+
+Create mock data for testing without blockchain interactions:
+
+<Tabs>
+<Tab title="Mock Assets">
+
+```typescript
+import { createMockAsset, createMockAssetConfig } from 'trusset-sdk/testing';
+
+// Create mock asset
+const mockAsset = createMockAsset({
+  name: 'Test Company',
+  symbol: 'TEST',
+  totalSupply: 1000
+});
+
+// Create mock asset configuration
+const mockConfig = createMockAssetConfig({
+  name: 'Real Estate Token',
+  symbol: 'RET',
+  assetType: AssetType.REAL_ESTATE
+});
+```
+
+</Tab>
+<Tab title="Mock Shares">
+
+```typescript
+import { createMockShare } from 'trusset-sdk/testing';
+
+const mockShare = createMockShare({
+  id: 1,
+  assetId: 1,
+  owner: '0x1234567890123456789012345678901234567890',
+  tags: ['preferred', 'voting']
+});
+```
+
+</Tab>
+<Tab title="Mock Events">
+
+```typescript
+import { createMockEvent } from 'trusset-sdk/testing';
+
+const mockEvent = createMockEvent({
+  event: 'AssetCreated',
+  args: [1, '0x1234...'],
+  blockNumber: 12345
+});
+```
+
+</Tab>
+</Tabs>
+
+## Test Fixtures
+
+Pre-configured test data for common scenarios:
+
+<CardGroup cols={2}>
+<Card title="Standard Asset" icon="building">
+Basic asset configuration for testing
+</Card>
+<Card title="Compliance Asset" icon="shield-check">
+Asset with KYC, whitelist, and authority controls
+</Card>
+<Card title="Real Estate Asset" icon="house">
+Fractional real estate token configuration
+</Card>
+<Card title="Art Asset" icon="palette">
+NFT-style art asset with metadata
+</Card>
+</CardGroup>
+
+```typescript fixtures.ts
+import { 
+  STANDARD_ASSET_CONFIG,
+  COMPLIANCE_ASSET_CONFIG,
+  REAL_ESTATE_ASSET_CONFIG,
+  ART_ASSET_CONFIG
+} from 'trusset-sdk/testing';
+
+// Use pre-configured test assets
+const standardAsset = await client.createAsset(STANDARD_ASSET_CONFIG);
+const complianceAsset = await client.createAsset(COMPLIANCE_ASSET_CONFIG);
+```
+
+## Helper Functions
+
+Utility functions for test scenarios:
+
+<AccordionGroup>
+<Accordion title="Address Generation">
+
+```typescript
+import { generateRandomAddress, createTestWallet } from 'trusset-sdk/testing';
+
+// Generate random Ethereum address
+const address = generateRandomAddress();
+
+// Create test wallet with random keys
+const wallet = createTestWallet();
+```
+
+</Accordion>
+
+<Accordion title="Asset Helpers">
+
+```typescript
+import { createTestAssetConfig, createRandomAssetConfigs } from 'trusset-sdk/testing';
+
+// Create single test asset
+const config = createTestAssetConfig('My Asset', 'ASSET', 1000);
+
+// Create multiple random assets
+const configs = createRandomAssetConfigs(5);
+```
+
+</Accordion>
+
+<Accordion title="Async Testing">
+
+```typescript
+import { expectAsync, wait } from 'trusset-sdk/testing';
+
+// Test async operations with error handling
+await expectAsync(
+  client.createAsset(invalidConfig),
+  'Asset configuration invalid'
+);
+
+// Add delays in tests
+await wait(1000); // Wait 1 second
+```
+
+</Accordion>
+</AccordionGroup>
+
+## Integration Testing
+
+<Steps>
+<Step title="Setup Test Environment">
+
+```typescript setup.ts
+import { TrussetTestSuite } from 'trusset-sdk';
+
+const testSuite = new TrussetTestSuite('http://localhost:8545');
+await testSuite.setup(3); // 3 test wallets
+```
+
+</Step>
+
+<Step title="Run Asset Creation Tests">
+
+```typescript
+const results = await testSuite.runBasicTests();
+const passedTests = results.filter(r => r.passed);
+const failedTests = results.filter(r => !r.passed);
+
+console.log(`Passed: ${passedTests.length}`);
+console.log(`Failed: ${failedTests.length}`);
+```
+
+</Step>
+
+<Step title="Custom Test Implementation">
+
+```typescript custom-test.ts
+import { TrussetClient } from 'trusset-sdk';
+import { createTestAssetConfig } from 'trusset-sdk/testing';
+
+async function testAssetCreation() {
+  const client = new TrussetClient({ provider });
+  
+  const config = createTestAssetConfig();
+  const result = await client.createAsset(config);
+  
+  assert(result.assetId > 0, 'Asset ID should be positive');
+  assert(result.tx.hash, 'Transaction hash should exist');
+}
+```
+
+</Step>
+</Steps>
+
+<Warning>
+Always test on testnets before mainnet deployment. Use Sepolia or Mumbai for Ethereum and Polygon testing.
+</Warning>
+
+## Mock Providers
+
+Test without connecting to real blockchain networks:
+
+```typescript
+import { createMockProvider, createMockWallet } from 'trusset-sdk/testing';
+
+const mockProvider = createMockProvider();
+const mockWallet = createMockWallet();
+
+// Use in tests
+const client = new TrussetClient({
+  provider: mockProvider,
+  signer: mockWallet
+});
+```
+
+<Tip>
+Mock providers return predictable responses, making tests deterministic and fast.
+</Tip>
+
+## Error Testing
+
+Test error scenarios and edge cases:
+
+```typescript error-testing.ts
+import { expectAsync } from 'trusset-sdk/testing';
+
+// Test invalid configurations
+await expectAsync(
+  client.createAsset({ name: '', symbol: '', initialSupply: 0 }),
+  'Asset name is required'
+);
+
+// Test insufficient funds
+await expectAsync(
+  client.createAsset(validConfig, { value: parseEther('1000') }),
+  'Insufficient funds'
+);
+```
+
+## Performance Testing
+
+Measure SDK performance:
+
+```typescript performance.ts
+const startTime = Date.now();
+await client.createAsset(config);
+const duration = Date.now() - startTime;
+
+console.log(`Asset creation took ${duration}ms`);
+```

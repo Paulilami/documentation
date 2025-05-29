@@ -1,0 +1,235 @@
+---
+title: "Installation"
+description: "Get started with the Trusset SDK for tokenized assets and security tokens"
+---
+
+## Quick Start
+
+Install the Trusset SDK and start building tokenized asset applications in minutes.
+
+<CodeGroup>
+```bash npm
+npm install trusset-sdk ethers@^5.7.2
+```
+
+```bash yarn
+yarn add trusset-sdk ethers@^5.7.2
+```
+
+```bash pnpm
+pnpm add trusset-sdk ethers@^5.7.2
+```
+</CodeGroup>
+
+<Note>
+The SDK requires `ethers@^5.7.2` as a peer dependency for blockchain interactions.
+</Note>
+
+## Basic Setup
+
+<Steps>
+<Step title="Initialize the Client">
+Create a TrussetClient instance with your provider and signer.
+
+```typescript
+import { TrussetClient } from 'trusset-sdk';
+import { ethers } from 'ethers';
+
+const provider = new ethers.providers.Web3Provider(window.ethereum);
+const signer = provider.getSigner();
+
+const client = new TrussetClient({
+  provider,
+  signer,
+  autoConnect: true
+});
+```
+</Step>
+
+<Step title="React Integration">
+Wrap your app with the TrussetProvider for React hooks.
+
+```typescript
+import { TrussetAppProvider } from 'trusset-sdk';
+
+function App() {
+  return (
+    <TrussetAppProvider autoConnect>
+      <YourApp />
+    </TrussetAppProvider>
+  );
+}
+```
+</Step>
+
+<Step title="Create Your First Asset">
+Use the client to create a tokenized asset.
+
+```typescript
+import { AssetType } from 'trusset-sdk';
+
+const result = await client.createAsset({
+  name: 'My Company Shares',
+  symbol: 'MCS',
+  initialSupply: 1000,
+  assetType: AssetType.EQUITY
+});
+
+console.log('Asset created with ID:', result.assetId);
+```
+</Step>
+</Steps>
+
+## CLI Tools
+
+Install the CLI globally for project scaffolding and testing.
+
+<CodeGroup>
+```bash Global Install
+npm install -g trusset-sdk
+```
+
+```bash Project Init
+trusset init my-tokenization-app
+cd my-tokenization-app
+npm install
+```
+
+```bash Run Tests
+trusset test --rpc https://sepolia.infura.io/v3/YOUR_KEY
+```
+</CodeGroup>
+
+<Accordion title="CLI Commands Reference">
+<ResponseField name="init" type="command">
+Initialize a new Trusset project with templates
+- `--name` - Project name
+- `--template` - Template type (basic, advanced)
+</ResponseField>
+
+<ResponseField name="test" type="command">
+Run integration tests against blockchain networks
+- `--rpc` - RPC URL for testing
+- `--wallets` - Number of test wallets
+</ResponseField>
+
+<ResponseField name="deploy" type="command">
+Deploy contracts to specified network
+- `--network` - Target network (sepolia, mainnet)
+- `--key` - Private key for deployment
+</ResponseField>
+
+<ResponseField name="build" type="command">
+Build project for production
+- `--output` - Output directory
+- `--production` - Production optimizations
+</ResponseField>
+</Accordion>
+
+## Network Configuration
+
+<Tabs>
+<Tab title="Sepolia Testnet">
+```typescript
+import { Network } from 'trusset-sdk';
+
+const client = new TrussetClient({
+  provider,
+  signer,
+  config: {
+    defaultNetwork: Network.SEPOLIA
+  }
+});
+```
+</Tab>
+
+<Tab title="Ethereum Mainnet">
+```typescript
+const client = new TrussetClient({
+  provider,
+  signer,
+  config: {
+    defaultNetwork: Network.ETHEREUM
+  }
+});
+```
+</Tab>
+
+<Tab title="Polygon">
+```typescript
+const client = new TrussetClient({
+  provider,
+  signer,
+  config: {
+    defaultNetwork: Network.POLYGON
+  }
+});
+```
+</Tab>
+</Tabs>
+
+## Environment Variables
+
+<CodeGroup>
+```bash .env
+# Required for wallet connections
+VITE_REOWN_PROJECT_ID=your_reown_project_id
+
+# Optional RPC endpoints
+VITE_ETHEREUM_RPC=https://eth.llamarpc.com
+VITE_SEPOLIA_RPC=https://sepolia.infura.io/v3/YOUR_KEY
+```
+
+```typescript TypeScript
+// Access in your app
+const projectId = import.meta.env.VITE_REOWN_PROJECT_ID;
+```
+</CodeGroup>
+
+## TypeScript Support
+
+The SDK is built with TypeScript and provides full type safety.
+
+```typescript
+import type { 
+  Asset, 
+  AssetConfig, 
+  Share, 
+  TransactionResult 
+} from 'trusset-sdk';
+
+// All types are exported and documented
+const config: AssetConfig = {
+  name: 'Test Asset',
+  symbol: 'TEST',
+  initialSupply: 1000,
+  assetType: AssetType.EQUITY
+};
+```
+
+## Troubleshooting
+
+<Accordion title="Common Installation Issues">
+**Peer dependency warnings**
+```bash
+npm install --legacy-peer-deps
+```
+
+**ESM Module Issues**
+Ensure your `package.json` includes:
+```json
+{
+  "type": "module"
+}
+```
+
+**React/TypeScript Errors**
+Install required dev dependencies:
+```bash
+npm install -D @types/react @types/react-dom
+```
+</Accordion>
+
+<Warning>
+Make sure to use Node.js version 16 or higher. The SDK uses modern JavaScript features.
+</Warning>

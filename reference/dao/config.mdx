@@ -1,0 +1,430 @@
+---
+title: "Configuration"
+description: "Configure your DAO settings, styling, and network parameters"
+---
+
+## Configuration Files
+
+Your DAO project uses two main configuration files to define behavior and appearance.
+
+<CardGroup cols={2}>
+  <Card title="trusset.json" icon="gear" href="#dao-configuration">
+    Core DAO settings and smart contract parameters
+  </Card>
+  <Card title="trussetStyles.json" icon="palette" href="#styling-configuration">
+    UI theming, colors, and component behavior
+  </Card>
+</CardGroup>
+
+## DAO Configuration
+
+The `trusset.json` file contains your DAO's core settings and smart contract parameters.
+
+### Complete Configuration
+
+<CodeGroup>
+```json trusset.json
+{
+  "name": "My DAO",
+  "description": "A decentralized autonomous organization built with Trusset",
+  "chain": "sepolia",
+  "token": "0x0000000000000000000000000000000000000000",
+  "admin": "0x0262503A71c343eE04AA8Dbeb7EA0e2576DC0848",
+  "minStake": "100000000000000000000",
+  "proposalFee": "10000000000000000000", 
+  "minVotes": "1000000000000000000000",
+  "mainDAOAddress": "0x39cB1a0D5Cb0043A1D922932a9fF13e46135Fa5b",
+  "privateKey": "your-private-key-for-deployment",
+  "rpcUrl": "https://sepolia.infura.io/v3/your-infura-project-id"
+}
+```
+
+```json Mainnet Example
+{
+  "name": "Production DAO",
+  "description": "Enterprise DAO for token holders",
+  "chain": "mainnet",
+  "token": "0x1234567890123456789012345678901234567890",
+  "admin": "0x1234567890123456789012345678901234567890",
+  "minStake": "1000000000000000000000",
+  "proposalFee": "100000000000000000000",
+  "minVotes": "10000000000000000000000",
+  "mainDAOAddress": "0x1234567890123456789012345678901234567890",
+  "privateKey": "${PRIVATE_KEY}",
+  "rpcUrl": "https://mainnet.infura.io/v3/${INFURA_KEY}"
+}
+```
+</CodeGroup>
+
+### Configuration Parameters
+
+<ParamField body="name" type="string" required>
+  The display name of your DAO organization
+</ParamField>
+
+<ParamField body="description" type="string">
+  Detailed description of your DAO's purpose and goals
+</ParamField>
+
+<ParamField body="chain" type="string" default="sepolia">
+  Target blockchain network: `sepolia`, `mainnet`, `polygon`, `arbitrum`
+</ParamField>
+
+<ParamField body="token" type="address">
+  ERC-20 token contract address for staking and voting. Use zero address for ETH
+</ParamField>
+
+<ParamField body="admin" type="address" required>
+  Administrator address with management privileges
+</ParamField>
+
+<ParamField body="minStake" type="string" required>
+  Minimum stake amount in wei (e.g., "100000000000000000000" = 100 tokens)
+</ParamField>
+
+<ParamField body="proposalFee" type="string" required>
+  Fee required to submit proposals in wei (e.g., "10000000000000000000" = 10 tokens)
+</ParamField>
+
+<ParamField body="minVotes" type="string" required>
+  Minimum votes required for proposal to pass in wei
+</ParamField>
+
+<ParamField body="mainDAOAddress" type="address">
+  Address of the main DAO contract (auto-populated after deployment)
+</ParamField>
+
+<ParamField body="privateKey" type="string">
+  Private key for contract deployment (keep secure!)
+</ParamField>
+
+<ParamField body="rpcUrl" type="string" required>
+  RPC endpoint URL for blockchain connection
+</ParamField>
+
+## Styling Configuration
+
+The `trussetStyles.json` file controls your DAO's visual appearance and UI behavior.
+
+### Complete Styling Configuration
+
+<Tabs>
+  <Tab title="Trusset Style">
+    ```json trussetStyles.json
+    {
+      "style": "trusset",
+      "theme": "dark",
+      "reownProjectId": "your-reown-project-id",
+      "navigation": {
+        "logo": "/logo.svg",
+        "search": true,
+        "language": true,
+        "theme": true
+      },
+      "sidebar": {
+        "expandOnHover": true,
+        "links": [
+          {
+            "label": "Home",
+            "icon": "Home",
+            "path": "/",
+            "component": "HomePage"
+          },
+          {
+            "label": "Treasury",
+            "icon": "Wallet", 
+            "path": "/treasury",
+            "component": "TreasuryPage"
+          },
+          {
+            "label": "Proposals",
+            "icon": "FileText",
+            "path": "/proposals", 
+            "component": "ProposalsPage"
+          },
+          {
+            "label": "Staking",
+            "icon": "Coins",
+            "path": "/staking",
+            "component": "StakingPage"
+          }
+        ]
+      },
+      "proposals": {
+        "display": "sidebar",
+        "pagination": 10
+      },
+      "treasury": {
+        "showStaking": true,
+        "showTopVoter": true
+      },
+      "colors": {
+        "primary": "#0070f3",
+        "secondary": "#666666",
+        "accent": "#00bb7f"
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Retro Style">
+    ```json Retro Configuration
+    {
+      "style": "retro",
+      "theme": "light",
+      "reownProjectId": "your-reown-project-id", 
+      "navigation": {
+        "logo": "/retro-logo.png",
+        "search": false,
+        "language": false,
+        "theme": true
+      },
+      "colors": {
+        "primary": "#ff6b35",
+        "secondary": "#2d3436", 
+        "accent": "#00b894"
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Styling Parameters
+
+<ResponseField name="style" type="'trusset' | 'retro'" required>
+  Visual style theme for the DAO interface
+</ResponseField>
+
+<ResponseField name="theme" type="'light' | 'dark'" required>
+  Color scheme preference
+</ResponseField>
+
+<ResponseField name="reownProjectId" type="string" required>
+  Project ID from Reown Cloud for wallet connection
+</ResponseField>
+
+<Expandable title="Navigation Settings">
+  <ResponseField name="navigation.logo" type="string">
+    Path to logo image file
+  </ResponseField>
+  
+  <ResponseField name="navigation.search" type="boolean">
+    Enable search functionality in navigation
+  </ResponseField>
+  
+  <ResponseField name="navigation.language" type="boolean">
+    Enable language switcher (English/German)
+  </ResponseField>
+  
+  <ResponseField name="navigation.theme" type="boolean">
+    Enable dark/light theme toggle
+  </ResponseField>
+</Expandable>
+
+<Expandable title="Sidebar Configuration">
+  <ResponseField name="sidebar.expandOnHover" type="boolean">
+    Auto-expand sidebar on mouse hover
+  </ResponseField>
+  
+  <ResponseField name="sidebar.links" type="array">
+    Navigation links configuration array
+  </ResponseField>
+</Expandable>
+
+<Expandable title="Component Settings">
+  <ResponseField name="proposals.display" type="'sidebar' | 'page'">
+    How to display proposal details
+  </ResponseField>
+  
+  <ResponseField name="proposals.pagination" type="number">
+    Number of proposals per page
+  </ResponseField>
+  
+  <ResponseField name="treasury.showStaking" type="boolean">
+    Display staking information in treasury
+  </ResponseField>
+  
+  <ResponseField name="treasury.showTopVoter" type="boolean">
+    Show top voter information
+  </ResponseField>
+</Expandable>
+
+## Network Configuration
+
+Configure different networks for development and production:
+
+<CodeGroup>
+```json Development (Sepolia)
+{
+  "chain": "sepolia",
+  "rpcUrl": "https://sepolia.infura.io/v3/your-key",
+  "minStake": "1000000000000000000",
+  "proposalFee": "100000000000000000"
+}
+```
+
+```json Production (Mainnet)
+{
+  "chain": "mainnet", 
+  "rpcUrl": "https://mainnet.infura.io/v3/your-key",
+  "minStake": "100000000000000000000",
+  "proposalFee": "10000000000000000000"
+}
+```
+
+```json Layer 2 (Polygon)
+{
+  "chain": "polygon",
+  "rpcUrl": "https://polygon-rpc.com",
+  "minStake": "1000000000000000000000",
+  "proposalFee": "100000000000000000000"
+}
+```
+</CodeGroup>
+
+### Supported Networks
+
+| Network | Chain ID | RPC URL |
+|---------|----------|---------|
+| Sepolia | 11155111 | `https://sepolia.infura.io/v3/key` |
+| Mainnet | 1 | `https://mainnet.infura.io/v3/key` |
+| Polygon | 137 | `https://polygon-rpc.com` |
+| Arbitrum | 42161 | `https://arb1.arbitrum.io/rpc` |
+
+## Environment Variables
+
+Set up environment variables for secure configuration:
+
+<Steps>
+  <Step title="Create Environment File">
+    Create `.env` file in your project root:
+    
+    ```bash .env
+    # Wallet Connection
+    VITE_REOWN_PROJECT_ID=your-reown-project-id
+    
+    # Contract Addresses (auto-populated)
+    VITE_DAO_ADDRESS=0x757948344907d08fF5844c50A91880066C6b4420
+    VITE_MAIN_DAO_ADDRESS=0x39cB1a0D5Cb0043A1D922932a9fF13e46135Fa5b
+    
+    # Network
+    VITE_CHAIN_ID=11155111
+    VITE_RPC_URL=https://sepolia.infura.io/v3/your-key
+    
+    # Deployment (keep secure)
+    PRIVATE_KEY=your-private-key-without-0x
+    SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/your-key
+    ```
+  </Step>
+  
+  <Step title="Reference in Configuration">
+    Use environment variables in configuration files:
+    
+    ```json trusset.json
+    {
+      "privateKey": "${PRIVATE_KEY}",
+      "rpcUrl": "${SEPOLIA_RPC_URL}"
+    }
+    ```
+  </Step>
+</Steps>
+
+## Configuration Validation
+
+The SDK automatically validates your configuration and provides helpful error messages:
+
+<Warning>
+**Common Configuration Errors:**
+
+- Missing admin address
+- Invalid minimum stake amounts
+- Incorrect RPC URL format
+- Missing Reown Project ID
+</Warning>
+
+Validate your configuration:
+
+```bash
+trusset-dao validate
+```
+
+## Advanced Configuration
+
+<AccordionGroup>
+  <Accordion title="Custom Token Integration">
+    Configure your DAO to use a custom ERC-20 token:
+    
+    ```json Custom Token Setup
+    {
+      "token": "0x1234567890123456789012345678901234567890",
+      "minStake": "1000000000000000000000",
+      "proposalFee": "100000000000000000000"
+    }
+    ```
+    
+    <Note>
+    Token amounts are in wei. Use tools like `ethers.utils.parseEther()` to convert from human-readable amounts.
+    </Note>
+  </Accordion>
+  
+  <Accordion title="Multi-Network Deployment">
+    Configure for multiple networks:
+    
+    ```json Multi-Network
+    {
+      "networks": {
+        "sepolia": {
+          "rpcUrl": "https://sepolia.infura.io/v3/key",
+          "minStake": "1000000000000000000"
+        },
+        "mainnet": {
+          "rpcUrl": "https://mainnet.infura.io/v3/key", 
+          "minStake": "100000000000000000000"
+        }
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Custom Styling">
+    Override default CSS variables:
+    
+    ```json Custom Colors
+    {
+      "colors": {
+        "primary": "#8b5cf6",
+        "secondary": "#64748b",
+        "accent": "#06b6d4",
+        "background": "#0f172a",
+        "surface": "#1e293b"
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Configuration Examples
+
+<CardGroup cols={2}>
+  <Card title="DeFi DAO" icon="chart-line">
+    High stake requirements for financial decisions
+    ```json
+    {
+      "minStake": "10000000000000000000000",
+      "proposalFee": "1000000000000000000000",
+      "minVotes": "100000000000000000000000"
+    }
+    ```
+  </Card>
+  
+  <Card title="Community DAO" icon="users">
+    Lower barriers for community participation
+    ```json
+    {
+      "minStake": "100000000000000000000",
+      "proposalFee": "10000000000000000000",
+      "minVotes": "1000000000000000000000"
+    }
+    ```
+  </Card>
+</CardGroup>

@@ -1,0 +1,864 @@
+---
+title: "Theming & Styling"
+description: "Customize your DAO interface with themes, colors, and styling options"
+---
+
+## Overview
+
+The Trusset DAO SDK provides comprehensive theming capabilities to match your brand and design preferences.
+
+<CardGroup cols={3}>
+  <Card title="Built-in Themes" icon="palette" href="#built-in-themes">
+    Trusset and Retro style themes
+  </Card>
+  <Card title="Custom Styling" icon="brush" href="#custom-styling">
+    CSS variables and custom styles
+  </Card>
+  <Card title="Dark/Light Mode" icon="moon" href="#theme-modes">
+    Automatic theme switching
+  </Card>
+</CardGroup>
+
+## Built-in Themes
+
+### Trusset Theme
+
+Modern, professional theme with clean lines and blue accents.
+
+<Tabs>
+  <Tab title="Configuration">
+    ```json trussetStyles.json
+    {
+      "style": "trusset",
+      "theme": "dark",
+      "colors": {
+        "primary": "#0070f3",
+        "secondary": "#666666",
+        "accent": "#00bb7f"
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Features">
+    - Clean, modern design
+    - Blue color scheme
+    - Rounded corners
+    - Subtle shadows
+    - Smooth animations
+  </Tab>
+
+  <Tab title="Preview">
+    ```css
+    /* Trusset theme variables */
+    :root {
+      --color-primary: #0070f3;
+      --color-secondary: #666666;
+      --color-accent: #00bb7f;
+      --border-radius: 8px;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Retro Theme
+
+Vintage-inspired theme with warm colors and bold typography.
+
+<Tabs>
+  <Tab title="Configuration">
+    ```json trussetStyles.json
+    {
+      "style": "retro",
+      "theme": "light",
+      "colors": {
+        "primary": "#ff6b35",
+        "secondary": "#2d3436",
+        "accent": "#00b894"
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Features">
+    - Retro color palette
+    - Bold typography
+    - Gradient backgrounds
+    - Vintage-style icons
+    - Rounded buttons
+  </Tab>
+
+  <Tab title="Preview">
+    ```css
+    /* Retro theme variables */
+    :root {
+      --color-primary: #ff6b35;
+      --color-secondary: #2d3436;
+      --color-accent: #00b894;
+      --border-radius: 12px;
+      --font-weight-bold: 700;
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Theme Modes
+
+### Dark Mode
+
+<CodeGroup>
+```css Dark Mode Variables
+[data-theme="dark"] {
+  --color-background: #000000;
+  --color-surface: #111111;
+  --color-border: #333333;
+  --color-text: #ffffff;
+  --color-text-muted: #888888;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+```
+
+```tsx Dark Mode Hook
+import { useTheme } from 'trusset-dao-sdk';
+
+function ThemeToggle() {
+  const { theme, toggleTheme, isDark } = useTheme();
+
+  return (
+    <button onClick={toggleTheme} className="theme-toggle">
+      {isDark ? (
+        <Sun size={20} />
+      ) : (
+        <Moon size={20} />
+      )}
+      {isDark ? 'Light' : 'Dark'} Mode
+    </button>
+  );
+}
+```
+</CodeGroup>
+
+### Light Mode
+
+<CodeGroup>
+```css Light Mode Variables
+[data-theme="light"] {
+  --color-background: #ffffff;
+  --color-surface: #f8f9fa;
+  --color-border: #e1e5e9;
+  --color-text: #333333;
+  --color-text-muted: #666666;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+```
+
+```tsx Auto Theme Detection
+import { useTheme } from 'trusset-dao-sdk';
+
+function AutoThemeProvider({ children }) {
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    // Auto-detect system preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (!localStorage.getItem('dao-theme')) {
+      setTheme(prefersDark ? 'dark' : 'light');
+    }
+  }, []);
+
+  return (
+    <div className={`app theme-${theme}`}>
+      {children}
+    </div>
+  );
+}
+```
+</CodeGroup>
+
+## Custom Styling
+
+### CSS Variables
+
+Override theme variables to customize appearance:
+
+<CodeGroup>
+```css Custom Variables
+:root {
+  /* Brand Colors */
+  --color-primary: #8b5cf6;
+  --color-secondary: #64748b;
+  --color-accent: #06b6d4;
+  
+  /* Status Colors */
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+  
+  /* Layout */
+  --border-radius: 12px;
+  --border-radius-large: 16px;
+  --spacing-small: 8px;
+  --spacing-medium: 16px;
+  --spacing-large: 24px;
+  
+  /* Typography */
+  --font-size-small: 12px;
+  --font-size-medium: 14px;
+  --font-size-large: 16px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 600;
+  
+  /* Effects */
+  --shadow-small: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-large: 0 8px 16px rgba(0, 0, 0, 0.15);
+  --transition: all 0.2s ease;
+}
+```
+
+```json Style Configuration
+{
+  "colors": {
+    "primary": "#8b5cf6",
+    "secondary": "#64748b",
+    "accent": "#06b6d4",
+    "success": "#10b981",
+    "danger": "#ef4444",
+    "warning": "#f59e0b"
+  },
+  "spacing": {
+    "small": "8px",
+    "medium": "16px",
+    "large": "24px"
+  },
+  "borderRadius": "12px",
+  "shadows": {
+    "small": "0 2px 4px rgba(0, 0, 0, 0.1)",
+    "medium": "0 4px 6px rgba(0, 0, 0, 0.1)"
+  }
+}
+```
+</CodeGroup>
+
+### Component Styling
+
+<AccordionGroup>
+  <Accordion title="Proposal Cards">
+    ```css
+    .proposal-card {
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius);
+      padding: var(--spacing-large);
+      transition: var(--transition);
+    }
+
+    .proposal-card:hover {
+      border-color: var(--color-primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .proposal-card.state-active {
+      border-left: 4px solid var(--color-primary);
+    }
+
+    .proposal-card.state-succeeded {
+      border-left: 4px solid var(--color-success);
+    }
+
+    .proposal-card.state-defeated {
+      border-left: 4px solid var(--color-danger);
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Navigation Styling">
+    ```css
+    .navigation {
+      background-color: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      padding: var(--spacing-medium) var(--spacing-large);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-button {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-small);
+      padding: var(--spacing-small) var(--spacing-medium);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius);
+      background: transparent;
+      color: var(--color-text);
+      transition: var(--transition);
+    }
+
+    .nav-button:hover {
+      background-color: var(--color-surface);
+      border-color: var(--color-primary);
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Button Styles">
+    ```css
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-small);
+      padding: var(--spacing-small) var(--spacing-medium);
+      border: none;
+      border-radius: var(--border-radius);
+      font-size: var(--font-size-medium);
+      font-weight: var(--font-weight-medium);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .button.primary {
+      background-color: var(--color-primary);
+      color: white;
+    }
+
+    .button.primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .button.secondary {
+      background-color: transparent;
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+    }
+
+    .button.secondary:hover {
+      background-color: var(--color-surface);
+      border-color: var(--color-primary);
+    }
+
+    .button.danger {
+      background-color: var(--color-danger);
+      color: white;
+    }
+
+    .button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Custom CSS Integration
+
+<Steps>
+  <Step title="Create Style File">
+    Create a custom CSS file in your project:
+    
+    ```css styles/custom.css
+    /* Custom DAO Styling */
+    
+    /* Override theme colors */
+    :root {
+      --color-primary: #9333ea;
+      --color-accent: #f59e0b;
+    }
+    
+    /* Custom proposal card styling */
+    .proposal-card {
+      background: linear-gradient(135deg, 
+        var(--color-surface) 0%, 
+        rgba(147, 51, 234, 0.05) 100%);
+    }
+    
+    /* Custom navigation */
+    .navigation {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(20px);
+    }
+    
+    /* Animated buttons */
+    .vote-button {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .vote-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+      transition: var(--transition);
+    }
+    
+    .vote-button:hover::before {
+      left: 100%;
+    }
+    ```
+  </Step>
+  
+  <Step title="Import in Application">
+    Import your custom styles:
+    
+    ```tsx App.tsx
+    import React from 'react';
+    import { DAO } from 'trusset-dao-sdk';
+    import './styles/custom.css';
+    
+    function App() {
+      return (
+        <div className="app">
+          <DAO />
+        </div>
+      );
+    }
+    
+    export default App;
+    ```
+  </Step>
+  
+  <Step title="Configuration Integration">
+    Reference styles in your configuration:
+    
+    ```json trussetStyles.json
+    {
+      "style": "custom",
+      "customStylePath": "./styles/custom.css",
+      "colors": {
+        "primary": "#9333ea",
+        "accent": "#f59e0b"
+      }
+    }
+    ```
+  </Step>
+</Steps>
+
+## Responsive Design
+
+The DAO components are designed to work across all device sizes:
+
+<Tabs>
+  <Tab title="Mobile Styles">
+    ```css
+    @media (max-width: 768px) {
+      .main-content {
+        margin-left: 0;
+        padding: var(--spacing-medium);
+      }
+      
+      .sidebar {
+        transform: translateX(-100%);
+        position: fixed;
+        z-index: 1000;
+      }
+      
+      .sidebar.expanded {
+        transform: translateX(0);
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .proposal-card {
+        padding: var(--spacing-medium);
+      }
+      
+      .navigation {
+        padding: var(--spacing-small) var(--spacing-medium);
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Tablet Styles">
+    ```css
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .main-content {
+        margin-left: 80px;
+      }
+      
+      .sidebar {
+        width: 80px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .proposals-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Desktop Styles">
+    ```css
+    @media (min-width: 1025px) {
+      .main-content {
+        margin-left: 240px;
+      }
+      
+      .sidebar {
+        width: 240px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      
+      .proposals-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .sidebar:hover {
+        width: 280px;
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Advanced Theming
+
+### Dynamic Theme Switching
+
+<CodeGroup>
+```tsx Theme Context
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+const ThemeContext = createContext({
+  theme: 'dark',
+  style: 'trusset',
+  colors: {},
+  setTheme: () => {},
+  setStyle: () => {},
+  updateColors: () => {}
+});
+
+export function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('dark');
+  const [style, setStyle] = useState('trusset');
+  const [colors, setColors] = useState({});
+
+  useEffect(() => {
+    // Load saved preferences
+    const savedTheme = localStorage.getItem('dao-theme');
+    const savedStyle = localStorage.getItem('dao-style');
+    const savedColors = localStorage.getItem('dao-colors');
+
+    if (savedTheme) setTheme(savedTheme);
+    if (savedStyle) setStyle(savedStyle);
+    if (savedColors) setColors(JSON.parse(savedColors));
+  }, []);
+
+  const updateColors = (newColors) => {
+    setColors(newColors);
+    localStorage.setItem('dao-colors', JSON.stringify(newColors));
+    
+    // Apply CSS variables
+    Object.entries(newColors).forEach(([key, value]) => {
+      document.documentElement.style.setProperty(`--color-${key}`, value);
+    });
+  };
+
+  return (
+    <ThemeContext.Provider value={{
+      theme,
+      style,
+      colors,
+      setTheme,
+      setStyle,
+      updateColors
+    }}>
+      <div className={`app theme-${theme} style-${style}`}>
+        {children}
+      </div>
+    </ThemeContext.Provider>
+  );
+}
+
+export const useTheme = () => useContext(ThemeContext);
+```
+
+```tsx Theme Customizer
+import { useTheme } from './ThemeProvider';
+
+function ThemeCustomizer() {
+  const { theme, style, colors, setTheme, setStyle, updateColors } = useTheme();
+
+  const handleColorChange = (colorKey, value) => {
+    updateColors({
+      ...colors,
+      [colorKey]: value
+    });
+  };
+
+  return (
+    <div className="theme-customizer">
+      <h3>Theme Settings</h3>
+      
+      <div className="theme-options">
+        <label>
+          <input
+            type="radio"
+            value="light"
+            checked={theme === 'light'}
+            onChange={(e) => setTheme(e.target.value)}
+          />
+          Light Mode
+        </label>
+        
+        <label>
+          <input
+            type="radio"
+            value="dark"
+            checked={theme === 'dark'}
+            onChange={(e) => setTheme(e.target.value)}
+          />
+          Dark Mode
+        </label>
+      </div>
+      
+      <div className="style-options">
+        <label>
+          <input
+            type="radio"
+            value="trusset"
+            checked={style === 'trusset'}
+            onChange={(e) => setStyle(e.target.value)}
+          />
+          Trusset Style
+        </label>
+        
+        <label>
+          <input
+            type="radio"
+            value="retro"
+            checked={style === 'retro'}
+            onChange={(e) => setStyle(e.target.value)}
+          />
+          Retro Style
+        </label>
+      </div>
+      
+      <div className="color-options">
+        <h4>Custom Colors</h4>
+        
+        <div className="color-input">
+          <label>Primary Color</label>
+          <input
+            type="color"
+            value={colors.primary || '#0070f3'}
+            onChange={(e) => handleColorChange('primary', e.target.value)}
+          />
+        </div>
+        
+        <div className="color-input">
+          <label>Accent Color</label>
+          <input
+            type="color"
+            value={colors.accent || '#00bb7f'}
+            onChange={(e) => handleColorChange('accent', e.target.value)}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+</CodeGroup>
+
+### Animation and Transitions
+
+<AccordionGroup>
+  <Accordion title="Smooth Transitions">
+    ```css
+    /* Global transition settings */
+    * {
+      transition: var(--transition);
+    }
+
+    /* Custom transitions for specific elements */
+    .proposal-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sidebar {
+      transition: width 0.3s ease, transform 0.3s ease;
+    }
+
+    .modal-overlay {
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-content {
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Loading Animations">
+    ```css
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @keyframes slideIn {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(0); }
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--color-border);
+      border-top: 3px solid var(--color-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, 
+        var(--color-surface) 25%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        var(--color-surface) 75%);
+      background-size: 200% 100%;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Hover Effects">
+    ```css
+    .interactive-element {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .interactive-element::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .interactive-element:hover::before {
+      opacity: 1;
+    }
+
+    .button-glow:hover {
+      box-shadow: 0 0 20px rgba(0, 112, 243, 0.4);
+    }
+
+    .card-lift:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-large);
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Theme Examples
+
+<CardGroup cols={2}>
+  <Card title="Corporate Theme" icon="building">
+    Professional theme for enterprise DAOs
+    ```json
+    {
+      "colors": {
+        "primary": "#1a365d",
+        "secondary": "#4a5568", 
+        "accent": "#3182ce"
+      }
+    }
+    ```
+  </Card>
+  
+  <Card title="Gaming Theme" icon="gamepad">
+    Vibrant theme for gaming communities
+    ```json
+    {
+      "colors": {
+        "primary": "#ff6b6b",
+        "secondary": "#4ecdc4",
+        "accent": "#45b7d1"
+      }
+    }
+    ```
+  </Card>
+  
+  <Card title="Eco Theme" icon="leaf">
+    Green theme for environmental DAOs
+    ```json
+    {
+      "colors": {
+        "primary": "#38a169",
+        "secondary": "#68d391",
+        "accent": "#f6e05e"
+      }
+    }
+    ```
+  </Card>
+  
+  <Card title="Finance Theme" icon="dollar-sign">
+    Professional theme for DeFi projects
+    ```json
+    {
+      "colors": {
+        "primary": "#1a202c",
+        "secondary": "#2d3748",
+        "accent": "#ed8936"
+      }
+    }
+    ```
+  </Card>
+</CardGroup>
+
+## Best Practices
+
+<Note>
+**Theme Design Guidelines:**
+
+1. **Consistency** - Use consistent spacing, colors, and typography
+2. **Accessibility** - Ensure proper contrast ratios for text readability
+3. **Performance** - Optimize CSS for smooth animations and transitions
+4. **Responsive** - Test themes across different screen sizes
+5. **Brand Alignment** - Match your organization's visual identity
+</Note>
+
+<Warning>
+**Common Pitfalls to Avoid:**
+
+- Don't override too many default styles at once
+- Avoid using `!important` unless absolutely necessary
+- Test dark/light mode compatibility
+- Ensure custom colors have sufficient contrast
+- Keep animations subtle and purposeful
+</Warning>
+
+The theming system provides complete control over your DAO's visual appearance while maintaining usability and accessibility standards.

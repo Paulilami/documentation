@@ -1,0 +1,471 @@
+---
+title: "Network Configuration"
+description: "Configure blockchain networks and manage contract deployments"
+---
+
+## Supported Networks
+
+The Trusset SDK supports multiple blockchain networks with production-ready contract deployments.
+
+<Tabs>
+<Tab title="Ethereum Mainnet">
+```typescript
+import { Network } from 'trusset-sdk';
+
+const config = {
+  defaultNetwork: Network.ETHEREUM,
+  networks: {
+    [Network.ETHEREUM]: {
+      chainId: 1,
+      name: 'Ethereum Mainnet',
+      rpcUrl: 'https://eth.llamarpc.com',
+      explorerUrl: 'https://etherscan.io'
+    }
+  }
+};
+```
+</Tab>
+
+<Tab title="Sepolia Testnet">
+```typescript
+const config = {
+  defaultNetwork: Network.SEPOLIA,
+  networks: {
+    [Network.SEPOLIA]: {
+      chainId: 11155111,
+      name: 'Sepolia Testnet',
+      rpcUrl: 'https://sepolia.infura.io/v3/YOUR_KEY',
+      explorerUrl: 'https://sepolia.etherscan.io'
+    }
+  }
+};
+```
+</Tab>
+
+<Tab title="Polygon">
+```typescript
+const config = {
+  defaultNetwork: Network.POLYGON,
+  networks: {
+    [Network.POLYGON]: {
+      chainId: 137,
+      name: 'Polygon Mainnet',
+      rpcUrl: 'https://polygon.llamarpc.com',
+      explorerUrl: 'https://polygonscan.com'
+    }
+  }
+};
+```
+</Tab>
+</Tabs>
+
+## Network Enum
+
+<ResponseField name="Network.ETHEREUM" type="1">
+Ethereum Mainnet - Production environment
+</ResponseField>
+
+<ResponseField name="Network.SEPOLIA" type="11155111">
+Sepolia Testnet - Development and testing
+</ResponseField>
+
+<ResponseField name="Network.POLYGON" type="137">
+Polygon Mainnet - Layer 2 scaling solution
+</ResponseField>
+
+<ResponseField name="Network.MUMBAI" type="80001">
+Mumbai Testnet - Polygon testing environment
+</ResponseField>
+
+<ResponseField name="Network.BSC" type="56">
+Binance Smart Chain - Alternative EVM chain
+</ResponseField>
+
+<ResponseField name="Network.BSC_TESTNET" type="97">
+BSC Testnet - Binance testing environment
+</ResponseField>
+
+## Contract Addresses
+
+### Sepolia Testnet (Recommended for Development)
+
+<CodeGroup>
+```typescript Contract Addresses
+const SEPOLIA_ADDRESSES = {
+  assetRegister: '0x2307cb5a19F53439b583Dc4E052E626FCD55773d',
+  securityToken: '0xE9C645c2d2Efede5625ec276c324F3d116Bde073',
+  securityManager: '0x853f44b2c003C736d6a3C0Eb2f3De8f3f4f020fd',
+  compliance: '0xe6a553533A128e9D1a9bA076f70558720C8cC0db',
+  decentralizedControl: '0xdA6Dfe53d450d2E7F71D59dc6a6773e1C1E67009',
+  tokenOracle: '0xB56a28cDe10DCfb575a3573ADaeDE996bc3F09D0',
+  assetFactory: '0x1Ca9018e56865b1eC3A2B63Af2192f10e1DdBC5E',
+  tokenFetch: '0x589387281cB8069619202ee259eBAa3780291B74'
+};
+```
+
+```typescript Usage
+import { TrussetClient, Network } from 'trusset-sdk';
+
+const client = new TrussetClient({
+  provider,
+  signer,
+  config: {
+    defaultNetwork: Network.SEPOLIA
+  }
+});
+```
+</CodeGroup>
+
+<Note>
+Sepolia testnet contracts are fully deployed and functional. Use them for development and testing.
+</Note>
+
+## Contract Interfaces
+
+### Core Contracts
+
+<Accordion title="AssetFactory">
+Handles creation and registration of new tokenized assets.
+
+<ResponseField name="createAsset" type="function">
+Creates a new tokenized asset with specified parameters
+
+**Parameters:**
+- `name` - Asset name (bytes32)
+- `symbol` - Asset symbol (bytes32) 
+- `initialSupply` - Number of initial tokens
+- `headerImage` - IPFS or HTTP image URL
+- `flags` - Feature flags as bit mask
+- `maxSupply` - Maximum tokens that can exist
+- `feeBps` - Fee in basis points
+- `authority` - Authority address for governance
+- `feeReceiver` - Address to collect fees
+- `assetType` - Type from AssetType enum
+- `monthlyTransferLimit` - Monthly transfer restrictions
+- `maxPerWallet` - Maximum tokens per wallet
+- `fractions` - Decimal places for fractions
+</ResponseField>
+
+**Events:**
+- `AssetCreated(uint256 assetId, address creator, string name)`
+</Accordion>
+
+<Accordion title="SecurityToken">
+Core token contract managing shares and transfers.
+
+<ResponseField name="getAssetFullDetails" type="function">
+Returns complete asset information including supply and metadata
+</ResponseField>
+
+<ResponseField name="bulkTransfer" type="function">
+Transfer multiple shares in a single transaction
+- `assetId` - Asset identifier
+- `shareIds` - Array of share IDs to transfer
+- `to` - Recipient address
+</ResponseField>
+
+<ResponseField name="bulkBurn" type="function">
+Burn multiple shares permanently
+- `assetId` - Asset identifier  
+- `shareIds` - Array of share IDs to burn
+</ResponseField>
+
+<ResponseField name="addToExisting" type="function">
+Mint additional shares for existing asset
+- `assetId` - Asset identifier
+- `amount` - Number of new shares to create
+</ResponseField>
+
+**Events:**
+- `ShareTransferred(uint256 assetId, uint256 shareId, address from, address to)`
+- `SharesMinted(uint256 assetId, uint256 startId, uint256 amount, address to)`
+- `ShareBurned(uint256 assetId, uint256 shareId, address owner)`
+</Accordion>
+
+<Accordion title="TokenFetch">
+Optimized contract for batch data retrieval.
+
+<ResponseField name="getAssetsByOwner" type="function">
+Get all assets owned by a specific address
+</ResponseField>
+
+<ResponseField name="getSharesWithDetails" type="function">
+Get detailed information for multiple shares
+</ResponseField>
+</Accordion>
+
+## Network Switching
+
+### Manual Network Switching
+
+<CodeGroup>
+```typescript React Hook
+import { useTrussetContext } from 'trusset-sdk';
+
+function NetworkSwitcher() {
+  const { switchNetwork, chainId, loading } = useTrussetContext();
+
+  const networks = [
+    { id: 1, name: 'Ethereum' },
+    { id: 11155111, name: 'Sepolia' },
+    { id: 137, name: 'Polygon' }
+  ];
+
+  return (
+    <select
+      value={chainId || ''}
+      onChange={(e) => switchNetwork(Number(e.target.value))}
+      disabled={loading}
+    >
+      {networks.map(network => (
+        <option key={network.id} value={network.id}>
+          {network.name}
+        </option>
+      ))}
+    </select>
+  );
+}
+```
+
+```typescript Direct Client
+const client = new TrussetClient({ provider, signer });
+
+// Switch to Sepolia
+await client.switchNetwork(11155111);
+
+// Switch to Polygon
+await client.switchNetwork(137);
+```
+</CodeGroup>
+
+### Automatic Network Detection
+
+```typescript
+import { TrussetClient } from 'trusset-sdk';
+
+const client = new TrussetClient({
+  provider,
+  signer,
+  config: {
+    autoRetry: true,
+    retryAttempts: 3,
+    retryDelay: 1000
+  },
+  autoConnect: true
+});
+
+// Client automatically detects and configures for current network
+client.on('connected', ({ chainId }) => {
+  console.log(`Connected to network: ${chainId}`);
+});
+
+client.on('networkChanged', ({ chainId }) => {
+  console.log(`Switched to network: ${chainId}`);
+});
+```
+
+## Custom Network Configuration
+
+<Steps>
+<Step title="Define Network Config">
+```typescript
+import { NetworkConfig } from 'trusset-sdk';
+
+const customNetwork: NetworkConfig = {
+  chainId: 1337,
+  name: 'Local Ganache',
+  rpcUrl: 'http://localhost:8545',
+  explorerUrl: 'http://localhost:8545',
+  contracts: {
+    assetRegister: '0x...',
+    securityToken: '0x...',
+    securityManager: '0x...',
+    compliance: '0x...',
+    decentralizedControl: '0x...',
+    tokenOracle: '0x...',
+    assetFactory: '0x...',
+    tokenFetch: '0x...'
+  },
+  gasMultiplier: 1.2,
+  maxGasPrice: ethers.utils.parseUnits('50', 'gwei')
+};
+```
+</Step>
+
+<Step title="Register Custom Network">
+```typescript
+const client = new TrussetClient({
+  provider,
+  signer,
+  config: {
+    networks: {
+      1337: customNetwork
+    },
+    defaultNetwork: 1337
+  }
+});
+```
+</Step>
+
+<Step title="Deploy Contracts">
+Use the CLI to deploy contracts to your custom network:
+
+```bash
+trusset deploy --network localhost --key 0x...
+```
+</Step>
+</Steps>
+
+## Gas Configuration
+
+<Tabs>
+<Tab title="Automatic Gas Management">
+```typescript
+const client = new TrussetClient({
+  provider,
+  signer,
+  config: {
+    networks: {
+      [Network.ETHEREUM]: {
+        gasMultiplier: 1.2, // 20% buffer
+        maxGasPrice: ethers.utils.parseUnits('100', 'gwei')
+      }
+    }
+  }
+});
+```
+</Tab>
+
+<Tab title="Manual Gas Control">
+```typescript
+// Override gas for specific transactions
+const result = await client.createAsset(config, {
+  gasLimit: ethers.utils.hexlify(500000),
+  gasPrice: ethers.utils.parseUnits('30', 'gwei')
+});
+```
+</Tab>
+
+<Tab title="Gas Estimation">
+```typescript
+// Estimate gas before transaction
+const gasEstimate = await client.estimateGas('createAsset', [
+  config.name,
+  config.symbol,
+  config.initialSupply
+  // ... other parameters
+]);
+
+console.log('Estimated gas:', gasEstimate.toString());
+```
+</Tab>
+</Tabs>
+
+## Network Monitoring
+
+### Connection Status
+
+```typescript
+import { useTrussetContext } from 'trusset-sdk';
+
+function NetworkStatus() {
+  const { connected, chainId, provider, error } = useTrussetContext();
+
+  const [blockNumber, setBlockNumber] = useState<number>();
+
+  useEffect(() => {
+    if (!provider) return;
+
+    const updateBlock = (block: number) => setBlockNumber(block);
+    provider.on('block', updateBlock);
+
+    return () => provider.off('block', updateBlock);
+  }, [provider]);
+
+  return (
+    <div className="network-status">
+      <div>Status: {connected ? '🟢 Connected' : '🔴 Disconnected'}</div>
+      <div>Network: {chainId}</div>
+      <div>Block: #{blockNumber}</div>
+      {error && <div>Error: {error.message}</div>}
+    </div>
+  );
+}
+```
+
+### Performance Metrics
+
+```typescript
+function NetworkPerformance() {
+  const { client } = useTrussetContext();
+  const [metrics, setMetrics] = useState({
+    latency: 0,
+    gasPrice: '',
+    blockTime: 0
+  });
+
+  useEffect(() => {
+    if (!client) return;
+
+    const measurePerformance = async () => {
+      const start = Date.now();
+      const gasPrice = await client.provider.getGasPrice();
+      const latency = Date.now() - start;
+
+      setMetrics({
+        latency,
+        gasPrice: ethers.utils.formatUnits(gasPrice, 'gwei'),
+        blockTime: 12 // Ethereum average
+      });
+    };
+
+    measurePerformance();
+    const interval = setInterval(measurePerformance, 30000);
+
+    return () => clearInterval(interval);
+  }, [client]);
+
+  return (
+    <div>
+      <div>Latency: {metrics.latency}ms</div>
+      <div>Gas Price: {metrics.gasPrice} gwei</div>
+      <div>Block Time: ~{metrics.blockTime}s</div>
+    </div>
+  );
+}
+```
+
+## Error Handling
+
+<Accordion title="Network Error Types">
+<ResponseField name="NetworkError" type="error">
+Connection or network-related errors
+- `NETWORK_ERROR` - Connection failed
+- `TIMEOUT` - Request timeout
+</ResponseField>
+
+<ResponseField name="ContractError" type="error">
+Smart contract interaction errors
+- `CONTRACT_ERROR` - Contract call failed
+- `UNPREDICTABLE_GAS_LIMIT` - Transaction would fail
+</ResponseField>
+
+<ResponseField name="ValidationError" type="error">
+Input validation errors
+- `VALIDATION_ERROR` - Invalid parameters
+</ResponseField>
+</Accordion>
+
+```typescript
+import { handleNetworkError, handleContractError } from 'trusset-sdk';
+
+try {
+  await client.createAsset(config);
+} catch (error) {
+  if (error.code === 'NETWORK_ERROR') {
+    handleNetworkError(error);
+  } else if (error.code === 'CONTRACT_ERROR') {
+    handleContractError(error);
+  }
+}
+```

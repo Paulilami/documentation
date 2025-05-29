@@ -1,0 +1,292 @@
+---
+title: "Installation"
+description: "Install and set up the Trusset DAO SDK"
+---
+
+## Quick Start
+
+<CardGroup cols={2}>
+  <Card title="NPM Installation" icon="npm" href="#npm-installation">
+    Install the SDK package and create your first DAO
+  </Card>
+  <Card title="CLI Setup" icon="terminal" href="#cli-installation">
+    Use the command line interface for rapid development
+  </Card>
+</CardGroup>
+
+## NPM Installation
+
+Install the Trusset DAO SDK in your project:
+
+<CodeGroup>
+```bash npm
+npm install trusset-dao-sdk
+```
+
+```bash yarn
+yarn add trusset-dao-sdk
+```
+
+```bash pnpm
+pnpm add trusset-dao-sdk
+```
+</CodeGroup>
+
+<Note>
+The SDK requires Node.js version 18 or higher and includes both React components and smart contract deployment tools.
+</Note>
+
+## CLI Installation
+
+For full project scaffolding and deployment capabilities:
+
+```bash
+npm install -g trusset-dao-sdk
+```
+
+Verify installation:
+
+```bash
+trusset-dao --version
+```
+
+## Quick Project Setup
+
+<Steps>
+  <Step title="Initialize New DAO">
+    Create a new DAO project with the CLI:
+    
+    ```bash
+    trusset-dao init my-dao --style trusset
+    cd my-dao
+    ```
+  </Step>
+  
+  <Step title="Configure Your DAO">
+    Edit the generated configuration files:
+    
+    <Tabs>
+      <Tab title="trusset.json">
+        ```json
+        {
+          "name": "My DAO",
+          "description": "A decentralized autonomous organization",
+          "admin": "0xYourAdminAddress",
+          "minStake": "100000000000000000000",
+          "proposalFee": "10000000000000000000",
+          "minVotes": "1000000000000000000000"
+        }
+        ```
+      </Tab>
+      
+      <Tab title="trussetStyles.json">
+        ```json
+        {
+          "style": "trusset",
+          "theme": "dark",
+          "reownProjectId": "your-reown-project-id",
+          "colors": {
+            "primary": "#0070f3",
+            "secondary": "#666666",
+            "accent": "#00bb7f"
+          }
+        }
+        ```
+      </Tab>
+    </Tabs>
+  </Step>
+  
+  <Step title="Deploy & Develop">
+    Deploy your contracts and start development:
+    
+    ```bash
+    trusset-dao deploy
+    trusset-dao dev
+    ```
+  </Step>
+</Steps>
+
+## Framework Integration
+
+### React Integration
+
+Import and use DAO components in your React app:
+
+<CodeGroup>
+```tsx App.tsx
+import React from 'react';
+import { DAO, useDAO, useProposals } from 'trusset-dao-sdk';
+
+function App() {
+  return (
+    <div className="app">
+      <DAO />
+    </div>
+  );
+}
+
+export default App;
+```
+
+```tsx Custom Usage
+import { 
+  useDAO, 
+  useProposals, 
+  useStaking,
+  ProposalCard,
+  StakingCard 
+} from 'trusset-dao-sdk';
+
+function MyDAODashboard() {
+  const { isConnected, stats } = useDAO();
+  const { proposals } = useProposals();
+  
+  return (
+    <div>
+      {proposals.map(proposal => (
+        <ProposalCard key={proposal.id} proposal={proposal} />
+      ))}
+    </div>
+  );
+}
+```
+</CodeGroup>
+
+### Next.js Setup
+
+<Accordion title="Next.js Configuration">
+For Next.js projects, add the following to your `next.config.js`:
+
+```javascript next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  transpilePackages: ['trusset-dao-sdk'],
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      net: false,
+      tls: false,
+    };
+    return config;
+  },
+};
+
+module.exports = nextConfig;
+```
+
+Then wrap your app with the DAO provider:
+
+```tsx pages/_app.tsx
+import type { AppProps } from 'next/app';
+import { DAOProvider } from 'trusset-dao-sdk';
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <DAOProvider>
+      <Component {...pageProps} />
+    </DAOProvider>
+  );
+}
+```
+</Accordion>
+
+## Environment Setup
+
+Create a `.env` file in your project root:
+
+```bash .env
+# Required for wallet connection
+VITE_REOWN_PROJECT_ID=your-reown-project-id
+
+# Contract addresses (auto-generated after deployment)
+VITE_DAO_ADDRESS=0x0000000000000000000000000000000000000000
+VITE_MAIN_DAO_ADDRESS=0x0000000000000000000000000000000000000000
+
+# Network configuration
+VITE_CHAIN_ID=11155111
+VITE_NETWORK_NAME=Sepolia
+VITE_RPC_URL=https://sepolia.infura.io/v3/your-infura-project-id
+
+# Deployment (required for CLI deployment)
+PRIVATE_KEY=your-private-key-without-0x-prefix
+SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/your-infura-project-id
+```
+
+<Warning>
+Never commit private keys to version control. Use environment variables or secure key management solutions in production.
+</Warning>
+
+## Peer Dependencies
+
+The SDK requires these peer dependencies in your project:
+
+<ResponseField name="React" type=">=18.0.0" required>
+React framework for UI components
+</ResponseField>
+
+<ResponseField name="react-dom" type=">=18.0.0" required>
+React DOM rendering
+</ResponseField>
+
+<ResponseField name="react-router-dom" type=">=6.0.0" required>
+Client-side routing for DAO pages
+</ResponseField>
+
+<ResponseField name="@reown/appkit" type=">=1.0.0" required>
+Wallet connection and Web3 integration
+</ResponseField>
+
+<ResponseField name="@reown/appkit-adapter-ethers5" type=">=1.0.0" required>
+Ethers.js adapter for Reown AppKit
+</ResponseField>
+
+<ResponseField name="lucide-react" type="^0.511.0" required>
+Icon library for UI components
+</ResponseField>
+
+Install peer dependencies:
+
+```bash
+npm install react react-dom react-router-dom @reown/appkit @reown/appkit-adapter-ethers5 lucide-react
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Module resolution errors">
+    If you encounter module resolution issues, ensure your bundler supports ES modules:
+    
+    ```javascript vite.config.ts
+    import { defineConfig } from 'vite';
+    import react from '@vitejs/plugin-react';
+    
+    export default defineConfig({
+      plugins: [react()],
+      define: {
+        global: 'globalThis',
+      },
+      resolve: {
+        alias: {
+          '@': '/src'
+        }
+      }
+    });
+    ```
+  </Accordion>
+  
+  <Accordion title="TypeScript errors">
+    Add type declarations to your `tsconfig.json`:
+    
+    ```json tsconfig.json
+    {
+      "compilerOptions": {
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "jsx": "react-jsx"
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>

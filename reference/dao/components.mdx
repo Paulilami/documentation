@@ -1,0 +1,1029 @@
+---
+title: "React Components"
+description: "Pre-built React components for DAO interfaces - navigation, proposals, staking, and governance"
+---
+
+## Overview
+
+The Trusset DAO SDK provides a comprehensive set of React components for building decentralized governance interfaces.
+
+<CardGroup cols={3}>
+  <Card title="Layout Components" icon="grid" href="#layout-components">
+    Navigation, Sidebar, and structural elements
+  </Card>
+  <Card title="Proposal Components" icon="file" href="#proposal-components">
+    Proposal display, voting, and management
+  </Card>
+  <Card title="Staking Components" icon="coins" href="#staking-components">
+    Token staking and reward interfaces
+  </Card>
+</CardGroup>
+
+## Layout Components
+
+### Navigation
+
+Top navigation bar with wallet connection, search, and theme controls.
+
+<CodeGroup>
+```tsx Basic Usage
+import { Navigation } from 'trusset-dao-sdk';
+
+function App() {
+  return (
+    <div>
+      <Navigation />
+      {/* Rest of your app */}
+    </div>
+  );
+}
+```
+
+```tsx With Router
+import { BrowserRouter } from 'react-router-dom';
+import { Navigation } from 'trusset-dao-sdk';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Navigation />
+      <Routes>
+        {/* Your routes */}
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+</CodeGroup>
+
+#### Features
+
+<AccordionGroup>
+  <Accordion title="Wallet Connection">
+    Integrated AppKit wallet connection button:
+    
+    ```tsx
+    // Automatic wallet integration
+    <appkit-button />
+    
+    // Custom connection status
+    const { isConnected } = useDAO();
+    ```
+  </Accordion>
+  
+  <Accordion title="Search Functionality">
+    Built-in search across proposals and members:
+    
+    ```tsx
+    // Search is automatically wired to proposal data
+    const { searchProposals } = useProposals();
+    ```
+  </Accordion>
+  
+  <Accordion title="Theme Toggle">
+    Light/dark mode switching:
+    
+    ```tsx
+    const { theme, toggleTheme } = useTheme();
+    
+    <button onClick={toggleTheme}>
+      {theme === 'dark' ? '☀️' : '🌙'}
+    </button>
+    ```
+  </Accordion>
+  
+  <Accordion title="Language Support">
+    English/German language switching:
+    
+    ```tsx
+    const { language, setLanguage } = useLanguage();
+    
+    <button onClick={() => setLanguage(language === 'en' ? 'de' : 'en')}>
+      {language.toUpperCase()}
+    </button>
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Sidebar
+
+Collapsible sidebar navigation with hover expansion.
+
+<CodeGroup>
+```tsx Basic Implementation
+import { Sidebar } from 'trusset-dao-sdk';
+
+function Layout({ children }) {
+  return (
+    <div className="app-layout">
+      <Sidebar />
+      <main className="main-content">
+        {children}
+      </main>
+    </div>
+  );
+}
+```
+
+```tsx Custom Links
+// Configure in trussetStyles.json
+{
+  "sidebar": {
+    "expandOnHover": true,
+    "links": [
+      {
+        "label": "Dashboard",
+        "icon": "Home",
+        "path": "/",
+        "component": "HomePage"
+      },
+      {
+        "label": "Governance",
+        "icon": "Vote",
+        "path": "/governance",
+        "component": "GovernancePage"
+      }
+    ]
+  }
+}
+```
+</CodeGroup>
+
+#### Navigation Links
+
+<ResponseField name="label" type="string" required>
+  Display text for the navigation link
+</ResponseField>
+
+<ResponseField name="icon" type="string" required>
+  Lucide React icon name (e.g., "Home", "FileText", "Coins")
+</ResponseField>
+
+<ResponseField name="path" type="string" required>
+  React Router path for navigation
+</ResponseField>
+
+<ResponseField name="component" type="string" required>
+  Component name for reference (used by themes)
+</ResponseField>
+
+#### Available Icons
+
+<Tabs>
+  <Tab title="Common Icons">
+    - `Home` - Homepage/Dashboard
+    - `FileText` - Proposals
+    - `Coins` - Staking
+    - `Wallet` - Treasury
+    - `Users` - Members
+    - `Settings` - Configuration
+    - `BarChart` - Analytics
+    - `Vote` - Governance
+  </Tab>
+  
+  <Tab title="Custom Icons">
+    ```tsx
+    import { Building, TrendingUp } from 'lucide-react';
+    
+    // Configure custom navigation
+    const customLinks = [
+      { label: "Organization", icon: "Building", path: "/org" },
+      { label: "Analytics", icon: "TrendingUp", path: "/analytics" }
+    ];
+    ```
+  </Tab>
+</Tabs>
+
+## Proposal Components
+
+### ProposalCard
+
+Display individual proposal information with voting interface.
+
+<CodeGroup>
+```tsx Basic Usage
+import { ProposalCard } from 'trusset-dao-sdk';
+
+function ProposalsList() {
+  const { proposals } = useProposals();
+  const { vote } = useDAO();
+
+  return (
+    <div>
+      {proposals.map(proposal => (
+        <ProposalCard
+          key={proposal.id}
+          proposal={proposal}
+          onVote={vote}
+          onClick={(p) => setSelectedProposal(p)}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+```tsx With Custom Actions
+function CustomProposalCard() {
+  const { proposals } = useProposals();
+  
+  const handleCustomAction = (proposal) => {
+    // Custom logic
+    console.log('Custom action for:', proposal.title);
+  };
+
+  return (
+    <div>
+      {proposals.map(proposal => (
+        <ProposalCard
+          key={proposal.id}
+          proposal={proposal}
+          onVote={(id, support) => vote(id, support)}
+          onClick={handleCustomAction}
+          showVotingPower={true}
+          compactMode={false}
+        />
+      ))}
+    </div>
+  );
+}
+```
+</CodeGroup>
+
+#### Props
+
+<ParamField body="proposal" type="Proposal" required>
+  Proposal object containing id, title, description, votes, and state
+</ParamField>
+
+<ParamField body="onVote" type="(proposalId: number, support: boolean) => void">
+  Callback function called when user votes
+</ParamField>
+
+<ParamField body="onClick" type="(proposal: Proposal) => void">
+  Callback function called when card is clicked
+</ParamField>
+
+<ParamField body="showVotingPower" type="boolean" default="false">
+  Display user's voting power in the interface
+</ParamField>
+
+<ParamField body="compactMode" type="boolean" default="false">
+  Use compact display mode for smaller cards
+</ParamField>
+
+#### Visual States
+
+The component automatically styles based on proposal state:
+
+<Tabs>
+  <Tab title="Active Proposal">
+    ```css
+    .state-blue {
+      background-color: rgba(0, 112, 243, 0.1);
+      color: var(--color-primary);
+    }
+    ```
+    
+    Shows voting buttons and countdown timer.
+  </Tab>
+  
+  <Tab title="Succeeded">
+    ```css
+    .state-green {
+      background-color: rgba(0, 187, 127, 0.1);
+      color: var(--color-success);
+    }
+    ```
+    
+    Displays success state with checkmark icon.
+  </Tab>
+  
+  <Tab title="Defeated">
+    ```css
+    .state-red {
+      background-color: rgba(255, 68, 68, 0.1);
+      color: var(--color-danger);
+    }
+    ```
+    
+    Shows defeated state with X icon.
+  </Tab>
+</Tabs>
+
+### ProposalsList
+
+Container component for displaying multiple proposals with filtering and pagination.
+
+<CodeGroup>
+```tsx Complete Implementation
+import { ProposalsList } from 'trusset-dao-sdk';
+
+function ProposalsPage() {
+  const { proposals, activeProposals } = useProposals();
+  const { vote } = useDAO();
+
+  return (
+    <div>
+      <h1>Active Proposals</h1>
+      <ProposalsList
+        proposals={activeProposals}
+        onVote={vote}
+        showAll={false}
+        maxDisplay={5}
+      />
+      
+      <h1>All Proposals</h1>
+      <ProposalsList
+        proposals={proposals}
+        onVote={vote}
+        showAll={true}
+        enableSearch={true}
+        enableFilters={true}
+      />
+    </div>
+  );
+}
+```
+
+```tsx With Custom Empty State
+function CustomProposalsList() {
+  const { proposals } = useProposals();
+
+  const EmptyState = () => (
+    <div className="custom-empty">
+      <h3>No Proposals Yet</h3>
+      <p>Be the first to propose something!</p>
+      <CreateProposalButton />
+    </div>
+  );
+
+  return (
+    <ProposalsList
+      proposals={proposals}
+      emptyComponent={<EmptyState />}
+      gridColumns={2}
+    />
+  );
+}
+```
+</CodeGroup>
+
+#### Props
+
+<ParamField body="proposals" type="Proposal[]" required>
+  Array of proposal objects to display
+</ParamField>
+
+<ParamField body="showAll" type="boolean" default="true">
+  Whether to show all proposals or limit display
+</ParamField>
+
+<ParamField body="maxDisplay" type="number" default="10">
+  Maximum number of proposals to show when showAll is false
+</ParamField>
+
+<ParamField body="enableSearch" type="boolean" default="false">
+  Enable search functionality
+</ParamField>
+
+<ParamField body="enableFilters" type="boolean" default="false">
+  Enable state-based filtering
+</ParamField>
+
+<ParamField body="gridColumns" type="number" default="1">
+  Number of columns in the proposal grid
+</ParamField>
+
+<ParamField body="emptyComponent" type="ReactNode">
+  Custom component to show when no proposals exist
+</ParamField>
+
+### VotingModal
+
+Modal interface for casting votes on proposals.
+
+<CodeGroup>
+```tsx Modal Integration
+import { VotingModal } from 'trusset-dao-sdk';
+
+function ProposalInteraction() {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProposal, setSelectedProposal] = useState(null);
+  const { vote } = useDAO();
+
+  const handleVote = async (support) => {
+    await vote(selectedProposal.id, support);
+    setShowModal(false);
+  };
+
+  return (
+    <>
+      <ProposalCard
+        proposal={proposal}
+        onClick={(p) => {
+          setSelectedProposal(p);
+          setShowModal(true);
+        }}
+      />
+      
+      {showModal && (
+        <VotingModal
+          proposal={selectedProposal}
+          onVote={handleVote}
+          onClose={() => setShowModal(false)}
+        />
+      )}
+    </>
+  );
+}
+```
+
+```tsx With Voting Power Display
+function EnhancedVotingModal() {
+  const { userStake } = useStaking();
+  
+  return (
+    <VotingModal
+      proposal={proposal}
+      onVote={handleVote}
+      onClose={handleClose}
+      votingPower={userStake}
+      showVotingPower={true}
+      requireConfirmation={true}
+    />
+  );
+}
+```
+</CodeGroup>
+
+#### Features
+
+<AccordionGroup>
+  <Accordion title="Voting Power Display">
+    Shows user's current voting power:
+    
+    ```tsx
+    <div className="voting-power">
+      <h4>Your Voting Power</h4>
+      <p>{formatAmount(votingPower)} tokens</p>
+    </div>
+    ```
+  </Accordion>
+  
+  <Accordion title="Vote Preview">
+    Previews the impact of the vote:
+    
+    ```tsx
+    // Shows updated vote counts before confirmation
+    const newForVotes = proposal.forVotes + (support ? votingPower : 0);
+    const newAgainstVotes = proposal.againstVotes + (!support ? votingPower : 0);
+    ```
+  </Accordion>
+  
+  <Accordion title="Confirmation Step">
+    Optional confirmation before voting:
+    
+    ```tsx
+    const [confirmStep, setConfirmStep] = useState(false);
+    
+    {confirmStep ? (
+      <ConfirmVote onConfirm={submitVote} onCancel={() => setConfirmStep(false)} />
+    ) : (
+      <VoteOptions onSelect={() => setConfirmStep(true)} />
+    )}
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### CreateProposalModal
+
+Modal form for submitting new governance proposals.
+
+<CodeGroup>
+```tsx Basic Form
+import { CreateProposalModal } from 'trusset-dao-sdk';
+
+function CreateProposalButton() {
+  const [showModal, setShowModal] = useState(false);
+  const { createProposal } = useDAO();
+
+  const handleCreate = async (title, description) => {
+    await createProposal(title, description);
+    setShowModal(false);
+    // Refresh proposals
+  };
+
+  return (
+    <>
+      <button onClick={() => setShowModal(true)}>
+        Create Proposal
+      </button>
+      
+      {showModal && (
+        <CreateProposalModal
+          onClose={() => setShowModal(false)}
+          onCreated={handleCreate}
+        />
+      )}
+    </>
+  );
+}
+```
+
+```tsx With Validation
+function ValidatedProposalModal() {
+  const { minStake, proposalFee } = useDAO();
+  const { userStake } = useStaking();
+
+  const canCreateProposal = parseInt(userStake) >= parseInt(minStake);
+
+  return (
+    <CreateProposalModal
+      onClose={handleClose}
+      onCreated={handleCreate}
+      minStake={minStake}
+      proposalFee={proposalFee}
+      userStake={userStake}
+      requiresStake={true}
+      maxTitleLength={100}
+      maxDescriptionLength={1000}
+    />
+  );
+}
+```
+</CodeGroup>
+
+#### Form Validation
+
+<ResponseField name="Title Validation" type="string">
+  - Minimum 5 characters
+  - Maximum 100 characters  
+  - Required field
+</ResponseField>
+
+<ResponseField name="Description Validation" type="string">
+  - Minimum 20 characters
+  - Maximum 1000 characters
+  - Required field
+</ResponseField>
+
+<ResponseField name="Stake Requirement" type="boolean">
+  - User must have minimum stake
+  - Proposal fee must be available
+  - Checks performed before submission
+</ResponseField>
+
+## Staking Components
+
+### StakingCard
+
+Compact card displaying user's staking information and quick actions.
+
+<CodeGroup>
+```tsx Dashboard Integration
+import { StakingCard } from 'trusset-dao-sdk';
+
+function DashboardSidebar() {
+  return (
+    <div className="sidebar-cards">
+      <TreasuryCard />
+      <StakingCard />
+      <RewardsCard />
+    </div>
+  );
+}
+```
+
+```tsx Full Page Version
+function StakingPage() {
+  return (
+    <div className="staking-page">
+      <div className="staking-overview">
+        <StakingCard 
+          expanded={true}
+          showRewards={true}
+          showHistory={true}
+        />
+      </div>
+    </div>
+  );
+}
+```
+</CodeGroup>
+
+#### Features
+
+<AccordionGroup>
+  <Accordion title="Stake Display">
+    Shows current staked amount and voting power:
+    
+    ```tsx
+    <div className="stake-amount">
+      <span className="amount-value">
+        {formatAmount(userStake)} ETH
+      </span>
+      <span className="voting-power">
+        Voting Power: {formatAmount(userStake)}
+      </span>
+    </div>
+    ```
+  </Accordion>
+  
+  <Accordion title="Quick Actions">
+    Buttons for staking and unstaking:
+    
+    ```tsx
+    <div className="stake-actions">
+      <button onClick={() => setShowStakeModal(true)}>
+        <Plus size={16} />
+        Stake More
+      </button>
+      
+      <button 
+        onClick={() => setShowUnstakeModal(true)}
+        disabled={!canUnstake}
+      >
+        <Minus size={16} />
+        Unstake
+      </button>
+    </div>
+    ```
+  </Accordion>
+  
+  <Accordion title="Lock Status">
+    Displays time remaining until unlock:
+    
+    ```tsx
+    {!canUnstake && timeUntilUnlock > 0 && (
+      <div className="unlock-info">
+        <Clock size={14} />
+        <span>Unlocks in {hoursUntilUnlock}h</span>
+      </div>
+    )}
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### StakeModal
+
+Modal interface for staking tokens with amount input and validation.
+
+<CodeGroup>
+```tsx Stake Interface
+import { StakeModal } from 'trusset-dao-sdk';
+
+function StakingInterface() {
+  const [showModal, setShowModal] = useState(false);
+  const { stake, minStake } = useStaking();
+
+  const handleStake = async (amount) => {
+    await stake(amount);
+    setShowModal(false);
+  };
+
+  return (
+    <>
+      <button onClick={() => setShowModal(true)}>
+        Stake Tokens
+      </button>
+      
+      {showModal && (
+        <StakeModal
+          onStake={handleStake}
+          onClose={() => setShowModal(false)}
+          minStake={minStake}
+          loading={false}
+        />
+      )}
+    </>
+  );
+}
+```
+
+```tsx With Balance Check
+function EnhancedStakeModal() {
+  const { tokenBalance } = useWallet();
+  const { minStake } = useStaking();
+
+  return (
+    <StakeModal
+      onStake={handleStake}
+      onClose={handleClose}
+      minStake={minStake}
+      maxStake={tokenBalance}
+      showBalance={true}
+      presetAmounts={['100', '500', '1000']}
+    />
+  );
+}
+```
+</CodeGroup>
+
+#### Input Features
+
+<ResponseField name="Amount Validation" type="validation">
+  - Must meet minimum stake requirement
+  - Cannot exceed user's token balance
+  - Real-time validation feedback
+</ResponseField>
+
+<ResponseField name="Preset Amounts" type="array">
+  Quick-select buttons for common amounts
+  ```tsx
+  const presets = ['100', '500', '1000', '5000'];
+  ```
+</ResponseField>
+
+<ResponseField name="MAX Button" type="function">
+  One-click button to stake maximum available amount
+</ResponseField>
+
+### UnstakeModal
+
+Modal interface for unstaking tokens with time validation.
+
+<CodeGroup>
+```tsx Unstake Interface
+import { UnstakeModal } from 'trusset-dao-sdk';
+
+function UnstakeInterface() {
+  const { unstake, userStake, canUnstake } = useStaking();
+  const [showModal, setShowModal] = useState(false);
+
+  if (!canUnstake) {
+    return <div>Stake is locked for 24 hours</div>;
+  }
+
+  return (
+    <>
+      <button onClick={() => setShowModal(true)}>
+        Unstake Tokens
+      </button>
+      
+      {showModal && (
+        <UnstakeModal
+          onUnstake={unstake}
+          onClose={() => setShowModal(false)}
+          maxUnstake={userStake}
+          loading={false}
+        />
+      )}
+    </>
+  );
+}
+```
+
+```tsx With Percentage Options
+function PercentageUnstakeModal() {
+  const percentages = ['25', '50', '75', '100'];
+
+  return (
+    <UnstakeModal
+      onUnstake={handleUnstake}
+      onClose={handleClose}
+      maxUnstake={userStake}
+      percentageOptions={percentages}
+      showImpact={true}
+    />
+  );
+}
+```
+</CodeGroup>
+
+#### Validation Features
+
+<ResponseField name="Lock Period Check" type="validation">
+  Ensures 24-hour lock period has passed since last stake
+</ResponseField>
+
+<ResponseField name="Amount Validation" type="validation">
+  - Cannot exceed staked amount
+  - Must be positive number
+  - Real-time feedback
+</ResponseField>
+
+<ResponseField name="Impact Preview" type="preview">
+  Shows how unstaking affects voting power and rewards
+</ResponseField>
+
+## Treasury Components
+
+### TreasuryCard
+
+Display treasury information and statistics.
+
+<CodeGroup>
+```tsx Treasury Overview
+import { TreasuryCard } from 'trusset-dao-sdk';
+
+function Sidebar() {
+  return (
+    <div className="sidebar-cards">
+      <TreasuryCard 
+        showBalance={true}
+        showMembers={true}
+        showTopVoter={true}
+      />
+    </div>
+  );
+}
+```
+
+```tsx Custom Treasury Display
+function CustomTreasury() {
+  const { stats } = useDAO();
+  const { totalStaked } = useStaking();
+
+  return (
+    <TreasuryCard
+      customStats={{
+        balance: '125,432.50 ETH',
+        staked: totalStaked,
+        members: stats?.totalMembers,
+        proposals: stats?.totalProposals
+      }}
+      theme="minimal"
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Styling and Theming
+
+### CSS Classes
+
+All components use consistent CSS classes for easy customization:
+
+<Tabs>
+  <Tab title="Proposal Classes">
+    ```css
+    .proposal-card { /* Base card styling */ }
+    .proposal-card.state-active { /* Active proposals */ }
+    .proposal-card:hover { /* Hover effects */ }
+    .proposal-header { /* Title and state */ }
+    .proposal-meta { /* Author, date info */ }
+    .vote-buttons { /* Voting interface */ }
+    ```
+  </Tab>
+  
+  <Tab title="Staking Classes">
+    ```css
+    .staking-card { /* Staking card container */ }
+    .stake-amount { /* Amount display */ }
+    .stake-actions { /* Action buttons */ }
+    .unlock-info { /* Lock status */ }
+    .stake-modal { /* Modal styling */ }
+    ```
+  </Tab>
+  
+  <Tab title="Layout Classes">
+    ```css
+    .navigation { /* Top nav bar */ }
+    .sidebar { /* Side navigation */ }
+    .sidebar.expanded { /* Expanded state */ }
+    .main-content { /* Content area */ }
+    .modal-overlay { /* Modal backdrop */ }
+    ```
+  </Tab>
+</Tabs>
+
+### Theme Variables
+
+<CodeGroup>
+```css CSS Variables
+:root {
+  --color-primary: #0070f3;
+  --color-secondary: #666666;
+  --color-accent: #00bb7f;
+  --color-background: #000000;
+  --color-surface: #111111;
+  --color-text: #ffffff;
+  --border-radius: 8px;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] {
+  --color-background: #ffffff;
+  --color-surface: #f8f9fa;
+  --color-text: #333333;
+}
+```
+
+```json Theme Configuration
+{
+  "colors": {
+    "primary": "#8b5cf6",
+    "secondary": "#64748b", 
+    "accent": "#06b6d4",
+    "success": "#10b981",
+    "danger": "#ef4444",
+    "warning": "#f59e0b"
+  }
+}
+```
+</CodeGroup>
+
+## Component Composition
+
+<CodeGroup>
+```tsx Complete DAO Interface
+import {
+  Navigation,
+  Sidebar,
+  ProposalsList,
+  StakingCard,
+  TreasuryCard,
+  useDAO,
+  useProposals
+} from 'trusset-dao-sdk';
+
+function CompleteDAOApp() {
+  const { isConnected } = useDAO();
+  const { activeProposals } = useProposals();
+
+  return (
+    <div className="dao-app">
+      <Navigation />
+      
+      <div className="app-layout">
+        <Sidebar />
+        
+        <main className="main-content">
+          {!isConnected ? (
+            <div className="connect-prompt">
+              <h1>Connect Your Wallet</h1>
+              <appkit-button />
+            </div>
+          ) : (
+            <div className="dashboard">
+              <div className="main-section">
+                <h1>Active Proposals</h1>
+                <ProposalsList proposals={activeProposals} />
+              </div>
+              
+              <div className="sidebar-section">
+                <TreasuryCard />
+                <StakingCard />
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}
+```
+
+```tsx Custom Page Layout
+function CustomProposalsPage() {
+  const { proposals } = useProposals();
+  const [filter, setFilter] = useState('all');
+
+  const filteredProposals = proposals.filter(p => {
+    if (filter === 'active') return p.state === ProposalState.Active;
+    if (filter === 'completed') return p.state === ProposalState.Executed;
+    return true;
+  });
+
+  return (
+    <div className="proposals-page">
+      <div className="page-header">
+        <h1>Governance Proposals</h1>
+        <CreateProposalButton />
+      </div>
+      
+      <div className="filter-bar">
+        <button 
+          className={filter === 'all' ? 'active' : ''}
+          onClick={() => setFilter('all')}
+        >
+          All ({proposals.length})
+        </button>
+        <button 
+          className={filter === 'active' ? 'active' : ''}
+          onClick={() => setFilter('active')}
+        >
+          Active
+        </button>
+        <button 
+          className={filter === 'completed' ? 'active' : ''}
+          onClick={() => setFilter('completed')}
+        >
+          Completed
+        </button>
+      </div>
+      
+      <ProposalsList 
+        proposals={filteredProposals}
+        gridColumns={2}
+        enableSearch={true}
+      />
+    </div>
+  );
+}
+```
+</CodeGroup>
+
+The component library provides everything needed to build comprehensive DAO interfaces with minimal custom code, while remaining flexible for advanced customization.

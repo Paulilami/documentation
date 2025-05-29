@@ -1,0 +1,719 @@
+---
+title: "React Hooks"
+description: "Integrate DAO functionality with React hooks for wallet connection, proposals, staking, and governance"
+---
+
+## Overview
+
+The Trusset DAO SDK provides powerful React hooks to integrate decentralized governance into your application.
+
+<CardGroup cols={3}>
+  <Card title="useDAO" icon="building" href="#usedao">
+    Core DAO operations and connection
+  </Card>
+  <Card title="useProposals" icon="file" href="#useproposals">
+    Proposal management and voting
+  </Card>
+  <Card title="useStaking" icon="coins" href="#usestaking">
+    Token staking and rewards
+  </Card>
+</CardGroup>
+
+## useDAO
+
+Core hook for DAO operations, wallet connection, and contract interactions.
+
+### Basic Usage
+
+```tsx
+import { useDAO } from 'trusset-dao-sdk';
+
+function DAODashboard() {
+  const { 
+    loading, 
+    error, 
+    isConnected, 
+    daoInstance, 
+    stats,
+    createProposal,
+    vote,
+    stake,
+    unstake
+  } = useDAO();
+
+  if (loading) return <div>Loading DAO...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div>
+      <h1>{daoInstance?.name}</h1>
+      <p>Connected: {isConnected ? 'Yes' : 'No'}</p>
+      <p>Total Staked: {stats?.totalStaked}</p>
+    </div>
+  );
+}
+```
+
+### Return Values
+
+<ResponseField name="loading" type="boolean">
+  Whether DAO data is currently loading
+</ResponseField>
+
+<ResponseField name="error" type="string | null">
+  Error message if DAO initialization fails
+</ResponseField>
+
+<ResponseField name="isConnected" type="boolean">
+  Whether user's wallet is connected
+</ResponseField>
+
+<ResponseField name="daoInstance" type="DAOInstance | null">
+  Current DAO instance configuration
+</ResponseField>
+
+<ResponseField name="stats" type="DAOStats | null">
+  DAO statistics including total proposals, members, success rate
+</ResponseField>
+
+### Methods
+
+<ResponseField name="createProposal" type="(title: string, description: string, data?: string) => Promise<number>">
+  Create a new governance proposal
+</ResponseField>
+
+<ResponseField name="vote" type="(proposalId: number, support: boolean) => Promise<void>">
+  Vote on an existing proposal
+</ResponseField>
+
+<ResponseField name="stake" type="(amount: string) => Promise<void>">
+  Stake tokens to participate in governance
+</ResponseField>
+
+<ResponseField name="unstake" type="(amount: string) => Promise<void>">
+  Unstake tokens from the DAO
+</ResponseField>
+
+<ResponseField name="refresh" type="() => Promise<void>">
+  Refresh DAO data and statistics
+</ResponseField>
+
+### Advanced Usage
+
+<CodeGroup>
+```tsx Create Proposal
+function CreateProposalForm() {
+  const { createProposal, isConnected } = useDAO();
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isConnected) return;
+    
+    try {
+      const proposalId = await createProposal(title, description);
+      console.log('Created proposal:', proposalId);
+    } catch (error) {
+      console.error('Failed to create proposal:', error);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input 
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Proposal title"
+      />
+      <textarea
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="Proposal description"
+      />
+      <button type="submit" disabled={!isConnected}>
+        Create Proposal
+      </button>
+    </form>
+  );
+}
+```
+
+```tsx Voting Interface
+function VotingInterface({ proposalId }: { proposalId: number }) {
+  const { vote, isConnected } = useDAO();
+  const [voting, setVoting] = useState(false);
+
+  const handleVote = async (support: boolean) => {
+    if (!isConnected) return;
+    
+    setVoting(true);
+    try {
+      await vote(proposalId, support);
+      console.log('Vote cast successfully');
+    } catch (error) {
+      console.error('Voting failed:', error);
+    } finally {
+      setVoting(false);
+    }
+  };
+
+  return (
+    <div className="voting-buttons">
+      <button 
+        onClick={() => handleVote(true)}
+        disabled={!isConnected || voting}
+      >
+        Vote For ✓
+      </button>
+      <button 
+        onClick={() => handleVote(false)}
+        disabled={!isConnected || voting}
+      >
+        Vote Against ✗
+      </button>
+    </div>
+  );
+}
+```
+</CodeGroup>
+
+## useProposals
+
+Manage and interact with governance proposals.
+
+### Basic Usage
+
+```tsx
+import { useProposals } from 'trusset-dao-sdk';
+
+function ProposalsList() {
+  const {
+    loading,
+    proposals,
+    activeProposals,
+    pastProposals,
+    getProposal,
+    searchProposals,
+    refresh
+  } = useProposals();
+
+  if (loading) return <div>Loading proposals...</div>;
+
+  return (
+    <div>
+      <h2>Active Proposals ({activeProposals.length})</h2>
+      {activeProposals.map(proposal => (
+        <div key={proposal.id}>
+          <h3>{proposal.title}</h3>
+          <p>{proposal.description}</p>
+          <p>For: {proposal.forVotes} | Against: {proposal.againstVotes}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+### Return Values
+
+<ResponseField name="loading" type="boolean">
+  Whether proposals are currently loading
+</ResponseField>
+
+<ResponseField name="error" type="string | null">
+  Error message if proposal loading fails
+</ResponseField>
+
+<ResponseField name="proposals" type="Proposal[]">
+  All proposals in the DAO
+</ResponseField>
+
+<ResponseField name="activeProposals" type="Proposal[]">
+  Currently active proposals available for voting
+</ResponseField>
+
+<ResponseField name="pastProposals" type="Proposal[]">
+  Completed proposals (executed, defeated, or expired)
+</ResponseField>
+
+### Methods
+
+<ResponseField name="getProposal" type="(id: number) => Proposal | undefined">
+  Get a specific proposal by ID
+</ResponseField>
+
+<ResponseField name="getProposalsByState" type="(state: ProposalState) => Proposal[]">
+  Filter proposals by their current state
+</ResponseField>
+
+<ResponseField name="searchProposals" type="(query: string) => Proposal[]">
+  Search proposals by title, description, or proposer
+</ResponseField>
+
+<ResponseField name="refresh" type="() => Promise<void>">
+  Refresh proposal data from the blockchain
+</ResponseField>
+
+### Proposal States
+
+<Tabs>
+  <Tab title="State Types">
+    ```typescript
+    enum ProposalState {
+      Pending = 0,    // Voting not yet started
+      Active = 1,     // Currently accepting votes
+      Succeeded = 2,  // Passed but not executed
+      Defeated = 3,   // Failed to pass
+      Executed = 4    // Successfully executed
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Usage Example">
+    ```tsx
+    import { ProposalState } from 'trusset-dao-sdk';
+    
+    function ProposalFilter() {
+      const { getProposalsByState } = useProposals();
+      
+      const activeProposals = getProposalsByState(ProposalState.Active);
+      const executedProposals = getProposalsByState(ProposalState.Executed);
+      
+      return (
+        <div>
+          <div>Active: {activeProposals.length}</div>
+          <div>Executed: {executedProposals.length}</div>
+        </div>
+      );
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Search and Filter
+
+<CodeGroup>
+```tsx Search Functionality
+function ProposalSearch() {
+  const { searchProposals } = useProposals();
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    const searchResults = searchProposals(query);
+    setResults(searchResults);
+  }, [query, searchProposals]);
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search proposals..."
+      />
+      
+      <div>
+        {results.map(proposal => (
+          <ProposalCard key={proposal.id} proposal={proposal} />
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+```tsx State Filter
+function ProposalStateFilter() {
+  const { proposals } = useProposals();
+  const [filter, setFilter] = useState<ProposalState | 'all'>('all');
+
+  const filteredProposals = filter === 'all' 
+    ? proposals 
+    : proposals.filter(p => p.state === filter);
+
+  return (
+    <div>
+      <select 
+        value={filter} 
+        onChange={(e) => setFilter(e.target.value as any)}
+      >
+        <option value="all">All Proposals</option>
+        <option value={ProposalState.Active}>Active</option>
+        <option value={ProposalState.Succeeded}>Succeeded</option>
+        <option value={ProposalState.Executed}>Executed</option>
+      </select>
+      
+      {filteredProposals.map(proposal => (
+        <ProposalCard key={proposal.id} proposal={proposal} />
+      ))}
+    </div>
+  );
+}
+```
+</CodeGroup>
+
+## useStaking
+
+Manage token staking, rewards, and voting power.
+
+### Basic Usage
+
+```tsx
+import { useStaking } from 'trusset-dao-sdk';
+
+function StakingDashboard() {
+  const {
+    loading,
+    userStake,
+    totalStaked,
+    minStake,
+    canUnstake,
+    stake,
+    unstake,
+    getTimeUntilUnlock
+  } = useStaking();
+
+  const timeUntilUnlock = getTimeUntilUnlock();
+
+  if (loading) return <div>Loading staking data...</div>;
+
+  return (
+    <div>
+      <h2>Your Stake: {userStake} tokens</h2>
+      <p>Total Staked: {totalStaked} tokens</p>
+      <p>Minimum Stake: {minStake} tokens</p>
+      
+      {!canUnstake && timeUntilUnlock > 0 && (
+        <p>Unlock in: {Math.floor(timeUntilUnlock / 3600)} hours</p>
+      )}
+    </div>
+  );
+}
+```
+
+### Return Values
+
+<ResponseField name="loading" type="boolean">
+  Whether staking data is currently loading
+</ResponseField>
+
+<ResponseField name="userStake" type="string">
+  Current user's staked amount in wei
+</ResponseField>
+
+<ResponseField name="totalStaked" type="string">
+  Total amount staked across all users in wei
+</ResponseField>
+
+<ResponseField name="minStake" type="string">
+  Minimum required stake amount in wei
+</ResponseField>
+
+<ResponseField name="lastStakeTime" type="number">
+  Timestamp of user's last staking action
+</ResponseField>
+
+<ResponseField name="canUnstake" type="boolean">
+  Whether user can currently unstake (after 24h lock period)
+</ResponseField>
+
+### Methods
+
+<ResponseField name="stake" type="(amount: string) => Promise<void>">
+  Stake tokens to gain voting power
+</ResponseField>
+
+<ResponseField name="unstake" type="(amount: string) => Promise<void>">
+  Unstake tokens (after lock period)
+</ResponseField>
+
+<ResponseField name="getUnlockTime" type="() => number">
+  Get timestamp when tokens can be unstaked
+</ResponseField>
+
+<ResponseField name="getTimeUntilUnlock" type="() => number">
+  Get seconds remaining until unlock
+</ResponseField>
+
+<ResponseField name="canStakeAmount" type="(amount: string) => boolean">
+  Check if amount meets minimum stake requirement
+</ResponseField>
+
+<ResponseField name="canUnstakeAmount" type="(amount: string) => boolean">
+  Check if amount can be unstaked
+</ResponseField>
+
+### Staking Interface
+
+<CodeGroup>
+```tsx Stake Form
+function StakeForm() {
+  const { stake, minStake, canStakeAmount } = useStaking();
+  const [amount, setAmount] = useState('');
+  const [staking, setStaking] = useState(false);
+
+  const handleStake = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!canStakeAmount(amount)) return;
+
+    setStaking(true);
+    try {
+      await stake(amount);
+      setAmount('');
+    } catch (error) {
+      console.error('Staking failed:', error);
+    } finally {
+      setStaking(false);
+    }
+  };
+
+  const minStakeEth = ethers.utils.formatEther(minStake);
+
+  return (
+    <form onSubmit={handleStake}>
+      <input
+        type="number"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+        placeholder={`Minimum: ${minStakeEth} ETH`}
+        min={minStakeEth}
+        step="0.01"
+      />
+      <button 
+        type="submit" 
+        disabled={!canStakeAmount(amount) || staking}
+      >
+        {staking ? 'Staking...' : 'Stake Tokens'}
+      </button>
+    </form>
+  );
+}
+```
+
+```tsx Unstake Form
+function UnstakeForm() {
+  const { 
+    unstake, 
+    userStake, 
+    canUnstake, 
+    canUnstakeAmount,
+    getTimeUntilUnlock 
+  } = useStaking();
+  const [amount, setAmount] = useState('');
+  const [unstaking, setUnstaking] = useState(false);
+
+  const timeUntilUnlock = getTimeUntilUnlock();
+  const hoursUntilUnlock = Math.floor(timeUntilUnlock / 3600);
+
+  const handleUnstake = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!canUnstake || !canUnstakeAmount(amount)) return;
+
+    setUnstaking(true);
+    try {
+      await unstake(amount);
+      setAmount('');
+    } catch (error) {
+      console.error('Unstaking failed:', error);
+    } finally {
+      setUnstaking(false);
+    }
+  };
+
+  if (!canUnstake) {
+    return (
+      <div className="unstake-locked">
+        <p>Stake is locked for 24 hours after staking</p>
+        {hoursUntilUnlock > 0 && (
+          <p>Unlock in: {hoursUntilUnlock} hours</p>
+        )}
+      </div>
+    );
+  }
+
+  const maxUnstake = ethers.utils.formatEther(userStake);
+
+  return (
+    <form onSubmit={handleUnstake}>
+      <input
+        type="number"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+        placeholder={`Max: ${maxUnstake} ETH`}
+        max={maxUnstake}
+        step="0.01"
+      />
+      <button 
+        type="submit" 
+        disabled={!canUnstakeAmount(amount) || unstaking}
+      >
+        {unstaking ? 'Unstaking...' : 'Unstake Tokens'}
+      </button>
+    </form>
+  );
+}
+```
+</CodeGroup>
+
+## Utility Hooks
+
+### useTheme
+
+Control dark/light theme switching.
+
+```tsx
+import { useTheme } from 'trusset-dao-sdk';
+
+function ThemeToggle() {
+  const { theme, toggleTheme, isDark } = useTheme();
+
+  return (
+    <button onClick={toggleTheme}>
+      {isDark ? '☀️ Light' : '🌙 Dark'} Mode
+    </button>
+  );
+}
+```
+
+### useLanguage
+
+Handle internationalization (English/German).
+
+```tsx
+import { useLanguage } from 'trusset-dao-sdk';
+
+function LanguageSwitcher() {
+  const { language, setLanguage, t } = useLanguage();
+
+  return (
+    <div>
+      <h1>{t('proposals.title')}</h1>
+      <button onClick={() => setLanguage(language === 'en' ? 'de' : 'en')}>
+        {language === 'en' ? 'Deutsch' : 'English'}
+      </button>
+    </div>
+  );
+}
+```
+
+### useStyles
+
+Access styling configuration and CSS helpers.
+
+```tsx
+import { useStyles } from 'trusset-dao-sdk';
+
+function StyledComponent() {
+  const { stylesConfig, getStyleClass, getThemeClass } = useStyles();
+
+  return (
+    <div className={`${getStyleClass('proposal-card')} ${getThemeClass()}`}>
+      <h2 style={{ color: stylesConfig.colors?.primary }}>
+        Styled Content
+      </h2>
+    </div>
+  );
+}
+```
+
+## Hook Combinations
+
+<Accordion title="Complete DAO Dashboard">
+  ```tsx
+  import { 
+    useDAO, 
+    useProposals, 
+    useStaking, 
+    useTheme,
+    useLanguage 
+  } from 'trusset-dao-sdk';
+
+  function CompleteDashboard() {
+    const { isConnected, stats } = useDAO();
+    const { activeProposals } = useProposals();
+    const { userStake, totalStaked } = useStaking();
+    const { theme, toggleTheme } = useTheme();
+    const { t } = useLanguage();
+
+    if (!isConnected) {
+      return (
+        <div>
+          <h1>{t('connect.title')}</h1>
+          <appkit-button />
+        </div>
+      );
+    }
+
+    return (
+      <div className={`dashboard theme-${theme}`}>
+        <header>
+          <h1>{t('dashboard.title')}</h1>
+          <button onClick={toggleTheme}>
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+        </header>
+
+        <div className="stats">
+          <div>Total Members: {stats?.totalMembers}</div>
+          <div>Active Proposals: {activeProposals.length}</div>
+          <div>Your Stake: {userStake} tokens</div>
+          <div>Total Staked: {totalStaked} tokens</div>
+        </div>
+
+        <div className="proposals">
+          {activeProposals.map(proposal => (
+            <ProposalCard key={proposal.id} proposal={proposal} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+  ```
+</Accordion>
+
+## Error Handling
+
+All hooks provide error handling and loading states:
+
+```tsx
+function ErrorHandlingExample() {
+  const { loading, error, refresh } = useDAO();
+  const { loading: proposalsLoading, error: proposalsError } = useProposals();
+
+  if (loading || proposalsLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error || proposalsError) {
+    return (
+      <div>
+        <p>Error: {error || proposalsError}</p>
+        <button onClick={refresh}>Retry</button>
+      </div>
+    );
+  }
+
+  // Normal render
+  return <div>DAO loaded successfully</div>;
+}
+```
+
+## TypeScript Support
+
+All hooks are fully typed with TypeScript interfaces:
+
+```typescript
+import type { 
+  Proposal, 
+  DAOInstance, 
+  DAOStats, 
+  ProposalState,
+  StakeInfo 
+} from 'trusset-dao-sdk';
+
+// Hooks return strongly typed objects
+const { proposals }: { proposals: Proposal[] } = useProposals();
+const { daoInstance }: { daoInstance: DAOInstance | null } = useDAO();
+```

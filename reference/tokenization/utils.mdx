@@ -1,0 +1,660 @@
+---
+title: "Utility Functions"
+description: "Formatting, validation, and helper utilities for tokenized assets"
+---
+
+## Overview
+
+The Trusset SDK provides comprehensive utility functions for data formatting, validation, cryptographic operations, and asset management helpers.
+
+## Formatting Utilities
+
+### Address Formatting
+
+<CodeGroup>
+```typescript formatAddress
+import { formatAddress } from 'trusset-sdk';
+
+// Shorten long addresses for display
+const shortAddress = formatAddress(
+  '0x1234567890123456789012345678901234567890',
+  4 // number of characters to show
+);
+// Returns: "0x1234...7890"
+
+// Custom character length
+const veryShort = formatAddress(address, 2);
+// Returns: "0x12...90"
+```
+
+```typescript React Component
+function UserProfile({ address }) {
+  return (
+    <div>
+      <strong>Address:</strong> {formatAddress(address)}
+    </div>
+  );
+}
+```
+</CodeGroup>
+
+### Token Amount Formatting
+
+<Tabs>
+<Tab title="Basic Formatting">
+```typescript
+import { formatTokenAmount, parseTokenAmount } from 'trusset-sdk';
+import { BigNumber } from 'ethers';
+
+// Format BigNumber to readable string
+const amount = BigNumber.from('1500000000000000000000'); // 1500 tokens
+const formatted = formatTokenAmount(amount, 18, 2);
+// Returns: "1500.00"
+
+// Handle large numbers with K/M notation
+const largeAmount = BigNumber.from('1500000000000000000000000');
+const formatted = formatTokenAmount(largeAmount, 18, 2);
+// Returns: "1.50M"
+
+// Very small amounts
+const smallAmount = BigNumber.from('50000000000000'); // 0.00005
+const formatted = formatTokenAmount(smallAmount, 18, 6);
+// Returns: "< 0.0001"
+```
+</Tab>
+
+<Tab title="Parse User Input">
+```typescript
+// Convert user input to BigNumber
+const userInput = "1234.56";
+const parsed = parseTokenAmount(userInput, 18);
+// Returns: BigNumber representing 1234.56 * 10^18
+
+// Handle errors gracefully
+try {
+  const amount = parseTokenAmount("invalid", 18);
+} catch (error) {
+  console.error("Invalid token amount:", error.message);
+}
+```
+</Tab>
+
+<Tab title="React Form Integration">
+```typescript
+function TokenInput({ onAmountChange }) {
+  const [input, setInput] = useState('');
+  const [error, setError] = useState('');
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setInput(value);
+
+    try {
+      const parsed = parseTokenAmount(value, 18);
+      onAmountChange(parsed);
+      setError('');
+    } catch (err) {
+      setError('Invalid amount');
+    }
+  };
+
+  return (
+    <div>
+      <input 
+        type="text" 
+        value={input}
+        onChange={handleChange}
+        placeholder="Enter amount"
+      />
+      {error && <span className="error">{error}</span>}
+    </div>
+  );
+}
+```
+</Tab>
+</Tabs>
+
+### Bytes32 String Handling
+
+```typescript
+import { formatBytes32String, parseBytes32String } from 'trusset-sdk';
+
+// Convert string to bytes32 for contracts
+const bytes32Name = formatBytes32String('My Asset Name');
+// Returns: "0x4d792041737365742044616d6500000000000000000000000000000000000000"
+
+// Parse bytes32 back to string
+const originalName = parseBytes32String(bytes32Name);
+// Returns: "My Asset Name"
+
+// Handle long strings (auto-truncated)
+const longName = formatBytes32String('This is a very long asset name that exceeds 31 characters');
+// Automatically truncated to 31 characters
+```
+
+### Gas and Fee Formatting
+
+<CodeGroup>
+```typescript Gas Formatting
+import { formatGas, formatFee } from 'trusset-sdk';
+import { BigNumber } from 'ethers';
+
+// Format gas usage
+const gasUsed = BigNumber.from('234567');
+const formattedGas = formatGas(gasUsed);
+// Returns: "234.6K"
+
+const highGas = BigNumber.from('1234567');
+const formattedHighGas = formatGas(highGas);
+// Returns: "1.23M"
+```
+
+```typescript Fee Display
+// Format basis points to percentage
+const feeBps = 250; // 2.5%
+const feeDisplay = formatFee(feeBps);
+// Returns: "2.5%"
+
+// In React component
+function FeeDisplay({ feeBps }) {
+  return (
+    <span>Transfer Fee: {formatFee(feeBps)}</span>
+  );
+}
+```
+</CodeGroup>
+
+## Validation Utilities
+
+### Address Validation
+
+<CodeGroup>
+```typescript Basic Validation
+import { isValidAddress } from 'trusset-sdk';
+
+// Validate Ethereum addresses
+const valid = isValidAddress('0x1234567890123456789012345678901234567890');
+// Returns: true
+
+const invalid = isValidAddress('invalid-address');
+// Returns: false
+
+// Use in forms
+function AddressInput({ onValidAddress }) {
+  const [address, setAddress] = useState('');
+  const [isValid, setIsValid] = useState(false);
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setAddress(value);
+    
+    const valid = isValidAddress(value);
+    setIsValid(valid);
+    
+    if (valid) {
+      onValidAddress(value);
+    }
+  };
+
+  return (
+    <div>
+      <input 
+        value={address}
+        onChange={handleChange}
+        className={isValid ? 'valid' : 'invalid'}
+      />
+      {!isValid && address && (
+        <span>Invalid Ethereum address</span>
+      )}
+    </div>
+  );
+}
+```
+
+```typescript URL and Email Validation
+import { validateUrl, validateEmail } from 'trusset-sdk';
+
+// Validate URLs for asset images
+const validUrl = validateUrl('https://example.com/image.jpg');
+// Returns: true
+
+const invalidUrl = validateUrl('not-a-url');
+// Returns: false
+
+// Validate email addresses
+const validEmail = validateEmail('user@example.com');
+// Returns: true
+```
+</CodeGroup>
+
+### Asset Configuration Validation
+
+```typescript
+import { validateAssetConfig, AssetType } from 'trusset-sdk';
+
+const config = {
+  name: 'Test Asset',
+  symbol: 'TEST',
+  initialSupply: 1000,
+  assetType: AssetType.EQUITY,
+  maxSupply: 2000,
+  feeBps: 250,
+  authority: '0x1234567890123456789012345678901234567890'
+};
+
+// Validate configuration
+const errors = validateAssetConfig(config);
+
+if (errors.length > 0) {
+  console.error('Configuration errors:', errors);
+  // Example errors:
+  // ["Asset name must be 31 characters or less"]
+  // ["Fee cannot exceed 50% (5000 basis points)"]
+} else {
+  console.log('Configuration is valid');
+}
+```
+
+<Accordion title="Asset Validation Rules">
+<ResponseField name="name" type="string">
+- Required field
+- Maximum 31 characters (bytes32 limit)
+- Cannot be empty or whitespace only
+</ResponseField>
+
+<ResponseField name="symbol" type="string">
+- Required field  
+- Maximum 31 characters (bytes32 limit)
+- Cannot be empty or whitespace only
+</ResponseField>
+
+<ResponseField name="initialSupply" type="number">
+- Must be greater than 0
+- Cannot exceed 21,000,000
+- Required field
+</ResponseField>
+
+<ResponseField name="maxSupply" type="number">
+- Must be greater than or equal to initialSupply
+- Optional field
+</ResponseField>
+
+<ResponseField name="feeBps" type="number">
+- Cannot exceed 5000 (50%)
+- Required if fee flags are enabled
+- Optional field
+</ResponseField>
+
+<ResponseField name="authority" type="string">
+- Must be valid Ethereum address if provided
+- Required if hasAuthority flag is enabled
+</ResponseField>
+
+<ResponseField name="feeReceiver" type="string">
+- Must be valid Ethereum address if provided
+- Required if any fee flags are enabled
+</ResponseField>
+</Accordion>
+
+### String Sanitization
+
+```typescript
+import { sanitizeString } from 'trusset-sdk';
+
+// Clean user input
+const userInput = "  Messy Input String!@#$  ";
+const clean = sanitizeString(userInput, 50);
+// Returns: "Messy Input String!@#$" (trimmed, max 50 chars)
+
+// Use in forms
+function NameInput({ onNameChange }) {
+  const handleChange = (e) => {
+    const sanitized = sanitizeString(e.target.value, 31);
+    onNameChange(sanitized);
+  };
+
+  return <input onChange={handleChange} maxLength={31} />;
+}
+```
+
+## Cryptographic Utilities
+
+### Random ID Generation
+
+<CodeGroup>
+```typescript Basic Usage
+import { generateRandomId, generateNonce } from 'trusset-sdk';
+
+// Generate unique IDs
+const id = generateRandomId();
+// Returns: "1640995200000-x7k9m2p3q"
+
+// Generate cryptographic nonces
+const nonce = generateNonce();
+// Returns: "a7x9m2p3qb8n4k6j"
+```
+
+```typescript React Integration
+function UniqueKeyComponent() {
+  const [items, setItems] = useState([]);
+
+  const addItem = () => {
+    setItems(prev => [...prev, {
+      id: generateRandomId(),
+      content: 'New item'
+    }]);
+  };
+
+  return (
+    <div>
+      {items.map(item => (
+        <div key={item.id}>{item.content}</div>
+      ))}
+      <button onClick={addItem}>Add Item</button>
+    </div>
+  );
+}
+```
+</CodeGroup>
+
+### VPass Encryption
+
+<Tabs>
+<Tab title="Data Encryption">
+```typescript
+import { 
+  encryptVPassData, 
+  decryptVPassData,
+  generateExpiryTimestamp,
+  isVPassExpired 
+} from 'trusset-sdk';
+
+// Encrypt sensitive data
+const sensitiveData = {
+  userInfo: 'Private information',
+  permissions: ['read', 'write']
+};
+
+const encrypted = encryptVPassData(sensitiveData);
+// Returns: base64 encoded encrypted string
+
+// Decrypt data
+const decrypted = decryptVPassData(encrypted);
+// Returns: original object
+```
+</Tab>
+
+<Tab title="Expiry Management">
+```typescript
+// Generate expiry timestamp (30 days from now)
+const expiresAt = generateExpiryTimestamp(30);
+
+// Check if VPass is expired
+const expired = isVPassExpired(expiresAt);
+
+// Use in VPass creation
+const vpassData = {
+  encryptedData: encryptVPassData(userData),
+  expiresAt: generateExpiryTimestamp(7), // 1 week
+  createdAt: Math.floor(Date.now() / 1000)
+};
+```
+</Tab>
+</Tabs>
+
+### Hashing and Checksums
+
+```typescript
+import { hashString, createChecksum } from 'trusset-sdk';
+
+// Create deterministic hash
+const hash = hashString('Important data');
+// Returns: "1a2b3c4d5e"
+
+// Create checksum with nonce
+const checksum = createChecksum('Data to verify');
+// Returns: unique checksum string
+
+// Verify data integrity
+function verifyData(data, expectedChecksum) {
+  const currentChecksum = createChecksum(data);
+  return currentChecksum === expectedChecksum;
+}
+```
+
+## Asset Management Helpers
+
+### Asset Type Utilities
+
+<CodeGroup>
+```typescript Asset Type Names
+import { getAssetTypeName, AssetType } from 'trusset-sdk';
+
+// Get human-readable asset type names
+const typeName = getAssetTypeName(AssetType.EQUITY);
+// Returns: "Equity"
+
+const bondName = getAssetTypeName(AssetType.BOND);
+// Returns: "Bond"
+
+// Use in UI
+function AssetTypeDisplay({ assetType }) {
+  return (
+    <span className="asset-type">
+      {getAssetTypeName(assetType)}
+    </span>
+  );
+}
+```
+
+```typescript Asset Type Selector
+function AssetTypeSelector({ value, onChange }) {
+  const assetTypes = Object.entries(AssetType)
+    .filter(([, val]) => typeof val === 'number')
+    .map(([key, val]) => ({
+      value: val,
+      label: getAssetTypeName(val as AssetType)
+    }));
+
+  return (
+    <select value={value} onChange={e => onChange(Number(e.target.value))}>
+      {assetTypes.map(type => (
+        <option key={type.value} value={type.value}>
+          {type.label}
+        </option>
+      ))}
+    </select>
+  );
+}
+```
+</CodeGroup>
+
+### Flag Management
+
+<Tabs>
+<Tab title="Encode Flags">
+```typescript
+import { encodeFlags, TokenFlags } from 'trusset-sdk';
+
+// Define token capabilities
+const flags: TokenFlags = {
+  canMint: true,
+  canBurn: true,
+  hasKYC: true,
+  hasWhitelist: true,
+  isDecentralized: false
+};
+
+// Encode to bit mask for contracts
+const encoded = encodeFlags(flags);
+// Returns: number representing combined flags
+```
+</Tab>
+
+<Tab title="Decode Flags">
+```typescript
+import { decodeFlags } from 'trusset-sdk';
+
+// Decode flags from contract
+const encoded = 0b11011; // Example bit mask
+const flags = decodeFlags(encoded);
+
+// Use decoded flags
+if (flags.canMint) {
+  console.log('This asset can mint new tokens');
+}
+
+if (flags.hasKYC) {
+  console.log('KYC verification required');
+}
+```
+</Tab>
+
+<Tab title="Flag Display Component">
+```typescript
+function FlagDisplay({ encodedFlags }) {
+  const flags = decodeFlags(encodedFlags);
+
+  const flagList = [
+    { key: 'canMint', label: 'Mintable', color: 'green' },
+    { key: 'canBurn', label: 'Burnable', color: 'red' },
+    { key: 'hasKYC', label: 'KYC Required', color: 'blue' },
+    { key: 'hasWhitelist', label: 'Whitelisted', color: 'purple' },
+    { key: 'isDecentralized', label: 'Decentralized', color: 'orange' }
+  ];
+
+  return (
+    <div className="flags">
+      {flagList.map(({ key, label, color }) => 
+        flags[key] && (
+          <span key={key} className={`flag flag-${color}`}>
+            {label}
+          </span>
+        )
+      )}
+    </div>
+  );
+}
+```
+</Tab>
+</Tabs>
+
+### Asset Configuration Presets
+
+<CodeGroup>
+```typescript Standard Asset
+import { createStandardAsset, AssetType } from 'trusset-sdk';
+
+// Create basic asset configuration
+const standardConfig = createStandardAsset(
+  'Standard Token',
+  'STD',
+  1000,
+  AssetType.EQUITY,
+  'https://example.com/image.jpg'
+);
+```
+
+```typescript Decentralized Asset
+import { createDecentralizedAsset } from 'trusset-sdk';
+
+// Create decentralized asset with governance
+const decentralizedConfig = createDecentralizedAsset(
+  'DAO Token',
+  'DAO',
+  10000,
+  AssetType.EQUITY,
+  20000, // max supply
+  '0x...' // authority address
+);
+```
+
+```typescript Compliance Asset
+import { createComplianceAsset } from 'trusset-sdk';
+
+// Create compliance-focused asset
+const complianceConfig = createComplianceAsset(
+  'Regulated Security',
+  'REG',
+  5000,
+  AssetType.BOND,
+  '0x...', // authority
+  {
+    kyc: true,
+    whitelist: true,
+    blacklist: true,
+    freeze: true
+  }
+);
+```
+</CodeGroup>
+
+## Performance Utilities
+
+### Async Helpers
+
+<CodeGroup>
+```typescript Retry Logic
+import { retry, sleep } from 'trusset-sdk';
+
+// Retry failed operations
+const result = await retry(
+  async () => {
+    // Potentially failing operation
+    return await client.createAsset(config);
+  },
+  3, // attempts
+  1000 // delay between attempts
+);
+```
+
+```typescript Rate Limiting
+import { debounce, throttle } from 'trusset-sdk';
+
+// Debounce search input
+const debouncedSearch = debounce((query) => {
+  searchAssets(query);
+}, 300);
+
+// Throttle frequent updates
+const throttledUpdate = throttle((data) => {
+  updateAssetData(data);
+}, 1000);
+
+// Use in React
+function SearchInput() {
+  const handleSearch = debounce((e) => {
+    searchAssets(e.target.value);
+  }, 300);
+
+  return <input onChange={handleSearch} />;
+}
+```
+</CodeGroup>
+
+### Array Processing
+
+```typescript
+import { chunk } from 'trusset-sdk';
+
+// Process large arrays in chunks
+const largeArray = Array.from({ length: 1000 }, (_, i) => i);
+const chunks = chunk(largeArray, 100);
+
+// Process each chunk
+for (const chunk of chunks) {
+  await processChunk(chunk);
+  await sleep(100); // Rate limiting
+}
+
+// Use with asset operations
+async function bulkTransferShares(transfers) {
+  const chunks = chunk(transfers, 10);
+  
+  for (const chunk of chunks) {
+    await Promise.all(chunk.map(transfer => 
+      client.transferShares(transfer.assetId, transfer.shareIds, transfer.to)
+    ));
+  }
+}
+```

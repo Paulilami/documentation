@@ -1,0 +1,505 @@
+---
+title: "React Hooks"
+description: "React hooks for building tokenized asset applications"
+---
+
+## Overview
+
+The Trusset SDK provides a comprehensive set of React hooks for managing tokenized assets, transactions, and blockchain interactions.
+
+<Note>
+All hooks must be used within the `TrussetAppProvider` component tree.
+</Note>
+
+## Core Hooks
+
+### useTrussetContext
+
+Access the main Trusset client and connection state.
+
+<CodeGroup>
+```typescript Basic Usage
+import { useTrussetContext } from 'trusset-sdk';
+
+function MyComponent() {
+  const { 
+    client, 
+    address, 
+    connected, 
+    loading, 
+    connect, 
+    disconnect 
+  } = useTrussetContext();
+
+  return (
+    <div>
+      {connected ? (
+        <p>Connected: {address}</p>
+      ) : (
+        <button onClick={connect}>Connect Wallet</button>
+      )}
+    </div>
+  );
+}
+```
+
+```typescript With Network Switching
+function NetworkSwitcher() {
+  const { switchNetwork, chainId } = useTrussetContext();
+
+  return (
+    <select 
+      value={chainId || ''} 
+      onChange={(e) => switchNetwork(Number(e.target.value))}
+    >
+      <option value={1}>Ethereum</option>
+      <option value={11155111}>Sepolia</option>
+      <option value={137}>Polygon</option>
+    </select>
+  );
+}
+```
+</CodeGroup>
+
+<ResponseField name="client" type="TrussetClient | null">
+The main SDK client instance for blockchain operations
+</ResponseField>
+
+<ResponseField name="address" type="string | null">
+Connected wallet address
+</ResponseField>
+
+<ResponseField name="connected" type="boolean">
+Whether wallet is connected and ready
+</ResponseField>
+
+<ResponseField name="loading" type="boolean">
+Connection or transaction loading state
+</ResponseField>
+
+<ResponseField name="error" type="TrussetError | null">
+Current error state, if any
+</ResponseField>
+
+<ResponseField name="connect" type="function">
+Function to connect wallet provider
+</ResponseField>
+
+<ResponseField name="disconnect" type="function">
+Function to disconnect wallet
+</ResponseField>
+
+<ResponseField name="switchNetwork" type="function">
+Function to switch blockchain networks
+</ResponseField>
+
+## Asset Management Hooks
+
+### useAssetContext
+
+Manage user assets and asset selection.
+
+<Tabs>
+<Tab title="Basic Usage">
+```typescript
+import { useAssetContext } from 'trusset-sdk';
+
+function AssetList() {
+  const { 
+    assets, 
+    loading, 
+    selectedAsset, 
+    selectAsset, 
+    refreshAssets 
+  } = useAssetContext();
+
+  if (loading) return <div>Loading assets...</div>;
+
+  return (
+    <div>
+      {assets.map(asset => (
+        <div 
+          key={asset.id}
+          onClick={() => selectAsset(asset)}
+          className={selectedAsset?.id === asset.id ? 'selected' : ''}
+        >
+          {asset.name} ({asset.symbol})
+        </div>
+      ))}
+      <button onClick={refreshAssets}>Refresh</button>
+    </div>
+  );
+}
+```
+</Tab>
+
+<Tab title="With Asset Creation">
+```typescript
+function AssetManager() {
+  const { refreshAssets } = useAssetContext();
+  const { client } = useTrussetContext();
+
+  const createAsset = async () => {
+    await client.createAsset({
+      name: 'New Asset',
+      symbol: 'NEW',
+      initialSupply: 1000,
+      assetType: AssetType.EQUITY
+    });
+    
+    // Refresh the asset list
+    await refreshAssets();
+  };
+
+  return <button onClick={createAsset}>Create Asset</button>;
+}
+```
+</Tab>
+</Tabs>
+
+<ResponseField name="assets" type="Asset[]">
+Array of user's tokenized assets
+</ResponseField>
+
+<ResponseField name="loading" type="boolean">
+Whether assets are currently loading
+</ResponseField>
+
+<ResponseField name="error" type="TrussetError | null">
+Error state for asset operations
+</ResponseField>
+
+<ResponseField name="selectedAsset" type="Asset | null">
+Currently selected asset for operations
+</ResponseField>
+
+<ResponseField name="selectAsset" type="(asset: Asset | null) => void">
+Function to select an asset
+</ResponseField>
+
+<ResponseField name="refreshAssets" type="() => Promise<void>">
+Function to refresh the asset list
+</ResponseField>
+
+### useUserShares
+
+Get shares for a specific asset and owner.
+
+```typescript
+import { useUserShares } from 'trusset-sdk';
+
+function SharesView({ assetId }: { assetId: number }) {
+  const { address } = useTrussetContext();
+  const { shares, loading, error } = useUserShares(assetId, address);
+
+  if (loading) return <div>Loading shares...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <div>
+      <h3>Your Shares: {shares.length}</h3>
+      {shares.map(share => (
+        <div key={share.id}>
+          Share #{share.id}
+          {share.tags.length > 0 && (
+            <span>Tags: {share.tags.join(', ')}</span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+## Transaction Hooks
+
+### useTransfer
+
+Handle share transfers with automatic state management.
+
+<CodeGroup>
+```typescript Single Transfer
+import { useTransfer } from 'trusset-sdk';
+
+function TransferButton({ assetId, shareIds, recipient }) {
+  const { transfer, isLoading, error } = useTransfer();
+
+  const handleTransfer = async () => {
+    try {
+      const result = await transfer(assetId, shareIds, recipient);
+      console.log('Transfer successful:', result.hash);
+    } catch (err) {
+      console.error('Transfer failed:', err);
+    }
+  };
+
+  return (
+    <button onClick={handleTransfer} disabled={isLoading}>
+      {isLoading ? 'Transferring...' : 'Transfer Shares'}
+    </button>
+  );
+}
+```
+
+```typescript Bulk Transfer
+function BulkTransfer({ transfers }) {
+  const { transferBatch, isLoading } = useTransfer();
+
+  const handleBulkTransfer = async () => {
+    const results = await transferBatch(transfers);
+    console.log(`${results.length} transfers completed`);
+  };
+
+  return (
+    <button onClick={handleBulkTransfer} disabled={isLoading}>
+      Transfer All ({transfers.length})
+    </button>
+  );
+}
+```
+</CodeGroup>
+
+### useBurn
+
+Burn shares with confirmation flow.
+
+```typescript
+import { useBurn } from 'trusset-sdk';
+
+function BurnShares({ assetId, shareIds }) {
+  const { burn, isLoading, error } = useBurn();
+
+  const handleBurn = async () => {
+    const confirmed = window.confirm(
+      `Permanently burn ${shareIds.length} shares?`
+    );
+    
+    if (confirmed) {
+      await burn(assetId, shareIds);
+    }
+  };
+
+  return (
+    <>
+      <button onClick={handleBurn} disabled={isLoading}>
+        {isLoading ? 'Burning...' : 'Burn Shares'}
+      </button>
+      {error && <div className="error">{error.message}</div>}
+    </>
+  );
+}
+```
+
+### useMint
+
+Mint additional shares for existing assets.
+
+```typescript
+import { useMint } from 'trusset-sdk';
+
+function MintControls({ assetId }) {
+  const { mint, isLoading } = useMint();
+  const [amount, setAmount] = useState(100);
+
+  const handleMint = async () => {
+    const result = await mint(assetId, amount);
+    console.log('Minted shares:', result.hash);
+  };
+
+  return (
+    <div>
+      <input 
+        type="number" 
+        value={amount}
+        onChange={(e) => setAmount(Number(e.target.value))}
+        min="1"
+      />
+      <button onClick={handleMint} disabled={isLoading}>
+        Mint {amount} Shares
+      </button>
+    </div>
+  );
+}
+```
+
+## Event Hooks
+
+### useEventContext
+
+Subscribe to blockchain events and real-time updates.
+
+<Tabs>
+<Tab title="Event Feed">
+```typescript
+import { useEventContext } from 'trusset-sdk';
+
+function EventFeed() {
+  const { events, clearEvents } = useEventContext();
+
+  return (
+    <div>
+      <div className="header">
+        <h3>Recent Events ({events.length})</h3>
+        <button onClick={clearEvents}>Clear</button>
+      </div>
+      
+      {events.map((event, index) => (
+        <div key={index} className="event">
+          <strong>{event.event}</strong>
+          <span>Block: {event.blockNumber}</span>
+          <time>{new Date(event.timestamp).toLocaleString()}</time>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+</Tab>
+
+<Tab title="Asset-Specific Events">
+```typescript
+function AssetEvents({ assetId }) {
+  const { events } = useEventContext();
+  
+  const assetEvents = events.filter(event => 
+    event.args?.[0] === assetId || event.assetId === assetId
+  );
+
+  return (
+    <div>
+      <h4>Events for Asset #{assetId}</h4>
+      {assetEvents.map((event, index) => (
+        <div key={index}>
+          {event.event}: {JSON.stringify(event.args)}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+</Tab>
+</Tabs>
+
+### useAssetEvents
+
+Subscribe to events for a specific asset.
+
+```typescript
+import { useAssetEvents } from 'trusset-sdk';
+
+function AssetEventSubscriber({ assetId }) {
+  const [notifications, setNotifications] = useState([]);
+
+  useAssetEvents(assetId, (event) => {
+    setNotifications(prev => [...prev, {
+      id: Date.now(),
+      message: `${event.event} occurred for asset ${assetId}`,
+      timestamp: event.timestamp
+    }]);
+  });
+
+  return (
+    <div>
+      {notifications.map(notif => (
+        <div key={notif.id} className="notification">
+          {notif.message}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+## Advanced Hooks
+
+### useAssetMetrics
+
+Calculate asset metrics and analytics.
+
+```typescript
+import { useAssetMetrics } from 'trusset-sdk';
+
+function AssetDashboard({ assetId }) {
+  const metrics = useAssetMetrics(assetId);
+
+  return (
+    <div className="metrics">
+      <div>Total Supply: {metrics.totalSupply}</div>
+      <div>Market Cap: ${metrics.marketCap}</div>
+      <div>Holders: {metrics.uniqueHolders}</div>
+      <div>24h Volume: {metrics.volume24h}</div>
+    </div>
+  );
+}
+```
+
+### useCache
+
+Access and manage the SDK's caching layer.
+
+```typescript
+import { useCache } from 'trusset-sdk';
+
+function CacheManager() {
+  const { cache, clearCache, cacheSize } = useCache();
+
+  return (
+    <div>
+      <p>Cache entries: {cacheSize}</p>
+      <button onClick={clearCache}>Clear Cache</button>
+    </div>
+  );
+}
+```
+
+## Hook Composition
+
+<Accordion title="Custom Hook Examples">
+Create reusable hooks by composing SDK hooks:
+
+```typescript
+// Custom hook for asset management
+function useAssetManager() {
+  const { client } = useTrussetContext();
+  const { refreshAssets } = useAssetContext();
+  const { mint } = useMint();
+  const { burn } = useBurn();
+
+  const createAndMint = async (config, extraAmount = 0) => {
+    const result = await client.createAsset(config);
+    
+    if (extraAmount > 0) {
+      await mint(result.assetId, extraAmount);
+    }
+    
+    await refreshAssets();
+    return result;
+  };
+
+  return { createAndMint, mint, burn };
+}
+```
+
+```typescript
+// Hook for portfolio management
+function usePortfolio() {
+  const { assets } = useAssetContext();
+  const { address } = useTrussetContext();
+
+  const totalValue = useMemo(() => {
+    return assets.reduce((sum, asset) => 
+      sum + parseFloat(asset.verifiedValue), 0
+    );
+  }, [assets]);
+
+  const assetsByType = useMemo(() => {
+    return assets.reduce((acc, asset) => {
+      acc[asset.assetType] = (acc[asset.assetType] || 0) + 1;
+      return acc;
+    }, {});
+  }, [assets]);
+
+  return { totalValue, assetsByType, assetCount: assets.length };
+}
+```
+</Accordion>
