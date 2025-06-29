@@ -1,0 +1,77 @@
+---
+title: "Multi-Chain Bridge"
+description: "Cross-chain bridge for security tokens using Chainlink CCIP with full compliance preservation"
+---
+
+# Multi-Chain Bridge
+
+A compliant cross-chain bridge for security tokens that maintains regulatory compliance and ownership rights across multiple blockchains. Security tokens are locked on the origin chain and 1:1 redeemable wrapped tokens are created on destination chains.
+
+## How It Works
+
+The bridge uses Chainlink CCIP to create exact replicas of tokenized assets on different blockchains. When users bridge their security tokens, the original tokens are locked in the bridge contract and equivalent wrapped tokens are minted on the destination chain. These wrapped tokens represent the same underlying real-world asset with identical compliance rules and transfer restrictions.
+
+<Steps>
+  <Step title="Lock Original Tokens">
+    Security tokens are locked in the bridge contract on the origin blockchain, ensuring they cannot be transferred while bridged.
+  </Step>
+  
+  <Step title="Create Wrapped Tokens">
+    Equivalent wrapped tokens are minted on the destination chain with identical compliance properties and transfer restrictions.
+  </Step>
+  
+  <Step title="Unified Registry">
+    Cross-chain registry maintains ownership and compliance data across all chains, ensuring consistent enforcement.
+  </Step>
+  
+  <Step title="Redeem Process">
+    Burn wrapped tokens to unlock and retrieve original security tokens on the origin chain at any time.
+  </Step>
+</Steps>
+
+## Technical Architecture
+
+The bridge maintains full compliance by preserving all security token properties across chains. Transfer restrictions, KYC requirements, and ownership rules remain identical on all supported blockchains. A unified cross-chain registry logs ownership and compliance data, ensuring consistent enforcement regardless of which chain users interact with.
+
+<Info>
+The multi-chain bridge launches when the protocol deploys to mainnet, enabling security tokens to access liquidity and functionality across the entire blockchain ecosystem while maintaining regulatory compliance.
+</Info>
+
+## Key Features
+
+<Columns cols={2}>
+  <Card title="1:1 Asset Backing" icon="scale">
+    **Perfect Parity**
+    
+    Every wrapped token is backed by exactly one locked security token, ensuring identical value and rights.
+  </Card>
+  
+  <Card title="Compliance Preservation" icon="shield-check">
+    **Full Regulatory Compliance**
+    
+    All transfer restrictions, KYC requirements, and compliance rules are maintained across all chains.
+  </Card>
+  
+  <Card title="Unified Ownership" icon="link">
+    **Cross-Chain Registry**
+    
+    Single source of truth for ownership and compliance data across all supported blockchains.
+  </Card>
+  
+  <Card title="Chainlink Security" icon="lock">
+    **Enterprise-Grade Infrastructure**
+    
+    Built on Chainlink CCIP for maximum security and reliability in cross-chain operations.
+  </Card>
+</Columns>
+
+## Supported Operations
+
+- **Bridge Assets**: Move security tokens between supported blockchains
+- **Maintain Compliance**: Preserve all regulatory requirements across chains  
+- **Unified Trading**: Access liquidity pools and markets on multiple chains
+- **Instant Redemption**: Convert wrapped tokens back to original assets anytime
+
+<Note>
+The bridge will be available upon mainnet deployment, enabling security tokens to operate across the multi-chain ecosystem while maintaining full regulatory compliance and asset backing.
+</Note>

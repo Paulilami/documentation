@@ -1,93 +1,60 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "almond",
-  "name": "Trusset Demo Documentation",
-  "description": "Documentation for Trusset's Security Token Demo Platform",
+  "theme": "maple",
+  "name": "Trusset Protocol",
+  "description": "End-to-end infrastructure for tokenizing any asset",
   "colors": {
-    "primary": "#0070f3",
-    "light": "#3291ff",
-    "dark": "#0761d1"
+    "primary": "#FD4319",
+    "light": "#FF6B35",
+    "dark": "#E63E00"
   },
   "favicon": "/favicon.png",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
-        "groups": [
-          {
-            "group": "Get Started",
-            "pages": [
-              "guides/getting-started",
-              "guides/creating-tokens"
-            ]
-          },
-          {
-            "group": "Managing Tokens",
-            "pages": [
-              "guides/managing-tokens",
-              "guides/compliance-features"
-            ]
-          },
-          {
-            "group": "Support",
-            "pages": [
-              "guides/troubleshooting"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Learn",
-        "groups": [
-          {
-            "group": "Core Concepts",
-            "pages": [
-              "learn/overview",
-              "learn/token-flags"
-            ]
-          },
-          {
-            "group": "Technical Reference",
-            "pages": [
-              "learn/contract-architecture",
-              "learn/data-models",
-              "learn/integration"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "SDK",
+        "tab": "Protocol",
         "groups": [
           {
             "group": "Getting Started",
             "pages": [
-              "reference/start"
+              "overview",
+              "introduction"
             ]
           },
           {
-            "group": "Tokenization SDK",
+            "group": "Core Protocol",
             "pages": [
-              "reference/tokenization/install",
-              "reference/tokenization/hooks",
-              "reference/tokenization/network",
-              "reference/tokenization/utils",
-              "reference/tokenization/test",
-              "reference/tokenization/provider",
-              "reference/tokenization/components"
+              "protocol-architecture",
+              "performance"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Products",
+        "groups": [
+          {
+            "group": "Tokenization",
+            "pages": [
+              "token-creation",
+              "token-issuance",
+              "asset-management"
             ]
           },
           {
-            "group": "DAO SDK",
+            "group": "Trading & Liquidity",
             "pages": [
-              "reference/dao/install",
-              "reference/dao/config",
-              "reference/dao/hooks",
-              "reference/dao/commands",
-              "reference/dao/contracts",
-              "reference/dao/components",
-              "reference/dao/theme"
-
+              "trading-platform",
+              "asset-financing",
+              "collateralized-loans"
+            ]
+          },
+          {
+            "group": "Infrastructure",
+            "pages": [
+              "identity-certificates",
+              "payment-automations",
+              "multi-chain-bridge"
             ]
           }
         ]
@@ -96,14 +63,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Demo Platform",
-          "href": "https://demo.trusset.org",
-          "icon": "play"
-        },
-        {
           "anchor": "Website",
           "href": "https://trusset.org",
           "icon": "globe"
+        },
+        {
+          "anchor": "Demo",
+          "href": "https://demo.trusset.org",
+          "icon": "play"
         }
       ]
     }
@@ -115,13 +82,13 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
+        "label": "Contact",
         "href": "https://www.trusset.org/contact"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Launch Demo",
+      "label": "Launch Testnet",
       "href": "https://demo.trusset.org"
     }
   },

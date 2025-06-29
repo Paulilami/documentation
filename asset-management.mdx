@@ -1,0 +1,152 @@
+---
+title: "Asset Management"
+description: "Advanced token management interface with automated data fetching and role-based controls"
+---
+
+Manage all aspects of your security tokens through a single interface. The platform automatically fetches token data based on roles and provides complete control over transfers, compliance, and investor management.
+
+## Automated Data Management
+
+The platform continuously monitors your tokens and presents all information in one unified interface. No manual data entry or complex integrations required.
+
+<Columns cols={2}>
+  <Card title="Real-time Updates" icon="list">
+    Token balances, holder counts, and transaction history update automatically across all connected networks.
+  </Card>
+  
+  <Card title="Complete Visualization" icon="chart-line">
+    Interactive charts, holder analytics, and compliance status displayed in clear, actionable dashboards.
+  </Card>
+</Columns>
+
+## Core Management Functions
+
+Access all token management capabilities through role-based controls that respect your token's configuration.
+
+### Token Operations
+
+<Accordion title="Transfer Management">
+  **Send Tokens**: Transfer tokens to individual addresses with automatic compliance checking.
+  
+  **Bulk Distribution**: Send tokens to multiple investors simultaneously with CSV upload or manual entry.
+  
+  **Transfer Restrictions**: All transfers automatically enforce KYC, whitelist, blacklist, and other compliance rules.
+</Accordion>
+
+<Accordion title="Supply Management">
+  **Mint New Tokens**: Create additional tokens if minting is enabled in your token configuration.
+  
+  **Burn Tokens**: Permanently remove tokens from circulation to reduce total supply.
+  
+  **Supply Monitoring**: Track total supply, burned supply, and active circulating tokens.
+</Accordion>
+
+<Accordion title="Account Controls">
+  **Freeze Accounts**: Temporarily block specific addresses from token transfers while maintaining other functionality.
+  
+  **User Status Management**: Set KYC verification, whitelist approval, and other compliance statuses for individual holders.
+  
+  **Role Management**: Assign and revoke administrative roles for token management functions.
+</Accordion>
+
+### Compliance Features
+
+<Accordion title="Investor Management">
+  **Holder Directory**: Complete list of all token holders with balances, verification status, and transaction history.
+  
+  **Whitelist Control**: Add or remove addresses from approved investor lists.
+  
+  **Blacklist Management**: Block specific addresses from receiving or sending tokens.
+  
+  **KYC Tracking**: Monitor identity verification status for all token holders.
+</Accordion>
+
+<Accordion title="Document Management">
+  **Upload Documents**: Attach legal documents, certificates, and asset information directly to tokens using IPFS storage.
+  
+  **Document Library**: Organize and categorize all token-related documents in a searchable interface.
+  
+  **Version Control**: Track document updates and maintain historical versions for compliance.
+</Accordion>
+
+<Accordion title="Asset Metadata">
+  **Tag Management**: Add, edit, and remove searchable tags to categorize token properties.
+  
+  **Header Images**: Set and update visual representations for tokens.
+  
+  **Custom Fields**: Store additional asset information and metadata.
+</Accordion>
+
+## Role-Based Access
+
+The management interface adapts to your permissions within each token's access control system.
+
+<CardGroup cols={3}>
+  <Card title="Token Creator" icon="crown">
+    **Full Control**
+    All management functions, role assignment, fee withdrawal
+  </Card>
+  
+  <Card title="Authority Role" icon="shield">
+    **Compliance Management**
+    User status, freezing, whitelist/blacklist control
+  </Card>
+  
+  <Card title="Token Holder" icon="user">
+    **Basic Operations**
+    View holdings, transfer tokens, access documents
+  </Card>
+</CardGroup>
+
+## Export and Reporting
+
+Generate comprehensive reports for compliance, auditing, and record-keeping.
+
+<Columns cols={2}>
+  <Card title="Metadata Export" icon="download">
+    **JSON Format**: Complete token data, holder information, and transaction history
+    
+    **PDF Reports**: Formatted compliance reports and token details
+  </Card>
+  
+  <Card title="Custom Reports" icon="file">
+    **Holder Analytics**: Detailed breakdowns of token distribution and holder demographics
+    
+    **Transaction Reports**: Complete audit trails for regulatory compliance
+  </Card>
+</Columns>
+
+## Interface Features
+
+The management platform provides intuitive tools for complex token operations:
+
+### Bulk Operations
+
+- **Multi-address Transfers**: Send tokens to dozens of investors simultaneously
+- **Batch Status Updates**: Apply KYC or whitelist status to multiple addresses
+- **CSV Import/Export**: Upload investor lists and export holder data
+
+### Real-time Monitoring
+
+- **Live Balance Updates**: See token distributions update in real-time
+- **Transaction Alerts**: Instant notifications for large transfers or compliance events
+- **Holder Analytics**: Track investor acquisition and token concentration
+
+### Compliance Dashboard
+
+- **Status Overview**: Visual indicators for KYC completion, whitelist status, and account health
+- **Restriction Tracking**: Monitor which addresses are frozen, blacklisted, or restricted
+- **Audit Trail**: Complete history of all management actions and compliance changes
+
+## Technical Integration
+
+The management interface automatically detects and adapts to your token's specific configuration:
+
+- **Feature Detection**: Interface shows only functions enabled in your token's flags
+- **Gas Optimization**: Batch operations minimize transaction costs
+- **Error Prevention**: Pre-flight checks prevent invalid operations
+- **Multi-network Support**: Manage tokens across different blockchain networks
+
+<Info>
+All management functions respect the compliance rules and transfer restrictions built into your token smart contract. The interface prevents operations that would violate your token's programmed compliance requirements.
+</Info>

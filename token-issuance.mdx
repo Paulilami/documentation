@@ -1,0 +1,174 @@
+---
+title: "Token Issuance"
+description: "Create compliant security tokens using verification passes from licensed issuers"
+---
+
+Verification passes enable compliant token creation through licensed issuers. These passes contain pre-approved parameters that ensure regulatory compliance from the start.
+
+## What are Verification Passes
+
+Verification passes (vPasses) are encrypted certificates containing approved token parameters. Licensed issuers create these passes after completing legal and regulatory review of your asset.
+
+<Columns cols={2}>
+  <Card title="Pre-approved Parameters" icon="check">
+    Token settings reviewed and approved by licensed financial institutions.
+  </Card>
+  
+  <Card title="Instant Compliance" icon="shield">
+    All regulatory requirements built into the token at creation time.
+  </Card>
+</Columns>
+
+## Issuer Network
+
+Any licensed financial institution can join the issuer network. Users are matched with appropriate issuers based on location and regulatory requirements.
+
+<Steps>
+  <Step title="Issuer Matching">
+    System recommends the nearest issuer that can fulfill your specific asset type and jurisdictional requirements.
+  </Step>
+  
+  <Step title="Free Choice">
+    Users can select any licensed issuer from the network, not just the recommended one.
+  </Step>
+  
+  <Step title="Global Coverage">
+    Access to licensed issuers worldwide for different asset types and regulatory frameworks.
+  </Step>
+  
+  <Step title="Direct Connection">
+    Work directly with your chosen issuer through their dashboard or API integration.
+  </Step>
+</Steps>
+
+## How Verification Passes Work
+
+The system connects asset owners with licensed issuers through secure verification passes stored both on-chain and off-chain.
+
+<Steps>
+  <Step title="Asset Review">
+    Licensed issuer reviews your asset documentation and determines appropriate token parameters for regulatory compliance.
+  </Step>
+  
+  <Step title="Pass Creation">
+    Issuer creates verification pass containing approved token settings. Pass is stored on-chain and encrypted data stored off-chain.
+  </Step>
+  
+  <Step title="Automatic Delivery">
+    Verification pass appears in your interface automatically when issued to your wallet address.
+  </Step>
+  
+  <Step title="One-Click Creation">
+    Select the verification pass and approve to create compliant tokens immediately.
+  </Step>
+</Steps>
+
+## Pass Structure
+
+Verification passes contain specific data required for compliant token creation:
+
+<Accordion title="Token Parameters">
+  **Basic Settings**: Name, symbol, supply, asset type
+  
+  **Compliance Rules**: KYC requirements, transfer restrictions, investor eligibility
+  
+  **Financial Terms**: Fee structures, supply limits, transfer limits
+</Accordion>
+
+<Accordion title="Locked Fields">
+  **Protected Parameters**: Critical compliance settings that cannot be modified by token creator
+  
+  **Flexible Parameters**: Settings that can be adjusted within approved ranges
+</Accordion>
+
+<Accordion title="Expiration">
+  **Time Limits**: Verification passes expire after set period to ensure current compliance
+  
+  **Single Use**: Each pass can only be used once to create tokens
+</Accordion>
+
+## Technical Implementation
+
+The verification pass system uses both on-chain and off-chain components for security and efficiency.
+
+### On-Chain Storage
+
+```solidity
+struct VPass {
+    string encryptedData;
+    address issuer;
+    address receiver;
+    uint256 expiresAt;
+    bool isUsed;
+    uint256 createdAt;
+}
+```
+
+### Off-Chain Encryption
+
+- Token parameters encrypted using AES-256-CBC
+- Encryption keys split between on-chain and off-chain storage
+- Only intended recipient can decrypt pass contents
+
+## Pass Lifecycle
+
+<CardGroup cols={2}>
+  <Card title="Active Pass" icon="circle-check">
+    **Status**: Ready to use
+    **Actions**: Create tokens, view parameters
+    **Duration**: Until expiration or use
+  </Card>
+  
+  <Card title="Used Pass" icon="circle-xmark">
+    **Status**: Already consumed
+    **Actions**: View creation record only
+    **Archive**: Moved to permanent record
+  </Card>
+</CardGroup>
+
+## Issuer Operations
+
+Licensed issuers can manage verification passes through multiple interfaces:
+
+<Columns cols={2}>
+  <Card title="Dashboard Interface" icon="browser">
+    Web-based interface for creating and managing verification passes for clients.
+  </Card>
+  
+  <Card title="API Integration" icon="code">
+    Direct API integration for issuers with existing systems and workflows.
+  </Card>
+</Columns>
+
+### Issuer Capabilities
+
+- **Pass Creation**: Generate verification passes for approved assets
+- **Pass Management**: View, deactivate, or modify active passes
+- **Client Tracking**: Monitor pass usage and token creation
+- **Compliance Reporting**: Generate reports for regulatory requirements
+
+## Security Features
+
+The verification pass system includes multiple security layers:
+
+- **Cryptographic Signatures**: All passes signed by issuer private keys
+- **Address Verification**: Passes locked to specific recipient addresses
+- **Expiration Controls**: Automatic expiration prevents stale approvals
+- **Usage Tracking**: Complete audit trail of pass creation and usage
+- **Rate Limiting**: Protection against spam and abuse
+
+## User Experience
+
+<Info>
+Verification passes appear automatically in your interface when issued. No manual import or setup required. Simply select the pass and approve to create compliant tokens.
+</Info>
+
+### Pass Selection
+
+When multiple verification passes are available:
+
+- View issuer information and credentials
+- Compare token parameters and restrictions
+- Check expiration dates and usage status
+- Select optimal pass for your requirements
+

@@ -1,0 +1,186 @@
+---
+title: "Identity Certificates"
+description: "On-chain identity verification system using zero knowledge proofs for compliant asset tokenization"
+---
+
+An on-chain identity verification system that stores zero knowledge proofs of verified personal data. Users control their identity completely while enabling automated compliance for security token transactions.
+
+## How Identity Certificates Work
+
+Identity certificates store cryptographic proofs of verified personal data on-chain without revealing the underlying information. Users verify their identity once with licensed issuers and can prove their credentials to any service without sharing personal data.
+
+<Steps>
+  <Step title="Choose Verification Provider">
+    Select from licensed issuers and identity verification providers in the network. Users are not locked to any single provider.
+  </Step>
+  
+  <Step title="Complete Verification">
+    Undergo identity verification process with your chosen provider using their existing systems and compliance procedures.
+  </Step>
+  
+  <Step title="Receive Cryptographic Proof">
+    Provider issues zero knowledge proof to your identity certificate. Only you can see the underlying verified data.
+  </Step>
+  
+  <Step title="Use for Compliance">
+    Prove your identity to any service without sharing personal information. Automated compliance for security token transactions.
+  </Step>
+</Steps>
+
+## Verification Types
+
+The system supports multiple types of identity verification, each contributing to your overall completion score:
+
+<Accordion title="Contact Verification">
+  **Email and Phone**: Basic contact verification ensuring you control the provided communication channels. Required for minimum compliance.
+</Accordion>
+
+<Accordion title="Identity Documents">
+  **Passport, ID Card, Driver's License**: Government-issued identification verification through licensed providers like Onfido.
+</Accordion>
+
+<Accordion title="Personal Information">
+  **Full Name and Address**: Verified personal details matching official documentation and residence confirmation.
+</Accordion>
+
+<Accordion title="KYC Compliance">
+  **Complete KYC Data**: Full regulatory compliance package including background checks and risk assessment.
+</Accordion>
+
+<Accordion title="Financial Information">
+  **Proof of Income**: Verified income documentation for qualified investor status and borrowing capacity assessment.
+</Accordion>
+
+<Note>
+The current demo version supports email verification to demonstrate functionality. Full verification types are being implemented with licensed providers.
+</Note>
+
+## Key Features
+
+### Zero Knowledge Privacy
+
+Users prove they meet requirements without revealing personal information. The system stores only cryptographic proofs, never actual data.
+
+| What's Stored | What's Hidden |
+|--------------|---------------|
+| Proof that you verified email | Your actual email address |
+| Proof of age verification | Your exact age or birthdate |
+| Proof of residence | Your specific address |
+| Proof of income level | Your exact income amount |
+
+### Multi-Issuer Network
+
+<Columns cols={2}>
+  <Card title="Bank Integration" icon="building-columns">
+    **Direct Customer Service**
+    
+    Banks and asset managers can issue identity proofs directly to their existing customers, providing seamless compliance.
+  </Card>
+  
+  <Card title="Licensed Providers" icon="shield-check">
+    **Professional Verification**
+    
+    Work with licensed identity verification providers like Onfido for comprehensive KYC and document verification.
+  </Card>
+</Columns>
+
+### Automated Compliance
+
+Identity certificates integrate directly with security token compliance rules. Tokens can require specific verification levels automatically.
+
+<Info>
+When a security token has the "KYC_VERIFIED" flag enabled, only users with valid KYC proofs in their certificates can receive transfers.
+</Info>
+
+## Technical Architecture
+
+### On-Chain Registry
+
+The identity registry smart contract stores verification proofs with the following structure:
+
+- **Proof Hash**: Cryptographic proof of verified data
+- **Issuer Address**: Licensed verifier who issued the proof  
+- **Timestamp**: When verification was completed
+- **Expiry Date**: When verification expires (if applicable)
+- **Active Status**: Whether proof is currently valid
+
+### Completion Scoring
+
+Each verification type contributes to an overall completion score:
+
+| Verification Type | Score Weight | Purpose |
+|------------------|--------------|---------|
+| Email | 20 points | Basic contact verification |
+| Phone | 20 points | Secondary contact verification |
+| Full Name | 15 points | Identity confirmation |
+| Passport/ID | 15 points | Government document verification |
+| Address | 15 points | Residence confirmation |
+| KYC Data | 15 points | Regulatory compliance |
+
+**Total possible score: 100 points**
+
+### Issuer Authorization
+
+Only authorized issuers can add verification proofs to user certificates. This ensures all verifications come from trusted, licensed providers.
+
+## Privacy Protection
+
+### No Data Storage
+
+Trusset stores no personal information. The company cannot access, view, or share user data. Only cryptographic proofs exist on-chain.
+
+### User-Controlled Access
+
+Users authorize which services can check their verification status. No automatic data sharing occurs without explicit permission.
+
+### Revocation Rights
+
+Users can revoke specific proofs at any time, removing verification status while maintaining privacy over reasons for revocation.
+
+## Compliance Integration
+
+### Automated Enforcement
+
+Security tokens automatically check identity certificates before allowing transfers. No manual compliance reviews required.
+
+### Regulatory Alignment
+
+The system meets requirements for regulated securities while maintaining user privacy and control.
+
+### Cross-Border Compatibility
+
+Identity certificates work globally, enabling compliant asset tokenization across jurisdictions with varying privacy requirements.
+
+## Advantages Over Traditional Systems
+
+<Columns cols={2}>
+  <Card title="Privacy Preservation" icon="eye-slash">
+    **Zero Data Exposure**
+    
+    Prove compliance without revealing personal information to service providers or the platform.
+  </Card>
+  
+  <Card title="Provider Independence" icon="unlock">
+    **No Vendor Lock-in**
+    
+    Choose any licensed verification provider. Switch providers without losing verification status.
+  </Card>
+  
+  <Card title="Automated Compliance" icon="robot">
+    **Smart Contract Integration**
+    
+    Compliance checks happen automatically without manual review or approval processes.
+  </Card>
+  
+  <Card title="Global Compatibility" icon="globe">
+    **Universal Access**
+    
+    Single identity certificate works across all platforms and jurisdictions using the protocol.
+  </Card>
+</Columns>
+
+## Current Status
+
+The identity certificate system is operational with email verification for demonstration purposes. Full verification types are being implemented with licensed identity verification providers.
+
+Banks and financial institutions can integrate directly to provide their customers with seamless identity verification for tokenized asset services.
