@@ -3,7 +3,11 @@ title: "Collateralized Loans"
 description: "The first solution enabling overcollateralized loans using security tokens as collateral"
 ---
 
-The first system that solves the $2 trillion problem: making illiquid security tokens useful for borrowing. Transform baskets of ERC1400 security tokens into fungible, DeFi-compatible collateral through our Asset Wrapper System.
+We are officially the first system that solves the $2 trillion problem: making illiquid security tokens useful for borrowing. Transform baskets of ERC1400 security tokens into fungible, DeFi-compatible collateral through our Asset Wrapper System.
+
+<Card title="Explore the Blog Post" icon="link" href="https://medium.com/@Trusset/how-we-solved-the-2-trillion-problem-overcollateralized-loans-for-security-tokens-e3fee6845a64">
+  Read our detailed technical analysis of the $2 trillion problem and how we solved it.
+</Card>
 
 ## The Problem
 
@@ -20,11 +24,11 @@ Result: Trillions of dollars in tokenized assets sitting idle, generating no add
 
 ## The Solution
 
-The Asset Wrapper System transforms illiquid security tokens into highly liquid, fungible assets that work seamlessly with overcollateralized lending.
+Our Asset Wrapper System transforms illiquid security tokens into highly liquid, fungible assets that work seamlessly with overcollateralized lending. Its like an ERC20-based index fund backed by RWAs and fully on-chain.
 
 <Steps>
   <Step title="Deposit Security Tokens">
-    Deposit multiple ERC1400 security tokens into the Asset Vault. Real estate, bonds, equity, and other assets create a diversified basket. Compliant security tokens created with our tools can be added instantly with a click.
+    Deposit your ERC1400 security tokens into a vault. Real estate, bonds, equity, and other assets create a diversified basket. Security tokens created with our tools can be added instantly with one click. The vault accepts tokens created with our security token tool or partner tools that use our oracle.
   </Step>
   
   <Step title="Receive Wrapper Tokens">
@@ -58,6 +62,10 @@ The system accepts multiple ERC1400 security tokens meeting quality criteria. Di
   Maintains unbroken legal ownership transfer while enabling fungible trading. Redemption rights preserve regulatory compliance.
 </Accordion>
 
+<Warning>
+Please note: The asset vault can only accept ERC1400-based tokens from issuers that have implemented our RWA orcale (Trusset Verify) into their tokenization service, otherwise only our platform-internal created tokens can be used.
+</Warning>
+
 ### Wrapper Token Mechanics
 
 Trusset (TRST) tokens are ERC20 tokens backed 1:1 by locked security tokens with direct redemption rights.
@@ -73,17 +81,11 @@ Trusset (TRST) tokens are ERC20 tokens backed 1:1 by locked security tokens with
 
 The breakthrough innovation: multiple layers of liquidity protection that solve the core liquidation problem.
 
-<Columns cols={3}>
+<Columns cols={2}>
   <Card title="Primary Liquidity" icon="coins">
     **Wrapper Token Trading**
     
     TRST tokens trade on decentralized exchanges with deep liquidity pools. Most liquidations happen instantly.
-  </Card>
-  
-  <Card title="Redemption Rights" icon="key">
-    **Direct Asset Claims**
-    
-    Convert wrapper tokens to underlying ERC1400s maintaining legal ownership and compliance requirements.
   </Card>
   
   <Card title="Extended Auctions" icon="gavel">
@@ -94,7 +96,7 @@ The breakthrough innovation: multiple layers of liquidity protection that solve 
 </Columns>
 
 <Info>
-Insurance backstops provide guaranteed payouts for extreme market conditions, ensuring lenders get paid even in worst-case scenarios.
+All assets can be liquidated by selling them. Auctions only happen for high-quality assets that meet specific criteria (currently private). These assets are mainly bought by our company to passively build an asset portfolio at lower rates
 </Info>
 
 ## Key Advantages
@@ -141,9 +143,8 @@ This system unlocks massive capital efficiency comparable to when ETH became usa
 - **Price Oracle**: Real-time valuations and risk assessments  
 - **Lending Protocol**: Overcollateralized borrowing with automatic liquidation
 - **Redemption Engine**: Direct conversion to underlying assets with legal compliance
-- **Governance System**: Community control over asset inclusion and parameters
 
-## Revolutionary Impact
+## The Impact
 
 This system creates a positive feedback loop that grows the entire ecosystem:
 
@@ -153,7 +154,3 @@ This system creates a positive feedback loop that grows the entire ecosystem:
 4. **Better Liquidity** → Even lower costs
 
 The compounding effects unlock the $10 trillion RWA market by making tokenized assets actually useful instead of just digital certificates.
-
-<Card title="Explore the Blog Post" icon="link" href="https://medium.com/@Trusset/how-we-solved-the-2-trillion-problem-overcollateralized-loans-for-security-tokens-e3fee6845a64">
-  Read our detailed technical analysis of the $2 trillion problem and how we solved it.
-</Card>

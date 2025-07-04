@@ -110,22 +110,6 @@ struct VPass {
 - Encryption keys split between on-chain and off-chain storage
 - Only intended recipient can decrypt pass contents
 
-## Pass Lifecycle
-
-<CardGroup cols={2}>
-  <Card title="Active Pass" icon="circle-check">
-    **Status**: Ready to use
-    **Actions**: Create tokens, view parameters
-    **Duration**: Until expiration or use
-  </Card>
-  
-  <Card title="Used Pass" icon="circle-xmark">
-    **Status**: Already consumed
-    **Actions**: View creation record only
-    **Archive**: Moved to permanent record
-  </Card>
-</CardGroup>
-
 ## Issuer Operations
 
 Licensed issuers can manage verification passes through multiple interfaces:
@@ -156,19 +140,3 @@ The verification pass system includes multiple security layers:
 - **Expiration Controls**: Automatic expiration prevents stale approvals
 - **Usage Tracking**: Complete audit trail of pass creation and usage
 - **Rate Limiting**: Protection against spam and abuse
-
-## User Experience
-
-<Info>
-Verification passes appear automatically in your interface when issued. No manual import or setup required. Simply select the pass and approve to create compliant tokens.
-</Info>
-
-### Pass Selection
-
-When multiple verification passes are available:
-
-- View issuer information and credentials
-- Compare token parameters and restrictions
-- Check expiration dates and usage status
-- Select optimal pass for your requirements
-
