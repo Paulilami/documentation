@@ -3,8 +3,6 @@ title: "Payment Automations"
 description: "Automate on-chain payment workflows with rule-based triggers and scheduled distributions"
 ---
 
-# Payment Automations
-
 Automate any on-chain payment workflow using simple rule-based triggers. Set conditions, define actions, and execute complex payment strategies automatically without ongoing costs or manual intervention.
 
 ## The Problem
@@ -39,23 +37,23 @@ Execute payment workflows automatically using three simple principles: When, If,
 
 <Steps>
   <Step title="When: Timing Control">
-    **One-time**: Execute once at a specific date and time
-    **Recurring**: Repeat on schedule (daily, weekly, monthly, quarterly, yearly)
-    **Custom**: Complex timing patterns and multiple execution windows
+    - **One-time**: Execute once at a specific date and time
+    - **Recurring**: Repeat on schedule (daily, weekly, monthly, quarterly, yearly)
+    - **Custom**: Complex timing patterns and multiple execution windows
   </Step>
   
   <Step title="If: Trigger Conditions">
-    **Wallet Balance**: If wallet balance under/over threshold
-    **Market Data**: If token price or market cap meets conditions via Chainlink oracles
-    **Custom Triggers**: Off-chain data integration and complex logical conditions
+    - **Wallet Balance**: If wallet balance under/over threshold
+    - **Market Data**: If token price or market cap meets conditions via Chainlink oracles
+    - **Custom Triggers**: Off-chain data integration and complex logical conditions
   </Step>
   
   <Step title="Then: Automated Actions">
-    **Transfer**: Send tokens to specified addresses
-    **Top-up**: Maintain minimum wallet balances automatically
-    **Convert**: Swap tokens when conditions are met
-    **Sweep**: Collect funds from multiple wallets
-    **Trigger Streams**: Activate payment distribution schedules
+    - **Transfer**: Send tokens to specified addresses
+    - **Top-up**: Maintain minimum wallet balances automatically
+    - **Convert**: Swap tokens when conditions are met
+    - **Sweep**: Collect funds from multiple wallets
+    - **Trigger Streams**: Activate payment distribution schedules
   </Step>
 </Steps>
 
@@ -96,15 +94,6 @@ Execute payment workflows automatically using three simple principles: When, If,
 ## Payment Streams
 
 Distribute payments to multiple recipients on predefined schedules with flexible access controls and automation integration.
-
-### Stream Configuration
-
-| Feature | Options | Use Cases |
-|---------|---------|-----------|
-| **Schedule** | Daily, Weekly, Monthly, Quarterly, Half-yearly, Yearly | Dividends, Royalties, Salaries |
-| **Recipients** | Multiple addresses with custom percentages | Team payments, Investor distributions |
-| **Access Control** | Permissioned or open payments | Private distributions, Public funding |
-| **Integration** | Triggered by payment automations | Conditional distributions |
 
 ### Access Control Options
 
@@ -163,27 +152,19 @@ Payment automations integrate with Chainlink price feeds for real-time market da
 
 - **Batch Processing**: Group multiple operations to reduce gas costs
 - **Conditional Execution**: Only execute when conditions are met
-- **Optimized Scheduling**: Bundle related automations for efficiency
 
 ### Security Features
 
 - **Access Controls**: Only authorized addresses can modify automations
 - **Emergency Stops**: Pause all automations instantly if needed
-- **Audit Trails**: Complete history of all automated transactions
-- **Fail-Safe Limits**: Maximum transaction amounts and frequency caps
+- **Audit Trails**: Complete history of all automated transactions on-chain
+- **Fail-Safe Limits**: Optional maximum transaction amounts and frequency caps
 
 ## Cost Structure
 
 <Info>
 Payment automations have no ongoing operational costs. Pay only for gas when transactions execute, making complex automation strategies economically viable.
 </Info>
-
-| Cost Component | Fee Structure |
-|----------------|---------------|
-| Setup | One-time gas cost for deployment |
-| Execution | Gas fees only when conditions trigger |
-| Maintenance | No ongoing subscription or service fees |
-| Modifications | Gas cost for updates only |
 
 ## Key Advantages
 
@@ -211,8 +192,11 @@ Payment automations work with any ERC20 token and integrate with existing DeFi p
 
 ### API Integration
 
-Connect with off-chain systems for custom triggers and data sources beyond blockchain-native information.
+Connect with off-chain systems for custom triggers and data sources beyond blockchain-native information. (Coming soon)
 
 ### Multi-Chain Support
 
-Deploy identical automation logic across different blockchain networks for diversified operations.
+Deploy identical automation logic across different blockchain networks for diversified operations. (Coming soon)
+
+## Current State
+We have successfully finished testing of our payment stream contracts and currently testing our payment automation contracts and will come out with our our mainnet launch.
