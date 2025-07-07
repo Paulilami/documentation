@@ -9,6 +9,36 @@
     "dark": "#E63E00"
   },
   "favicon": "/favicon.png",
+  "seo": {
+    "indexing": "all",
+    "metatags": {
+      "description": "Trusset Protocol provides end-to-end infrastructure for tokenizing any asset. Build on our blockchain platform for asset tokenization, DeFi trading, and collateralized lending.",
+      "keywords": "asset tokenization, blockchain infrastructure, DeFi platform, tokenized assets, smart contracts, collateralized loans, asset financing, multi-chain bridge, real-world assets, RWA tokenization",
+      "author": "Trusset Protocol",
+      "robots": "index, follow",
+      "googlebot": "index, follow",
+      "language": "en",
+      "category": "Blockchain Technology",
+      "distribution": "global",
+      "coverage": "Worldwide",
+      "target": "developers, institutions, asset managers",
+      "theme-color": "#FD4319",
+      "og:title": "Trusset Protocol - Infrastructure for Asset Tokenization",
+      "og:type": "website",
+      "og:url": "https://docs.trusset.org",
+      "og:image": "https://docs.trusset.org/assets/logoDark.png",
+      "og:description": "End-to-end infrastructure for tokenizing any asset. Build DeFi applications, manage tokenized assets, and access collateralized lending on our blockchain platform.",
+      "og:site_name": "Trusset Protocol Documentation",
+      "og:locale": "en_US",
+      "article:section": "Blockchain Technology",
+      "article:tag": "blockchain, tokenization, DeFi, smart contracts, asset management, collateral, lending, trading",
+      "application-name": "Trusset Protocol Docs",
+      "HandheldFriendly": "True",
+      "MobileOptimized": "320",
+      "viewport": "width=device-width, initial-scale=1.0",
+      "charset": "UTF-8"
+    }
+  },
   "navigation": {
     "tabs": [
       {
