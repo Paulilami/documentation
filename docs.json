@@ -84,6 +84,7 @@
             "group": "Infrastructure",
             "pages": [
               "identity-certificates",
+              "learn-oracles",
               "payment-automations",
               "multi-chain-bridge"
             ]

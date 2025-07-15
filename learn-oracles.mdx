@@ -1,0 +1,182 @@
+---
+title: "RWA Oracles"
+description: "How our oracle system brings real-world asset data on-chain"
+---
+
+## Our Oracle Solution
+
+Our RWA Oracle system lets approved financial institutions submit verified asset data directly to the blockchain. When someone creates a tokenized asset, they need real data about that asset - its value, location, risk profile. That's where our oracles come in.
+
+Think of it like this: You have a tokenized property worth $1.5 million. How does everyone know it's actually worth that? Our oracle system lets trusted institutions verify and update this information on-chain.
+
+## Becoming an Oracle
+
+Financial institutions apply through our Issuer Platform. Once approved, they receive an oracle ID that links their wallet address to their institution. This isn't just any wallet - it's specifically authorized to submit asset verifications.
+
+<Note>
+  Each oracle starts with a trust score of 100. Every 10 successful verifications increase this score by 10 points (update will follow soon).
+</Note>
+
+## Verification Requests
+
+When someone tokenizes an asset, they can request verification from specific oracles. The request includes:
+
+- Token contract address
+- Asset ID within that contract
+- Asset type (real estate, commodity, security, etc.)
+- Which oracle they want to verify it
+
+As an oracle, you see these pending requests in your dashboard. You can then research the asset and submit verification data including:
+
+<CodeGroup>
+```typescript Core Data
+{
+  name: "Downtown Office Building",
+  physicalAddress: "123 Main St, New York, NY",
+  storageAddress: "Document Vault A-123", 
+  issuerDetails: "ABC Property Management LLC",
+  signature: "0x..." // Cryptographic proof
+}
+```
+
+```typescript Valuation & Risk
+{
+  valuation: "1500000", // In ETH units
+  riskScore1: 25,      // Market risk (0-100)
+  riskScore2: 15,      // Credit risk (0-100)
+  validityPeriod: 30   // Days until re-verification needed
+}
+```
+</CodeGroup>
+
+## Sync Links: The Automation Layer
+
+Sync Links are what make our system powerful. Instead of manually verifying each asset, you create an automated connection between your data systems and the blockchain.
+
+### How Sync Links Actually Work
+
+Let's say you're a bank with a database of real estate valuations. You create a Sync Link that:
+
+1. Points to your API endpoint (like `https://api.yourbank.com/properties`)
+2. Maps your data fields to our requirements
+3. Runs automatically every hour (or whatever frequency you set)
+
+The field mapping is crucial. Your API might return data like this:
+
+```json Example API Response
+{
+  "property_id": 12345,
+  "property_name": "Sunset Plaza",
+  "address": {
+    "street": "456 Sunset Blvd",
+    "city": "Los Angeles"
+  },
+  "current_appraisal": 2500000,
+  "risk_metrics": {
+    "market_volatility": 0.15,
+    "tenant_risk": 0.08
+  }
+}
+```
+
+You then map these fields:
+- `property_name` → Asset Name
+- `address.street + address.city` → Physical Address  
+- `current_appraisal` → Valuation
+- `risk_metrics.market_volatility * 100` → Risk Score 1
+- `risk_metrics.tenant_risk * 100` → Risk Score 2
+
+<Info>
+  Your API credentials are encrypted before storage. The smart contract never sees your actual API keys.
+</Info>
+
+### Creating a Sync Link
+
+When you create a Sync Link, you specify:
+
+- **Token Contract**: Which tokenized assets to update
+- **Specific Token IDs**: Update all tokens or just specific ones
+- **API Endpoint**: Where we fetch the data
+- **Field Mappings**: How your data translates to our format
+- **Sync Frequency**: How often to check for updates (default: 3600 seconds)
+
+The system then automatically fetches data from your endpoint and submits it on-chain at the specified intervals.
+
+## Reference IDs and Data Access
+
+Every verification gets a unique reference ID: `RWA-[contract address]-[asset ID]`
+
+For example: `RWA-0x1234...5678-42`
+
+This ID lets anyone look up the verification data on-chain. They can see:
+- Which oracle verified it
+- When it was verified
+- All the asset details
+- When it expires
+
+## Testing Your Integration
+
+We provide preset endpoints for testing:
+
+<Tabs>
+  <Tab title="Stock Data">
+    Test with real-time stock data from major companies:
+    - Apple (AAPL)
+    - Microsoft (MSFT)
+    - Google (GOOGL)
+    
+    These endpoints return properly formatted data with price as valuation and volatility as risk score.
+  </Tab>
+  
+  <Tab title="Custom Test">
+    Use our test endpoint that returns sample real estate data:
+    ```
+    /api/oracle/test-sync-endpoint
+    ```
+    
+    This returns a complete property dataset you can use to test field mappings.
+  </Tab>
+</Tabs>
+
+## Managing Your Oracle Status
+
+Through the Issuer Platform, you can:
+
+- View all pending verification requests
+- See which requests want Sync Link access
+- Monitor your trust score and total verifications
+- Update existing Sync Links
+- Deactivate Sync Links you no longer need
+
+<Warning>
+  Once you submit a verification, it's permanent on-chain. You can submit new verifications but cannot edit old ones.
+</Warning>
+
+## Why This Matters
+
+Traditional tokenization platforms struggle with data freshness. An asset gets tokenized with a $1M valuation, but six months later, is it still worth $1M? Our oracle system solves this by:
+
+1. **Continuous Updates**: Sync Links keep valuations current
+2. **Trust Building**: Verification counts and scores show reliability
+3. **Audit Trails**: Every verification is timestamped and traceable
+4. **Flexibility**: Verify anything from real estate to art to commodities
+
+## Technical Details
+
+The smart contract stores verifications in a mapping structure:
+```solidity
+mapping(address => mapping(uint32 => AssetVerification)) public verifications
+```
+
+This means for any token contract and asset ID combination, there's at most one active verification. New verifications overwrite old ones, but the history remains in the blockchain events.
+
+Sync Links store encrypted credentials as bytes:
+```solidity
+bytes encryptedCredentials
+```
+
+Your actual API keys are encrypted client-side before being sent to the contract.
+
+<Card title="Start Verifying Assets" icon="check" href="https://issuers.trusset.org">
+  Apply to become an oracle through our Issuer Platform
+</Card>
