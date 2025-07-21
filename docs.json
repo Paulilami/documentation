@@ -1,10 +1,10 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "maple",
+  "theme": "palm",
   "name": "Trusset Protocol",
   "description": "End-to-end infrastructure for tokenizing any asset",
   "colors": {
-    "primary": "#FD4319",
+    "primary": "#000",
     "light": "#FF6B35",
     "dark": "#E63E00"
   },
@@ -90,6 +90,17 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "APIs",
+        "groups": [
+          {
+            "group": "Tokenization",
+            "pages": [
+              "stock-exchanges"
+            ]
+          }
+        ]
       }
     ],
     "global": {
@@ -120,8 +131,8 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Launch Testnet",
-      "href": "https://demo.trusset.org"
+      "label": "Sign In",
+      "href": "https://issuers.trusset.org"
     }
   },
   "footer": {
