@@ -227,7 +227,8 @@ Sent when the system detects token burn and initiates unlock process.
 }
 ```
 </CodeGroup>
-Error Handling
+
+## Error Handling
 The API returns standard HTTP status codes and structured error responses.
 <CodeGroup>
 ```json Error Response
@@ -254,9 +255,10 @@ The API returns standard HTTP status codes and structured error responses.
 <ResponseField name="503" type="Service Unavailable">
   Smart contract infrastructure unavailable
 </ResponseField>
-Testing Environment
+
+## Testing Environment
 Use the Sepolia testnet for integration testing. All operations mirror production behavior but use test tokens without value.
-Test ISIN codes for different scenarios:
+- Test ISIN codes for different scenarios:
 <ResponseField name="US0378331005" type="string">
   Apple Inc. - Standard successful flow
 </ResponseField>
