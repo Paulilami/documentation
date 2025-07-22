@@ -1,0 +1,892 @@
+---
+title: "Balancer Exchange API"
+description: "API documentation for licensed trading platforms to integrate decentralized stock token trading through Balancer pools."
+---
+
+This API documentation is for approved partners to integrate decentralized stock token trading using Balancer V2 automated market maker pools. Users can trade tokenized stock certificates for stablecoins, provide liquidity, and access leveraged trading - all while maintaining regulatory compliance under MiCA Asset-Referenced Token frameworks.
+
+## Overview
+Our Balancer integration creates weighted pools (80% stock token / 20% USDC) optimized for selling pressure from token holders wanting to liquidate positions. The system supports:
+
+1. **Pool Trading** - Direct swaps between stock tokens and USDC through Balancer pools
+2. **Liquidity Provision** - Earn fees by providing liquidity to stock/USDC pools  
+3. **Leveraged Trading** - Open leveraged long/short positions using pool liquidity
+4. **Price Discovery** - Real-time pricing through automated market maker mechanics
+
+The integration follows a streamlined flow:
+1. **Create Pool** - Deploy Balancer weighted pool for stock token
+2. **Trade** - Users swap tokens directly through your interface
+3. **Manage** - Monitor liquidity, volumes, and pool performance
+
+## Authentication
+All API requests require authentication using your instance API key.
+<ParamField header="x-api-key" type="string" required>
+  Your unique API key provided during onboarding
+</ParamField>
+<CodeGroup>
+```bash Authentication Header
+curl -H "x-api-key: your-api-key-here" \
+  https://trusser-issuer-backend.vercel.app/api/balancer/pools
+```
+</CodeGroup>
+<CodeGroup>
+```json Success Response
+[
+  {
+    "id": "clx123abc456",
+    "poolId": "0x1234567890abcdef1234567890abcdef12345678901234567890abcdef123456",
+    "stockISIN": "US0378331005",
+    "tokenAddress": "0xabcd1234567890abcd1234567890abcd12345678",
+    "active": true
+  }
+]
+```
+</CodeGroup>
+
+## Pool Management
+
+### Create Pool
+Creates a new Balancer weighted pool for stock token trading.
+<ParamField body="stockISIN" type="string" required>
+  International Securities Identification Number of the stock
+</ParamField>
+<ParamField body="tokenAddress" type="string" required>
+  Address of the deployed stock token contract
+</ParamField>
+<ParamField body="pairedToken" type="string" optional>
+  USDC token address (defaults to Sepolia USDC)
+</ParamField>
+<ParamField body="weights" type="array" optional>
+  Pool weights as [stock, usdc] percentages (defaults to [80, 20])
+</ParamField>
+<ParamField body="swapFee" type="string" optional>
+  Pool swap fee percentage (defaults to "0.003" = 0.3%)
+</ParamField>
+
+<CodeGroup>
+```bash Create Pool
+curl -X POST https://trusser-issuer-backend.vercel.app/api/balancer/pools/create \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: your-api-key-here" \
+  -d '{
+    "stockISIN": "US0378331005",
+    "tokenAddress": "0xabcd1234567890abcd1234567890abcd12345678",
+    "weights": [80, 20],
+    "swapFee": "0.003"
+  }'
+```
+</CodeGroup>
+
+<CodeGroup>
+```json Pool Creation Response
+{
+  "success": true,
+  "poolId": "0x1234567890abcdef1234567890abcdef12345678901234567890abcdef123456",
+  "poolAddress": "clx123abc456",
+  "txHash": "0x987654321fedcba987654321fedcba987654321fedcba987654321fedcba98"
+}
+```
+</CodeGroup>
+
+### Search Pool by ISIN
+Retrieves pool information for a specific stock.
+<CodeGroup>
+```bash Search Pool
+curl https://trusser-issuer-backend.vercel.app/api/balancer/pools/search/US0378331005 \
+  -H "x-api-key: your-api-key-here"
+```
+</CodeGroup>
+<CodeGroup>
+```json Pool Search Response
+{
+  "id": "clx123abc456",
+  "poolId": "0x1234567890abcdef1234567890abcdef12345678901234567890abcdef123456",
+  "stockISIN": "US0378331005",
+  "tokenAddress": "0xabcd1234567890abcd1234567890abcd12345678",
+  "pairedToken": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+  "weights": [80, 20],
+  "swapFee": "0.003",
+  "currentPrice": "170.25",
+  "liquidity": {
+    "stockBalance": "1000.0",
+    "pairedBalance": "170250.0"
+  }
+}
+```
+</CodeGroup>
+
+### Get Pool Price
+Retrieves current pool pricing and liquidity information.
+<CodeGroup>
+```bash Get Pool Price
+curl https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234.../price \
+  -H "x-api-key: your-api-key-here"
+```
+</CodeGroup>
+<CodeGroup>
+```json Price Response
+{
+  "price": "170.25",
+  "stockBalance": "1000.0",
+  "pairedBalance": "170250.0"
+}
+```
+</CodeGroup>
+
+## Trading Operations
+
+### Get Swap Quote
+Calculates expected output for a token swap without executing.
+<ParamField body="stockISIN" type="string" required>
+  Stock identifier for the pool
+</ParamField>
+<ParamField body="direction" type="string" required>
+  Either "sell" (stock to USDC) or "buy" (USDC to stock)
+</ParamField>
+<ParamField body="amountIn" type="string" required>
+  Amount of input tokens to swap
+</ParamField>
+
+<CodeGroup>
+```bash Get Quote
+curl -X POST https://trusser-issuer-backend.vercel.app/api/balancer/swap/quote \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: your-api-key-here" \
+  -d '{
+    "stockISIN": "US0378331005",
+    "direction": "sell",
+    "amountIn": "5.88"
+  }'
+```
+</CodeGroup>
+
+<CodeGroup>
+```json Quote Response
+{
+  "amountOut": "999.47",
+  "priceImpact": "0.002",
+  "swapFee": "0.003"
+}
+```
+</CodeGroup>
+
+### Prepare Swap
+Generates transaction data for user to sign and execute.
+<ParamField body="stockISIN" type="string" required>
+  Stock identifier for the pool
+</ParamField>
+<ParamField body="direction" type="string" required>
+  Either "sell" (stock to USDC) or "buy" (USDC to stock)
+</ParamField>
+<ParamField body="amountIn" type="string" required>
+  Amount of input tokens to swap
+</ParamField>
+<ParamField body="userAddress" type="string" required>
+  User's wallet address for the transaction
+</ParamField>
+<ParamField body="slippage" type="string" optional>
+  Maximum slippage tolerance (defaults to "0.01" = 1%)
+</ParamField>
+
+<CodeGroup>
+```bash Prepare Swap
+curl -X POST https://trusser-issuer-backend.vercel.app/api/balancer/swap/prepare \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: your-api-key-here" \
+  -d '{
+    "stockISIN": "US0378331005",
+    "direction": "sell",
+    "amountIn": "5.88",
+    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+    "slippage": "0.01"
+  }'
+```
+</CodeGroup>
+
+<CodeGroup>
+```json Swap Preparation Response
+{
+  "success": true,
+  "transactionData": {
+    "to": "0x1234567890123456789012345678901234567890",
+    "data": "0x52bbbe29000000000000000000000000...",
+    "value": "0",
+    "gasLimit": "300000"
+  },
+  "expectedOutput": "999.47",
+  "minimumOutput": "989.37",
+  "priceImpact": "0.002",
+  "poolId": "0x1234567890abcdef1234567890abcdef12345678901234567890abcdef123456"
+}
+```
+</CodeGroup>
+
+### Execute Swap
+Records swap completion after user executes transaction.
+<ParamField body="txHash" type="string" required>
+  Transaction hash of the executed swap
+</ParamField>
+<ParamField body="userAddress" type="string" required>
+  User's wallet address
+</ParamField>
+<ParamField body="expectedOutput" type="string" required>
+  Expected output amount from preparation
+</ParamField>
+<ParamField body="stockISIN" type="string" required>
+  Stock identifier for tracking
+</ParamField>
+
+<CodeGroup>
+```bash Execute Swap
+curl -X POST https://trusser-issuer-backend.vercel.app/api/balancer/swap/execute \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: your-api-key-here" \
+  -d '{
+    "txHash": "0x987654321fedcba987654321fedcba987654321fedcba987654321fedcba98",
+    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+    "expectedOutput": "999.47",
+    "stockISIN": "US0378331005"
+  }'
+```
+</CodeGroup>
+
+<CodeGroup>
+```json Execute Response
+{
+  "success": true,
+  "txHash": "0x987654321fedcba987654321fedcba987654321fedcba987654321fedcba98"
+}
+```
+</CodeGroup>
+
+## Liquidity Management
+
+### Add Liquidity
+Adds liquidity to a pool and mints LP tokens.
+<ParamField body="amounts" type="array" required>
+  Amounts of [stock tokens, USDC] to deposit
+</ParamField>
+<ParamField body="userAddress" type="string" required>
+  Liquidity provider's wallet address
+</ParamField>
+<ParamField body="minLpTokens" type="string" optional>
+  Minimum LP tokens to receive
+</ParamField>
+
+<CodeGroup>
+```bash Add Liquidity
+curl -X POST https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234.../liquidity/add \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: your-api-key-here" \
+  -d '{
+    "amounts": ["100", "17025"],
+    "minLpTokens": "50",
+    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4"
+  }'
+```
+</CodeGroup>
+
+<CodeGroup>
+```json Add Liquidity Response
+{
+  "success": true,
+  "txHash": "0x123abc456def789abc456def789abc456def789abc456def789abc456def78"
+}
+```
+</CodeGroup>
+
+### Remove Liquidity
+Burns LP tokens and withdraws underlying assets.
+<ParamField body="lpTokens" type="string" required>
+  Amount of LP tokens to burn
+</ParamField>
+<ParamField body="userAddress" type="string" required>
+  Liquidity provider's wallet address
+</ParamField>
+<ParamField body="minAmountsOut" type="array" optional>
+  Minimum amounts of [stock tokens, USDC] to receive
+</ParamField>
+
+<CodeGroup>
+```bash Remove Liquidity
+curl -X POST https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234.../liquidity/remove \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: your-api-key-here" \
+  -d '{
+    "lpTokens": "50",
+    "minAmountsOut": ["90", "15322"],
+    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4"
+  }'
+```
+</CodeGroup>
+
+<CodeGroup>
+```json Remove Liquidity Response
+{
+  "success": true,
+  "txHash": "0x456def789abc123def789abc123def789abc123def789abc123def789abc12"
+}
+```
+</CodeGroup>
+
+## Leveraged Trading
+
+### Open Leverage Position
+Prepares transaction to open a leveraged position.
+<ParamField body="stockISIN" type="string" required>
+  Stock identifier for the position
+</ParamField>
+<ParamField body="collateral" type="string" required>
+  USDC collateral amount
+</ParamField>
+<ParamField body="leverage" type="number" required>
+  Leverage multiplier (2-10x)
+</ParamField>
+<ParamField body="direction" type="string" required>
+  Either "long" (bullish) or "short" (bearish)
+</ParamField>
+<ParamField body="userAddress" type="string" required>
+  Trader's wallet address
+</ParamField>
+
+<CodeGroup>
+```bash Open Position
+curl -X POST https://trusser-issuer-backend.vercel.app/api/balancer/leverage/open/prepare \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: your-api-key-here" \
+  -d '{
+    "stockISIN": "US0378331005",
+    "collateral": "1000",
+    "leverage": 5,
+    "direction": "long",
+    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4"
+  }'
+```
+</CodeGroup>
+
+<CodeGroup>
+```json Open Position Response
+{
+  "success": true,
+  "transactionData": {
+    "to": "0x2345678901234567890123456789012345678901",
+    "data": "0x1a686502000000000000000000000000...",
+    "value": "0",
+    "gasLimit": "400000"
+  },
+  "poolId": "0x1234567890abcdef1234567890abcdef12345678901234567890abcdef123456",
+  "estimatedLiquidationPrice": "136.20"
+}
+```
+</CodeGroup>
+
+### Close Leverage Position
+Prepares transaction to close an existing position.
+<ParamField body="positionId" type="string" required>
+  ID of the position to close
+</ParamField>
+<ParamField body="userAddress" type="string" required>
+  Position owner's wallet address
+</ParamField>
+
+<CodeGroup>
+```bash Close Position
+curl -X POST https://trusser-issuer-backend.vercel.app/api/balancer/leverage/close/prepare \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: your-api-key-here" \
+  -d '{
+    "positionId": "1",
+    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4"
+  }'
+```
+</CodeGroup>
+
+<CodeGroup>
+```json Close Position Response
+{
+  "success": true,
+  "transactionData": {
+    "to": "0x2345678901234567890123456789012345678901",
+    "data": "0x43d726d6000000000000000000000000...",
+    "value": "0",
+    "gasLimit": "400000"
+  }
+}
+```
+</CodeGroup>
+
+### Get User Positions
+Retrieves all open positions for a user.
+<CodeGroup>
+```bash Get Positions
+curl https://trusser-issuer-backend.vercel.app/api/balancer/leverage/positions/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4 \
+  -H "x-api-key: your-api-key-here"
+```
+</CodeGroup>
+
+<CodeGroup>
+```json Positions Response
+[
+  {
+    "id": "clx456def789",
+    "positionId": "1",
+    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+    "stockISIN": "US0378331005",
+    "size": "5000",
+    "leverage": 5,
+    "isLong": true,
+    "entryPrice": "170.25",
+    "liquidationPrice": "136.20",
+    "collateral": "1000",
+    "status": "open",
+    "openedAt": "2025-01-22T10:30:00.000Z"
+  }
+]
+```
+</CodeGroup>
+
+## Client-Side Integration Examples
+
+<CodeGroup>
+```javascript React Swap Component
+import { ethers } from 'ethers'
+import { useState } from 'react'
+
+export function SwapInterface({ stockISIN, apiKey }) {
+  const [amount, setAmount] = useState('')
+  const [quote, setQuote] = useState(null)
+  const [swapping, setSwapping] = useState(false)
+  
+  const getQuote = async () => {
+    try {
+      const response = await fetch('/api/balancer/swap/quote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey
+        },
+        body: JSON.stringify({
+          stockISIN,
+          direction: 'sell',
+          amountIn: amount
+        })
+      })
+      const data = await response.json()
+      setQuote(data)
+    } catch (error) {
+      console.error('Quote failed:', error)
+    }
+  }
+  
+  const executeSwap = async () => {
+    setSwapping(true)
+    try {
+      // Get transaction data
+      const prepareResponse = await fetch('/api/balancer/swap/prepare', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey
+        },
+        body: JSON.stringify({
+          stockISIN,
+          direction: 'sell',
+          amountIn: amount,
+          userAddress: await window.ethereum.request({ method: 'eth_accounts' })[0],
+          slippage: '0.01'
+        })
+      })
+      const { transactionData, expectedOutput } = await prepareResponse.json()
+      
+      // Execute transaction
+      const txHash = await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [transactionData]
+      })
+      
+      // Confirm with backend
+      await fetch('/api/balancer/swap/execute', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey
+        },
+        body: JSON.stringify({
+          txHash,
+          userAddress: transactionData.from,
+          expectedOutput,
+          stockISIN
+        })
+      })
+      
+      console.log('Swap completed:', txHash)
+    } catch (error) {
+      console.error('Swap failed:', error)
+    } finally {
+      setSwapping(false)
+    }
+  }
+  
+  return (
+    <div>
+      <input 
+        value={amount} 
+        onChange={(e) => setAmount(e.target.value)}
+        placeholder="Amount to sell"
+      />
+      <button onClick={getQuote}>Get Quote</button>
+      {quote && (
+        <div>
+          <p>You'll receive: {quote.amountOut} USDC</p>
+          <button onClick={executeSwap} disabled={swapping}>
+            {swapping ? 'Swapping...' : 'Execute Swap'}
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+```typescript Wagmi Integration
+import { useContractWrite, useWaitForTransaction } from 'wagmi'
+import { parseUnits } from 'viem'
+
+const POOL_MANAGER_ABI = [
+  {
+    name: 'executeSwap',
+    type: 'function',
+    inputs: [
+      { name: 'poolId', type: 'bytes32' },
+      { name: 'tokenIn', type: 'address' },
+      { name: 'tokenOut', type: 'address' },
+      { name: 'amountIn', type: 'uint256' },
+      { name: 'minAmountOut', type: 'uint256' }
+    ],
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'nonpayable'
+  }
+] as const
+
+interface SwapProps {
+  poolId: `0x${string}`
+  tokenIn: `0x${string}`
+  tokenOut: `0x${string}`
+  amountIn: string
+  minAmountOut: string
+  onSuccess?: (txHash: string) => void
+}
+
+export function useBalancerSwap({ 
+  poolId, 
+  tokenIn, 
+  tokenOut, 
+  amountIn, 
+  minAmountOut, 
+  onSuccess 
+}: SwapProps) {
+  
+  const { write, data } = useContractWrite({
+    address: '0x1234567890123456789012345678901234567890', // Pool Manager
+    abi: POOL_MANAGER_ABI,
+    functionName: 'executeSwap',
+    args: [
+      poolId,
+      tokenIn,
+      tokenOut,
+      parseUnits(amountIn, 18),
+      parseUnits(minAmountOut, 18)
+    ],
+    gas: 300000n
+  })
+  
+  const { isLoading } = useWaitForTransaction({
+    hash: data?.hash,
+    onSuccess: (receipt) => {
+      onSuccess?.(receipt.transactionHash)
+    }
+  })
+  
+  return {
+    executeSwap: write,
+    isLoading,
+    txHash: data?.hash
+  }
+}
+
+// Usage:
+// const { executeSwap, isLoading } = useBalancerSwap({
+//   poolId: "0x...",
+//   tokenIn: "0x...",
+//   tokenOut: "0x...",
+//   amountIn: "5.88",
+//   minAmountOut: "989.37",
+//   onSuccess: (hash) => notifyBackend(hash)
+// })
+```
+
+```javascript Complete Trading Flow
+async function handleCompleteSwap(stockISIN, amount, direction, apiKey) {
+  try {
+    // Step 1: Get quote
+    const quoteResponse = await fetch('/api/balancer/swap/quote', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      },
+      body: JSON.stringify({
+        stockISIN,
+        direction,
+        amountIn: amount
+      })
+    })
+    const quote = await quoteResponse.json()
+    console.log('Quote received:', quote)
+    
+    // Step 2: Prepare transaction
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+    const prepareResponse = await fetch('/api/balancer/swap/prepare', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      },
+      body: JSON.stringify({
+        stockISIN,
+        direction,
+        amountIn: amount,
+        userAddress: accounts[0],
+        slippage: '0.01'
+      })
+    })
+    const { transactionData, expectedOutput } = await prepareResponse.json()
+    
+    // Step 3: Execute transaction
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{ ...transactionData, from: accounts[0] }]
+    })
+    console.log('Transaction sent:', txHash)
+    
+    // Step 4: Confirm with backend
+    const executeResponse = await fetch('/api/balancer/swap/execute', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      },
+      body: JSON.stringify({
+        txHash,
+        userAddress: accounts[0],
+        expectedOutput,
+        stockISIN
+      })
+    })
+    const result = await executeResponse.json()
+    
+    return {
+      quote,
+      txHash,
+      expectedOutput,
+      result
+    }
+  } catch (error) {
+    console.error('Complete swap failed:', error)
+    throw error
+  }
+}
+
+// Usage:
+// const result = await handleCompleteSwap("US0378331005", "5.88", "sell", "your-api-key")
+// console.log("Swap completed:", result)
+```
+
+```javascript Liquidity Management
+async function addLiquidityToPool(poolId, stockAmount, usdcAmount, userAddress, apiKey) {
+  try {
+    const response = await fetch(`/api/balancer/pools/${poolId}/liquidity/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      },
+      body: JSON.stringify({
+        amounts: [stockAmount, usdcAmount],
+        minLpTokens: "0",
+        userAddress
+      })
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to add liquidity')
+    }
+    
+    const result = await response.json()
+    console.log('Liquidity added:', result.txHash)
+    return result
+  } catch (error) {
+    console.error('Add liquidity failed:', error)
+    throw error
+  }
+}
+
+async function removeLiquidityFromPool(poolId, lpTokens, userAddress, apiKey) {
+  try {
+    const response = await fetch(`/api/balancer/pools/${poolId}/liquidity/remove`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      },
+      body: JSON.stringify({
+        lpTokens,
+        minAmountsOut: ["0", "0"],
+        userAddress
+      })
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to remove liquidity')
+    }
+    
+    const result = await response.json()
+    console.log('Liquidity removed:', result.txHash)
+    return result
+  } catch (error) {
+    console.error('Remove liquidity failed:', error)
+    throw error
+  }
+}
+
+// Usage:
+// await addLiquidityToPool("0x123...", "100", "17025", userAddress, apiKey)
+// await removeLiquidityFromPool("0x123...", "50", userAddress, apiKey)
+```
+</CodeGroup>
+
+## Webhook Events
+Your system will receive webhook notifications for trading and liquidity events.
+
+### Event Authentication
+All webhooks include HMAC-SHA256 signature for verification:
+<ParamField header="X-Webhook-Signature" type="string">
+  HMAC-SHA256 hash of the payload using your webhook secret
+</ParamField>
+<ParamField header="X-Event-Type" type="string">
+  Type of event being delivered
+</ParamField>
+<ParamField header="X-Pool-Id" type="string">
+  Pool identifier for the event
+</ParamField>
+
+### Pool Created
+Sent when a new trading pool is successfully deployed.
+<CodeGroup>
+```json pool_created
+{
+  "poolId": "0x1234567890abcdef1234567890abcdef12345678901234567890abcdef123456",
+  "stockISIN": "US0378331005",
+  "tokenAddress": "0xabcd1234567890abcd1234567890abcd12345678",
+  "txHash": "0x987654321fedcba987654321fedcba987654321fedcba987654321fedcba98"
+}
+```
+</CodeGroup>
+
+### Swap Executed
+Sent when a user completes a token swap.
+<CodeGroup>
+```json swap_executed
+{
+  "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+  "txHash": "0x123abc456def789abc456def789abc456def789abc456def789abc456def78",
+  "expectedOutput": "999.47"
+}
+```
+</CodeGroup>
+
+### Liquidity Added
+Sent when liquidity is added to a pool.
+<CodeGroup>
+```json liquidity_added
+{
+  "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+  "amounts": ["100", "17025"],
+  "txHash": "0x456def789abc123def789abc123def789abc123def789abc123def789abc12"
+}
+```
+</CodeGroup>
+
+### Liquidity Removed
+Sent when liquidity is removed from a pool.
+<CodeGroup>
+```json liquidity_removed
+{
+  "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+  "lpTokens": "50",
+  "txHash": "0x789abc123def456abc123def456abc123def456abc123def456abc123def45"
+}
+```
+</CodeGroup>
+
+## Error Handling
+The API returns standard HTTP status codes and structured error responses.
+<CodeGroup>
+```json Error Response
+{
+  "error": "Pool not found for stock",
+  "details": "No active pool exists for the specified ISIN"
+}
+```
+</CodeGroup>
+
+### Common error codes:
+<ResponseField name="400" type="Bad Request">
+  Invalid parameters, missing pool, or malformed request
+</ResponseField>
+<ResponseField name="401" type="Unauthorized">  
+  Invalid or missing API key
+</ResponseField>
+<ResponseField name="404" type="Not Found">
+  Pool, position, or resource not found
+</ResponseField>
+<ResponseField name="500" type="Internal Server Error">
+  Contract interaction failure or system error
+</ResponseField>
+<ResponseField name="503" type="Service Unavailable">
+  Balancer infrastructure temporarily unavailable
+</ResponseField>
+
+## Testing Environment
+Use the Sepolia testnet for integration testing with test tokens and pools.
+
+- Test pool configurations:
+<ResponseField name="US0378331005" type="string">
+  Apple Inc. - High liquidity test pool with 80/20 weighting
+</ResponseField>
+<ResponseField name="US5949181045" type="string">
+  Microsoft Corp. - Standard test pool for swap testing
+</ResponseField>
+<ResponseField name="TEST0000002" type="string">
+  Mock token - Simulated low liquidity for slippage testing
+</ResponseField>
+
+Your test API key allows unlimited operations on Sepolia. Test USDC and ETH available from our support team.
+
+## Rate Limits
+Production API endpoints are rate limited per partner:
+
+- Pool operations: 50 requests per minute
+- Swap operations: 200 requests per minute  
+- Quote requests: 1000 requests per minute
+- Status checks: 500 requests per minute
+
+Test environment has no rate limits but requests timeout after 30 seconds.
+
+## Integration Notes
+- **Pool Creation**: Requires existing tokenized stock from the tokenization API
+- **Slippage**: Always set appropriate slippage tolerance for swaps (1-3%)
+- **Gas Limits**: Use provided gas estimates, actual usage typically 60-80% of limit
+- **Price Impact**: Monitor price impact on large trades, consider splitting orders
+- **Liquidity**: Ensure sufficient pool liquidity before enabling trading features
+- **Leverage**: Maximum 10x leverage, positions automatically liquidated at threshold
