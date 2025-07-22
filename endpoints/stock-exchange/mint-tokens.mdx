@@ -1,0 +1,71 @@
+---
+title: 'Mint Stock Tokens'
+api: 'POST /api/stock-exchange/mint'
+---
+
+Mint tokenized stock certificates for a locked position. This creates blockchain tokens representing the locked stock shares.
+
+<ParamField body="lockId" type="string" required>
+  The unique identifier of the locked position
+</ParamField>
+
+<ParamField body="walletAddress" type="string" required>
+  The Ethereum wallet address to receive the minted tokens
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/stock-exchange/mint" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "lockId": "LOCK-1234567890-abcdef1234567890",
+    "walletAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/stock-exchange/mint', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    lockId: 'LOCK-1234567890-abcdef1234567890',
+    walletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/stock-exchange/mint',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'lockId': 'LOCK-1234567890-abcdef1234567890',
+        'walletAddress': '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "lockId": "LOCK-1234567890-abcdef1234567890",
+  "status": "minting",
+  "message": "Minting process initiated",
+  "walletAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4"
+}
+```
+</ResponseExample>

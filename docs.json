@@ -9,6 +9,22 @@
     "dark": "#E63E00"
   },
   "favicon": "/favicon.png",
+  "api": {
+    "mdx": {
+      "server": "https://trusser-issuer-backend.vercel.app",
+      "auth": {
+        "method": "key",
+        "name": "x-api-key"
+      }
+    },
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": ["curl", "javascript", "python"],
+      "defaults": "required"
+    }
+  },
   "seo": {
     "indexing": "all",
     "metatags": {
@@ -95,15 +111,32 @@
         "tab": "APIs",
         "groups": [
           {
-            "group": "Tokenization",
+            "group": "Stock Exchange",
             "pages": [
-              "stock-exchanges"
+              "stock-exchanges",
+              "endpoints/stock-exchange/lock-position",
+              "endpoints/stock-exchange/mint-tokens", 
+              "endpoints/stock-exchange/unlock-position",
+              "endpoints/stock-exchange/get-status"
             ]
           },
           {
-            "group": "Exchange",
+            "group": "Balancer Exchange",
             "pages": [
-              "balancer-exchange"
+              "balancer-exchange",
+              "endpoints/balancer-exchange/create-pool",
+              "endpoints/balancer-exchange/prepare-swap",
+              "endpoints/balancer-exchange/get-quote",
+              "endpoints/balancer-exchange/add-liquidity",
+              "endpoints/balancer-exchange/remove-liquidity",
+              "endpoints/balancer-exchange/execute-swap",
+              "endpoints/balancer-exchange/prepare-leverage-open",
+              "endpoints/balancer-exchange/prepare-leverage-close",
+              "endpoints/balancer-exchange/search-pools",
+              "endpoints/balancer-exchange/get-pool-price",
+              "endpoints/balancer-exchange/get-positions",
+              "endpoints/balancer-exchange/get-liquidation-price",
+              "endpoints/balancer-exchange/get-pools"
             ]
           }
         ]

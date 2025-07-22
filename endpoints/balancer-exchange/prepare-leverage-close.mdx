@@ -1,0 +1,74 @@
+---
+title: 'Prepare Close Leverage Position'
+api: 'POST /api/balancer-exchange/leverage/close/prepare'
+---
+
+Prepare to close an existing leveraged position. This generates the transaction data needed to close a leveraged position and return collateral.
+
+<ParamField body="positionId" type="string" required>
+  The unique identifier of the position to close
+</ParamField>
+
+<ParamField body="userAddress" type="string" required>
+  The Ethereum address that owns the position
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/leverage/close/prepare" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "positionId": "position123",
+    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer-exchange/leverage/close/prepare', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    positionId: 'position123',
+    userAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/balancer-exchange/leverage/close/prepare',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'positionId': 'position123',
+        'userAddress': '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "transactionData": {
+    "to": "0x1234567890123456789012345678901234567890",
+    "data": "0x1234567890abcdef...",
+    "value": "0",
+    "gasLimit": "400000"
+  }
+}
+```
+</ResponseExample>

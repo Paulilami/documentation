@@ -1,0 +1,100 @@
+---
+title: 'Prepare Swap'
+api: 'POST /api/balancer-exchange/swap/prepare'
+---
+
+Prepare a swap transaction for execution. This endpoint generates the transaction data needed to perform a swap on the Balancer pool.
+
+<ParamField body="stockISIN" type="string" required>
+  The ISIN of the stock to swap
+</ParamField>
+
+<ParamField body="direction" type="string" required>
+  The direction of the swap: "buy" or "sell"
+</ParamField>
+
+<ParamField body="amountIn" type="string" required>
+  The amount of tokens to swap (input amount)
+</ParamField>
+
+<ParamField body="slippage" type="string">
+  The maximum slippage tolerance (defaults to "0.01" for 1%)
+</ParamField>
+
+<ParamField body="userAddress" type="string" required>
+  The Ethereum address of the user performing the swap
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/swap/prepare" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "stockISIN": "US0378331005",
+    "direction": "buy",
+    "amountIn": "100",
+    "slippage": "0.01",
+    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer-exchange/swap/prepare', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    stockISIN: 'US0378331005',
+    direction: 'buy',
+    amountIn: '100',
+    slippage: '0.01',
+    userAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/balancer-exchange/swap/prepare',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'stockISIN': 'US0378331005',
+        'direction': 'buy',
+        'amountIn': '100',
+        'slippage': '0.01',
+        'userAddress': '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "transactionData": {
+    "to": "0x1234567890123456789012345678901234567890",
+    "data": "0x1234567890abcdef...",
+    "value": "0",
+    "gasLimit": "300000"
+  },
+  "expectedOutput": "95.0",
+  "minimumOutput": "94.05",
+  "priceImpact": "0.002",
+  "poolId": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12",
+  "poolAddress": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12"
+}
+```
+</ResponseExample>

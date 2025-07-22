@@ -1,0 +1,70 @@
+---
+title: 'Unlock Stock Position'
+api: 'POST /api/stock-exchange/unlock'
+---
+
+Unlock a stock position by providing proof of token burning. This releases the underlying stock shares for trading.
+
+<ParamField body="burnTxHash" type="string" required>
+  The transaction hash of the token burn operation
+</ParamField>
+
+<ParamField body="amount" type="string" required>
+  The amount of tokens that were burned
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/stock-exchange/unlock" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "burnTxHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12",
+    "amount": "100"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/stock-exchange/unlock', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    burnTxHash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
+    amount: '100'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/stock-exchange/unlock',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'burnTxHash': '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
+        'amount': '100'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "confirmation": true,
+  "lockId": "LOCK-1234567890-abcdef1234567890",
+  "status": "unlocking"
+}
+```
+</ResponseExample>

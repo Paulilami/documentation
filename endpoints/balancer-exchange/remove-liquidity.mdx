@@ -1,0 +1,80 @@
+---
+title: 'Remove Liquidity'
+api: 'POST /api/balancer-exchange/pools/{poolId}/liquidity/remove'
+---
+
+Remove liquidity from a Balancer pool by burning LP tokens and receiving underlying tokens.
+
+<ParamField path="poolId" type="string" required>
+  The unique identifier of the pool
+</ParamField>
+
+<ParamField body="lpTokens" type="string" required>
+  Amount of LP tokens to burn
+</ParamField>
+
+<ParamField body="minAmountsOut" type="array">
+  Minimum amounts of underlying tokens to receive [minStockTokens, minPairedTokens]
+</ParamField>
+
+<ParamField body="userAddress" type="string" required>
+  The Ethereum address of the liquidity provider
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/remove" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "lpTokens": "50",
+    "minAmountsOut": ["45", "4500"],
+    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/remove', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    lpTokens: '50',
+    minAmountsOut: ['45', '4500'],
+    userAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/remove',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'lpTokens': '50',
+        'minAmountsOut': ['45', '4500'],
+        'userAddress': '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "txHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12"
+}
+```
+</ResponseExample>

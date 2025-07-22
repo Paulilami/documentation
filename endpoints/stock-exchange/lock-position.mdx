@@ -1,0 +1,77 @@
+---
+title: 'Lock Stock Position'
+api: 'POST /api/stock-exchange/lock'
+---
+
+Lock a stock position for tokenization. This creates a lock record that prevents the underlying stock from being traded while it's being tokenized.
+
+<ParamField body="userId" type="string" required>
+  The unique identifier for the user
+</ParamField>
+
+<ParamField body="stockISIN" type="string" required>
+  The ISIN (International Securities Identification Number) of the stock
+</ParamField>
+
+<ParamField body="amount" type="string" required>
+  The amount of stock to lock (as string for precision)
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/stock-exchange/lock" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "userId": "user123",
+    "stockISIN": "US0378331005",
+    "amount": "100"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/stock-exchange/lock', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    userId: 'user123',
+    stockISIN: 'US0378331005',
+    amount: '100'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/stock-exchange/lock',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'userId': 'user123',
+        'stockISIN': 'US0378331005',
+        'amount': '100'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "lockId": "LOCK-1234567890-abcdef1234567890",
+  "confirmation": true,
+  "expiresIn": 3600
+}
+```
+</ResponseExample>

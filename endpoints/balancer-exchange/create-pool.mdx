@@ -1,0 +1,93 @@
+---
+title: 'Create Pool'
+api: 'POST /api/balancer-exchange/pools/create'
+---
+
+Create a new liquidity pool for a tokenized stock. If a pool doesn't exist for the specified stock, it will be created automatically.
+
+<ParamField body="stockISIN" type="string" required>
+  The ISIN of the stock to create a pool for
+</ParamField>
+
+<ParamField body="tokenAddress" type="string" required>
+  The contract address of the tokenized stock
+</ParamField>
+
+<ParamField body="pairedToken" type="string">
+  The address of the token to pair with (defaults to USDC)
+</ParamField>
+
+<ParamField body="weights" type="array">
+  Array of weights for the pool tokens (defaults to [80, 20])
+</ParamField>
+
+<ParamField body="swapFee" type="string">
+  The swap fee for the pool (defaults to "0.003")
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/create" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "stockISIN": "US0378331005",
+    "tokenAddress": "0x1234567890123456789012345678901234567890",
+    "pairedToken": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+    "weights": [80, 20],
+    "swapFee": "0.003"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/create', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    stockISIN: 'US0378331005',
+    tokenAddress: '0x1234567890123456789012345678901234567890',
+    pairedToken: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
+    weights: [80, 20],
+    swapFee: '0.003'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/create',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'stockISIN': 'US0378331005',
+        'tokenAddress': '0x1234567890123456789012345678901234567890',
+        'pairedToken': '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
+        'weights': [80, 20],
+        'swapFee': '0.003'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "poolId": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12",
+  "poolAddress": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12",
+  "message": "Pool ready for use",
+  "existing": false
+}
+```
+</ResponseExample>

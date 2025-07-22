@@ -1,0 +1,83 @@
+---
+title: 'Execute Swap'
+api: 'POST /api/balancer-exchange/swap/execute'
+---
+
+Record the execution of a swap transaction. This endpoint is called after the user has successfully executed the swap transaction on-chain.
+
+<ParamField body="txHash" type="string" required>
+  The transaction hash of the executed swap
+</ParamField>
+
+<ParamField body="userAddress" type="string" required>
+  The Ethereum address that executed the swap
+</ParamField>
+
+<ParamField body="expectedOutput" type="string">
+  The expected output amount from the swap
+</ParamField>
+
+<ParamField body="stockISIN" type="string" required>
+  The ISIN of the stock that was swapped
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/swap/execute" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "txHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12",
+    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+    "expectedOutput": "95.0",
+    "stockISIN": "US0378331005"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer-exchange/swap/execute', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    txHash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
+    userAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+    expectedOutput: '95.0',
+    stockISIN: 'US0378331005'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/balancer-exchange/swap/execute',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'txHash': '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
+        'userAddress': '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+        'expectedOutput': '95.0',
+        'stockISIN': 'US0378331005'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "txHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12"
+}
+```
+</ResponseExample>

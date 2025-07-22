@@ -1,0 +1,78 @@
+---
+title: 'Get Swap Quote'
+api: 'POST /api/balancer-exchange/swap/quote'
+---
+
+Get a quote for a potential swap without preparing the transaction. This is useful for displaying prices to users before they commit to a swap.
+
+<ParamField body="stockISIN" type="string" required>
+  The ISIN of the stock to swap
+</ParamField>
+
+<ParamField body="direction" type="string" required>
+  The direction of the swap: "buy" or "sell"
+</ParamField>
+
+<ParamField body="amountIn" type="string" required>
+  The amount of tokens to swap (input amount)
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/swap/quote" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "stockISIN": "US0378331005",
+    "direction": "buy",
+    "amountIn": "100"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer-exchange/swap/quote', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    stockISIN: 'US0378331005',
+    direction: 'buy',
+    amountIn: '100'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/balancer-exchange/swap/quote',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'stockISIN': 'US0378331005',
+        'direction': 'buy',
+        'amountIn': '100'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "amountOut": "95.0",
+  "priceImpact": "0.002",
+  "swapFee": "0.003",
+  "poolId": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12"
+}
+```
+</ResponseExample>
