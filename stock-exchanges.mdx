@@ -11,7 +11,7 @@ The integration follows a simple three-step flow:
 
 1. **Lock** - Partner locks customer's stock position in their system
 2. **Mint** - We mint tokenized certificates to customer's wallet
-3. **Unlock** - Customer burns tokens, we notify partner to release original position
+3. **Unlock** - Customer burns tokens directly, partner receives notification to release original position
 
 ## Authentication
 All API requests require authentication using your instance API key.
@@ -21,7 +21,7 @@ All API requests require authentication using your instance API key.
 <CodeGroup>
 ```bash Authentication Header
 curl -H "x-api-key: your-api-key-here" \
-  https://api.trusset.org/api/stock-exchange/health
+  https://trusser-issuer-backend.vercel.app/api/stock-exchange/health
 ```
 </CodeGroup>
 <CodeGroup>
@@ -51,7 +51,7 @@ Locks a customer's stock position in preparation for tokenization.
 
 <CodeGroup>
 ```bash Lock Position
-curl -X POST https://api.trusset.org/api/stock-exchange/lock \
+curl -X POST https://trusser-issuer-backend.vercel.app/api/stock-exchange/lock \
   -H "Content-Type: application/json" \
   -H "x-api-key: your-api-key-here" \
   -d '{
@@ -82,7 +82,7 @@ Mints tokenized certificates for a locked position to customer's wallet.
 </ParamField>
 <CodeGroup>
 ```bash Mint Tokens
-curl -X POST https://api.trusset.org/api/stock-exchange/mint \
+curl -X POST https://trusser-issuer-backend.vercel.app/api/stock-exchange/mint \
   -H "Content-Type: application/json" \
   -H "x-api-key: your-api-key-here" \
   -d '{
@@ -106,7 +106,7 @@ curl -X POST https://api.trusset.org/api/stock-exchange/mint \
 Retrieves the current status of a lock and associated token operations.
 <CodeGroup>
 ```bash Check Status
-curl https://api.trusset.org/api/stock-exchange/status/LOCK-1642857600000-a1b2c3d4e5f6 \
+curl https://trusser-issuer-backend.vercel.app/api/stock-exchange/status/LOCK-1642857600000-a1b2c3d4e5f6 \
   -H "x-api-key: your-api-key-here"
 ```
 </CodeGroup>
@@ -137,14 +137,428 @@ The status field indicates the current state:
     <ResponseField name="minted" type="string">
       Tokens successfully minted to customer wallet
     </ResponseField>
-    <ResponseField name="burned" type="string">
-      Tokens burned by customer, unlock process initiated
-    </ResponseField>
     <ResponseField name="failed" type="string">
       Operation failed, check error logs
     </ResponseField>
   </Expandable>
 </ResponseField>
+
+## Client-Side Token Burning
+Users burn their tokens directly from their wallets. Below are implementation examples for different frameworks:
+
+<CodeGroup>
+```javascript Ethers v5 React Hook
+import { ethers } from 'ethers'
+import { useState } from 'react'
+
+const TOKEN_ABI = [
+  "function burn(uint256 amount)",
+  "function balanceOf(address account) view returns (uint256)",
+  "function decimals() view returns (uint8)"
+]
+
+export function useBurnTokens() {
+  const [burning, setBurning] = useState(false)
+  
+  const burnTokens = async (tokenAddress, amount, provider) => {
+    setBurning(true)
+    try {
+      const signer = provider.getSigner()
+      const contract = new ethers.Contract(tokenAddress, TOKEN_ABI, signer)
+      const decimals = await contract.decimals()
+      const burnAmount = ethers.utils.parseUnits(amount.toString(), decimals)
+      
+      const tx = await contract.burn(burnAmount, {
+        gasLimit: 200000
+      })
+      const receipt = await tx.wait()
+      
+      return {
+        success: true,
+        txHash: receipt.transactionHash,
+        gasUsed: receipt.gasUsed.toString(),
+        blockNumber: receipt.blockNumber
+      }
+    } catch (error) {
+      throw new Error(`Burn failed: ${error.message}`)
+    } finally {
+      setBurning(false)
+    }
+  }
+  
+  return { burnTokens, burning }
+}
+
+// Usage:
+// const { burnTokens, burning } = useBurnTokens()
+// const result = await burnTokens(tokenAddress, "100", provider)
+// console.log("Burn TX Hash:", result.txHash)
+```
+
+```javascript Ethers v6 Modern
+import { ethers } from 'ethers'
+
+const TOKEN_ABI = [
+  "function burn(uint256 amount)",
+  "function decimals() view returns (uint8)"
+]
+
+async function burnTokensV6(tokenAddress, amount, signer) {
+  try {
+    const contract = new ethers.Contract(tokenAddress, TOKEN_ABI, signer)
+    const decimals = await contract.decimals()
+    const burnAmount = ethers.parseUnits(amount.toString(), decimals)
+    
+    const tx = await contract.burn(burnAmount, {
+      gasLimit: 200000n
+    })
+    const receipt = await tx.wait()
+    
+    return {
+      success: true,
+      txHash: receipt.hash,
+      gasUsed: receipt.gasUsed.toString(),
+      blockNumber: receipt.blockNumber
+    }
+  } catch (error) {
+    throw new Error(`Burn failed: ${error.shortMessage || error.message}`)
+  }
+}
+
+// Usage:
+// const result = await burnTokensV6(tokenAddress, "100", signer)
+// await notifyBackendUnlock(result.txHash, "100")
+```
+
+```typescript Wagmi React Hook
+import { useContractWrite, useWaitForTransaction, usePrepareContractWrite } from 'wagmi'
+import { parseUnits } from 'viem'
+import { useState } from 'react'
+
+const TOKEN_ABI = [
+  {
+    name: 'burn',
+    type: 'function',
+    inputs: [{ name: 'amount', type: 'uint256' }],
+    outputs: [],
+    stateMutability: 'nonpayable'
+  }
+] as const
+
+interface BurnTokensProps {
+  tokenAddress: `0x${string}`
+  amount: string
+  onSuccess?: (txHash: string) => void
+  onError?: (error: Error) => void
+}
+
+export function useBurnTokens({ tokenAddress, amount, onSuccess, onError }: BurnTokensProps) {
+  const [burnAmount] = useState(() => parseUnits(amount, 18))
+  
+  const { config } = usePrepareContractWrite({
+    address: tokenAddress,
+    abi: TOKEN_ABI,
+    functionName: 'burn',
+    args: [burnAmount],
+    gas: 200000n
+  })
+  
+  const { write, data } = useContractWrite({
+    ...config,
+    onError: (error) => onError?.(new Error(error.message))
+  })
+  
+  const { isLoading } = useWaitForTransaction({
+    hash: data?.hash,
+    onSuccess: (receipt) => {
+      onSuccess?.(receipt.transactionHash)
+    }
+  })
+  
+  return {
+    burnTokens: write,
+    isLoading,
+    txHash: data?.hash
+  }
+}
+
+// Usage Component:
+// const { burnTokens, isLoading, txHash } = useBurnTokens({
+//   tokenAddress: "0x...",
+//   amount: "100",
+//   onSuccess: (hash) => notifyBackendUnlock(hash, "100")
+// })
+```
+
+```javascript Web3.js Implementation
+import Web3 from 'web3'
+
+const TOKEN_ABI = [
+  {
+    name: 'burn',
+    type: 'function',
+    inputs: [{ name: 'amount', type: 'uint256' }],
+    outputs: [],
+    stateMutability: 'nonpayable'
+  }
+]
+
+async function burnTokensWeb3(tokenAddress, amount, account) {
+  try {
+    const web3 = new Web3(window.ethereum)
+    const contract = new web3.eth.Contract(TOKEN_ABI, tokenAddress)
+    
+    const decimals = await contract.methods.decimals().call()
+    const burnAmount = web3.utils.toBN(amount).mul(web3.utils.toBN(10).pow(web3.utils.toBN(decimals)))
+    
+    const tx = await contract.methods.burn(burnAmount.toString()).send({
+      from: account,
+      gas: 200000
+    })
+    
+    return {
+      success: true,
+      txHash: tx.transactionHash,
+      gasUsed: tx.gasUsed,
+      blockNumber: tx.blockNumber
+    }
+  } catch (error) {
+    throw new Error(`Burn failed: ${error.message}`)
+  }
+}
+
+// Usage:
+// const result = await burnTokensWeb3(tokenAddress, "100", userAccount)
+// await fetch('/api/unlock', { 
+//   method: 'POST', 
+//   body: JSON.stringify({ burnTxHash: result.txHash, amount: "100" }) 
+// })
+```
+
+```typescript Viem Modern Alternative
+import { createWalletClient, custom, parseUnits, getContract } from 'viem'
+import { sepolia } from 'viem/chains'
+
+const TOKEN_ABI = [
+  {
+    name: 'burn',
+    type: 'function',
+    inputs: [{ name: 'amount', type: 'uint256' }],
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    name: 'decimals',
+    type: 'function',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint8' }],
+    stateMutability: 'view'
+  }
+] as const
+
+async function burnTokensViem(tokenAddress: `0x${string}`, amount: string, account: `0x${string}`) {
+  try {
+    const client = createWalletClient({
+      chain: sepolia,
+      transport: custom(window.ethereum!)
+    })
+    
+    const contract = getContract({
+      address: tokenAddress,
+      abi: TOKEN_ABI,
+      client
+    })
+    
+    const decimals = await contract.read.decimals()
+    const burnAmount = parseUnits(amount, decimals)
+    
+    const hash = await contract.write.burn([burnAmount], {
+      account,
+      gas: 200000n
+    })
+    
+    return {
+      success: true,
+      txHash: hash,
+      timestamp: Date.now()
+    }
+  } catch (error: any) {
+    throw new Error(`Burn failed: ${error.shortMessage || error.message}`)
+  }
+}
+
+// Usage:
+// const result = await burnTokensViem("0x...", "100", "0x...")
+// console.log("Transaction hash:", result.txHash)
+```
+
+```javascript RainbowKit + Wagmi
+import { useContractWrite, useWaitForTransaction, useAccount } from 'wagmi'
+import { parseUnits } from 'viem'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
+
+const TOKEN_ABI = [
+  {
+    name: 'burn',
+    type: 'function',
+    inputs: [{ name: 'amount', type: 'uint256' }],
+    outputs: [],
+    stateMutability: 'nonpayable'
+  }
+] as const
+
+export function BurnTokenButton({ tokenAddress, amount, onBurnComplete }) {
+  const { address, isConnected } = useAccount()
+  const { openConnectModal } = useConnectModal()
+  
+  const { write: burnTokens, data } = useContractWrite({
+    address: tokenAddress,
+    abi: TOKEN_ABI,
+    functionName: 'burn',
+    args: [parseUnits(amount.toString(), 18)],
+    gas: 200000n
+  })
+  
+  const { isLoading } = useWaitForTransaction({
+    hash: data?.hash,
+    onSuccess: async (receipt) => {
+      await onBurnComplete(receipt.transactionHash)
+    }
+  })
+  
+  if (!isConnected) {
+    return (
+      <button onClick={openConnectModal}>
+        Connect Wallet to Burn Tokens
+      </button>
+    )
+  }
+  
+  return (
+    <button onClick={() => burnTokens?.()} disabled={isLoading}>
+      {isLoading ? 'Burning...' : `Burn ${amount} Tokens`}
+    </button>
+  )
+}
+
+// Usage:
+// <BurnTokenButton 
+//   tokenAddress="0x..." 
+//   amount="100"
+//   onBurnComplete={(txHash) => notifyUnlock(txHash)} 
+// />
+```
+
+```javascript Vanilla JavaScript MetaMask
+async function burnTokensMetaMask(tokenAddress, amount) {
+  try {
+    if (!window.ethereum) {
+      throw new Error('MetaMask not installed')
+    }
+    
+    await window.ethereum.request({ method: 'eth_requestAccounts' })
+    
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+    const account = accounts[0]
+    
+    // Get decimals first
+    const decimalsData = '0x313ce567' // decimals() function selector
+    const decimalsResult = await window.ethereum.request({
+      method: 'eth_call',
+      params: [{
+        to: tokenAddress,
+        data: decimalsData
+      }, 'latest']
+    })
+    const decimals = parseInt(decimalsResult, 16)
+    
+    // Calculate burn amount
+    const burnAmount = (BigInt(amount) * BigInt(10 ** decimals)).toString(16)
+    const paddedAmount = burnAmount.padStart(64, '0')
+    
+    // burn(uint256) function selector + amount
+    const data = '0x42966c68' + paddedAmount
+    
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{
+        from: account,
+        to: tokenAddress,
+        data: data,
+        gas: '0x30d40' // 200000 in hex
+      }]
+    })
+    
+    return {
+      success: true,
+      txHash: txHash,
+      account: account
+    }
+  } catch (error) {
+    throw new Error(`MetaMask burn failed: ${error.message}`)
+  }
+}
+
+// Usage:
+// const result = await burnTokensMetaMask("0x...", "100")
+// await notifyBackendUnlock(result.txHash, "100")
+```
+
+```javascript Complete Integration Flow
+// After burning tokens, notify backend to unlock position
+async function handleCompleteTokenBurn(tokenAddress, amount, apiKey) {
+  try {
+    // Step 1: Burn tokens (choose any method above)
+    const burnResult = await burnTokens(tokenAddress, amount)
+    console.log('Tokens burned:', burnResult.txHash)
+    
+    // Step 2: Wait a moment for blockchain confirmation
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    
+    // Step 3: Notify backend to unlock position
+    const unlockResponse = await fetch('/api/stock-exchange/unlock', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      },
+      body: JSON.stringify({
+        burnTxHash: burnResult.txHash,
+        amount: amount.toString()
+      })
+    })
+    
+    if (!unlockResponse.ok) {
+      throw new Error('Failed to unlock position')
+    }
+    
+    const unlockResult = await unlockResponse.json()
+    console.log('Position unlocked:', unlockResult)
+    
+    return {
+      burnTxHash: burnResult.txHash,
+      unlockConfirmation: unlockResult.confirmation,
+      lockId: unlockResult.lockId
+    }
+  } catch (error) {
+    console.error('Complete burn process failed:', error)
+    throw error
+  }
+}
+
+// Usage:
+// const result = await handleCompleteTokenBurn("0x...", "100", "your-api-key")
+// console.log("Full process complete:", result)
+```
+</CodeGroup>
+
+### Integration Notes
+- **Token Address**: Obtained from the mint response or status check
+- **Amount**: Must match the amount you want to unlock (usually full position)
+- **Gas Limit**: Set to 200,000 for safety (actual usage ~50,000-100,000)
+- **Error Handling**: Always wrap in try-catch blocks
+- **Transaction Hash**: Required for the unlock endpoint
+- **Confirmation**: Wait for blockchain confirmation before calling unlock
 
 ## Unlock Position
 Processes unlock request after customer burns tokens.
@@ -156,7 +570,7 @@ Processes unlock request after customer burns tokens.
 </ParamField>
 <CodeGroup>
 ```bash Unlock Position
-curl -X POST https://api.trusset.org/api/stock-exchange/unlock \
+curl -X POST https://trusser-issuer-backend.vercel.app/api/stock-exchange/unlock \
   -H "Content-Type: application/json" \
   -H "x-api-key: your-api-key-here" \
   -d '{
