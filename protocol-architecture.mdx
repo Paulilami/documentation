@@ -1,61 +1,116 @@
 ---
 title: "Protocol Architecture"
-description: "Technical infrastructure for asset tokenization and verification"
+description: "Technical infrastructure for institutional tokenization. API architecture, security model, and service integration."
 ---
 
-Our protocol connects users to verified asset issuers through a decentralized network. The system provides complete infrastructure for asset tokenization and the complete lifecycle management while maintaining legal compliance and operational independence.
+Our protocol provides enterprise-grade tokenization infrastructure designed specifically for financial institutions. The system delivers complete API-based services for asset tokenization and lifecycle management while maintaining regulatory compliance and operational independence.
 
-## Technical Workflow
+## Technical Architecture
 
-The protocol operates through a four-step verification and issuance process:
+The Trusset platform operates through the **Issuer Platform**—your institution's central control system for all tokenization operations:
 
 <Steps>
-  <Step title="Asset Selection & Data Processing">
-    Users select assets for tokenization through our platform. Our software automatically sorts data based on legal requirements and provides issuers everything needed to start the legal process with tamper-proof verification data.
+  <Step title="Instance Provisioning">
+    Create isolated instances with dedicated environments for testing and production operations.
   </Step>
   
-  <Step title="Issuer Connection">
-    The system automatically connects users to verified issuers from our partner network. Issuers can access requests via our dashboard or integrate our services directly through APIs.
+  <Step title="Service Integration">
+    Choose and integrate specific services: Tokenization APIs, Oracle feeds, White-label platforms, or complete infrastructure.
   </Step>
   
-  <Step title="Verification Pass Issuance">
-    Issuers create verification passes containing asset parameters. For identity verification, only cryptographic proof is stored. Verification passes are issued to public keys, enabling automatic and secure approval without additional communication.
+  <Step title="Compliance Configuration">
+    Set regulatory parameters and compliance rules once through our APIs. Smart contracts automatically enforce these requirements.
   </Step>
   
-  <Step title="Independent Token Operations">
-    Users mint tokens, manage identity, and operate within the decentralized network without ongoing dependencies on the protocol or issuers.
+  <Step title="Client Operations">
+    Your clients operate independently with their tokenized assets without ongoing dependencies on Trusset infrastructure.
   </Step>
 </Steps>
 
-## Company Structure
+## Platform Structure
 
-The protocol operates through two specialized entities providing complementary services:
+The platform operates through two specialized service layers providing complementary functionality:
 
 <Columns cols={2}>
-  <Card title="Trusset" icon="code">
-    **Main Technology Platform**
+  <Card title="Tokenization Service" icon="coins">
+    **Complete Asset Digitization APIs**
     
-    Pure technology provider and SaaS platform. Handles token creation, management, trading through decentralized marketplace, on-chain liquidity solutions, and developer tools.
+    ERC1400 token creation, automated KYC/KYB integration, white-label platform deployment, stock exchange APIs, and transaction monitoring infrastructure.
   </Card>
   
-  <Card title="Trusset Verify" icon="shield-check">
-    **Verification Infrastructure**
+  <Card title="Oracle Service" icon="database">
+    **Asset Verification Infrastructure**
     
-    Specialized subsidiary working with asset verifiers and insurance companies. Provides foundation for the first RWA oracle protocol using enhanced proof of reserve.
+    Real-world asset pricing, automated partner integrations, insurance-backed verification, and enhanced proof of reserve implementation.
   </Card>
 </Columns>
 
-## Oracle Protocol Architecture
+## Service Architecture
 
-Trusset Verify implements a layered verification system for real-world asset pricing and validation:
+### Issuer Platform: Central Control System
+
+The Issuer Platform acts as your institution's command center, providing:
+
+- **Instance Management**: Isolated environments with dedicated API keys
+- **Service Selection**: Modular integration of tokenization and oracle services  
+- **Access Control**: Granular permissions and security settings
+- **Monitoring Dashboard**: Real-time analytics and operational metrics
+
+### Instance-Based Isolation
 
 ```mermaid
 flowchart TD
-    A[Developer Integration] --> B[Direct Oracle API]
-    A --> C[Pre-built Tokens]
+    A[Financial Institution] --> B[Dedicated Instance]
+    B --> C[Tokenization APIs]
+    B --> D[Oracle Services]
+    C --> E[ERC1400 Tokens]
+    C --> F[White-Label Platform]
+    D --> G[Price Feeds]
+    D --> H[Asset Verification]
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#e8f5e8
+    style D fill:#fff3e0
+```
+
+Each institution operates within completely isolated instances, ensuring:
+- **Data Separation**: No cross-contamination between institutions
+- **Security Isolation**: Dedicated API keys and access controls
+- **Operational Independence**: Complete control over your tokenization infrastructure
+- **Scalable Architecture**: Add instances and services as your operations grow
+
+## Core Technical Features
+
+### Automated Compliance Processing
+- **Smart Contract Rules**: Compliance requirements programmed directly into tokens
+- **Automatic Verification**: Real-time eligibility and jurisdictional checks
+- **Regulatory Reporting**: Complete audit trails for compliance documentation
+- **Zero-Knowledge Proofs**: Privacy-preserving identity verification
+
+### Enterprise Security Model
+- **Instance Isolation**: Complete separation between financial institutions
+- **API Authentication**: Secure token-based authentication for all endpoints
+- **Encrypted Communications**: TLS 1.3 encryption for all API traffic
+- **Audit Logging**: Comprehensive logging for security and compliance monitoring
+
+### Modular Integration Architecture
+- **API-First Design**: All functionality accessible through REST APIs
+- **Service Selection**: Choose and pay only for the services you need
+- **Incremental Deployment**: Add services as your digital asset offerings grow
+- **Custom Integration**: Flexible APIs support custom institutional workflows
+
+## Oracle Infrastructure
+
+Trusset Verify implements a multi-layered verification system for real-world asset pricing and validation:
+
+```mermaid
+flowchart TD
+    A[Bank Integration] --> B[Oracle API Access]
+    A --> C[White-Label Platform]
     B --> D[Trusset Oracle Engine]
     C --> D
-    D --> E[Partner Network Integration]
+    D --> E[Insurance Partner Network]
     E --> F[Enhanced Proof of Reserve]
     
     style A fill:#e1f5fe
@@ -64,33 +119,54 @@ flowchart TD
     style F fill:#fff3e0
 ```
 
-<Accordion title="Architecture Layer Details">
-  **Developer Integration**: Two integration paths - direct Oracle API access or pre-built token implementations for rapid deployment.
+<Accordion title="Oracle Architecture Components">
+  **Bank Integration**: Two integration paths - direct Oracle API access or embedded verification in white-label platforms.
 
-  **Trusset Oracle Engine**: Core ML algorithms, business rules, and fallback mechanisms for price discovery and asset verification.
+  **Trusset Oracle Engine**: Machine learning algorithms, business rules, and fallback mechanisms for price discovery and asset verification.
 
-  **Partner Network Integration**: Direct API integrations with insurance companies, professional appraisers, and verification services.
+  **Insurance Partner Network**: Direct integrations with insurance companies, professional appraisers, and verification services for reliable data.
 
   **Enhanced Proof of Reserve**: Custom implementation combining traditional proof of reserve with real-time valuation data from verified sources.
 </Accordion>
 
-## Technical Features
+## Integration Patterns
 
-- **Multi-issuer Network**: Decentralized issuer network eliminates single points of failure
-- **Automated Compliance Processing**: Software automatically sorts data based on jurisdictional legal requirements  
-- **Zero Protocol Dependencies**: Users operate independently after initial verification
-- **Flexible Integration**: Partners integrate through APIs or use provided dashboard interface
-- **On-chain Verification**: All verification passes and asset parameters stored immutably on-chain
-- **Proof-based Identity**: Cryptographic proofs without storing underlying personal data
+### API-Only Integration
+Perfect for institutions with existing client interfaces:
+- Direct API access to all tokenization services
+- Custom user experience design and workflows
+- Integration into existing banking systems
+- Maximum flexibility and control
 
-## Network Architecture
+### White-Label Platform Deployment
+Complete client-facing infrastructure:
+- 24-hour deployment with your branding
+- Full customization of interfaces and functionality
+- Zero ongoing technical maintenance
+- Configurable access controls and compliance settings
+
+### Hybrid Architecture
+Best of both approaches:
+- Backend API integration for institutional operations
+- White-label platforms for specific client segments
+- Custom interfaces for high-value clients
+- Unified reporting through Issuer Platform
+
+## Security & Compliance Architecture
 
 <Info>
-The protocol uses "entrypoints" through verified issuers. Users are never dependent on a single entry point and can choose from our partner network. Partners benefit from new customers, end-to-end software with custom integrations, and zero ongoing operational costs.
+The protocol ensures complete regulatory compliance through programmable smart contract rules, automated verification systems, and comprehensive audit trails—all while maintaining operational independence for your institution and privacy for your clients.
 </Info>
 
-## Next Steps
+## Enterprise Support Infrastructure
 
-<Card title="Become an Issuer" icon="building" href="https://issuers.trusset.org">
-  Ready to integrate Trusset and cut management costs by over 80% and experience no more downtime? Sign up today.
+- **Dedicated Technical Teams**: Direct access to integration specialists
+- **24/7 System Monitoring**: Continuous infrastructure monitoring and alerts
+- **Custom SLA Options**: Service level agreements tailored to institutional requirements
+- **Priority Support Channels**: Fast-track issue resolution and feature development
+
+---
+
+<Card title="Ready to Integrate?" icon="rocket" href="https://issuers.trusset.org">
+  Contact our enterprise team to discuss your institution's specific tokenization requirements and integration timeline.
 </Card>

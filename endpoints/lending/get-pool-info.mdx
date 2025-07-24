@@ -1,0 +1,47 @@
+---
+title: 'Get Pool Information'
+api: 'GET /api/lending/pools/info/{assetAddress}'
+---
+
+Retrieve detailed information about a lending pool including liquidity, rates, and utilization.
+
+<ParamField path="assetAddress" type="string" required>
+  Address of the asset token for the lending pool
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/lending/pools/info/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4" \
+  -H "x-api-key: YOUR_API_KEY"
+javascriptconst response = await fetch('https://trusser-issuer-backend.vercel.app/api/lending/pools/info/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4', {
+  method: 'GET',
+  headers: {
+    'x-api-key': 'YOUR_API_KEY'
+  }
+});
+
+const data = await response.json();
+pythonimport requests
+
+response = requests.get(
+    'https://trusser-issuer-backend.vercel.app/api/lending/pools/info/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+    headers={
+        'x-api-key': 'YOUR_API_KEY'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+<ResponseExample>
+```json Response
+{
+  "poolAddress": "0x1234567890123456789012345678901234567890",
+  "totalAssets": "1000000.0",
+  "totalBorrows": "750000.0",
+  "availableLiquidity": "250000.0",
+  "supplyRate": "0.045",
+  "borrowRate": "0.067"
+}
+```
+</ResponseExample>

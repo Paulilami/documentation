@@ -1,0 +1,487 @@
+---
+title: "Lending API"
+description: "API documentation for overcollateralized lending against tokenized stock positions with automated liquidation and interest accrual."
+---
+
+<Warning>This is a test environment running on sepolia</Warning>
+
+This API documentation is for approved partners to integrate overcollateralized lending against ERC20 stock tokens. Users can deposit tokens to earn yield, borrow against collateral, and access automated liquidation protection - all while maintaining regulatory compliance through our MiCA-compliant infrastructure.
+
+<Tip>We will soon update our contracts to add automated liquidation using our AMM engine.</Tip>
+
+## Overview
+Our lending system creates isolated pools for each stock token, enabling overcollateralized borrowing similar to AAVE V3 but tailored for tokenized securities. The system supports:
+
+1. **Deposit & Earn** - Deposit tokens to lending pools and earn yield from borrower interest
+2. **Borrow Against Collateral** - Use one token as collateral to borrow another token
+3. **Automated Liquidation** - Protect lenders through automated liquidation when health factors drop
+4. **Dynamic Interest Rates** - Market-driven interest rates based on utilization and demand
+
+The integration follows a simple flow:
+1. **Create Pool** - Deploy lending pool for stock token (automatic for new tokens)
+2. **Deposit** - Users deposit tokens to earn yield from borrower interest
+3. **Borrow** - Users provide collateral to borrow tokens at current rates
+4. **Manage** - Monitor health factors, repay loans, and handle liquidations
+
+## Authentication
+All API requests require authentication using your instance API key.
+<ParamField header="x-api-key" type="string" required>
+  Your unique API key provided during onboarding
+</ParamField>
+<CodeGroup>
+```bash Authentication Header
+curl -H "x-api-key: your-api-key-here" \
+  https://trusser-issuer-backend.vercel.app/api/lending/health
+</CodeGroup>
+<CodeGroup>
+```json Success Response
+{
+  "status": "Lending service is running",
+  "timestamp": "2025-01-22T10:30:00.000Z",
+  "environment": {
+    "hasKeeperKey": true,
+    "hasFactoryAddress": true,
+    "hasManagerAddress": true,
+    "hasOracleAddress": true
+  }
+}
+```
+</CodeGroup>
+Core Concepts
+Health Factor
+The health factor determines loan safety. It's calculated as:
+Health Factor = (Collateral Value × Liquidation Threshold) / Borrowed Value
+
+> 1.0: Position is safe
+< 1.0: Position can be liquidated
+Liquidation Threshold: Default 80% (varies by asset)
+
+Interest Rates
+Dynamic rates based on pool utilization:
+
+Low Utilization (0-80%): Gradual rate increase
+High Utilization (80-100%): Steep rate increase to encourage repayment
+Rates Update: Every transaction automatically recalculates rates
+
+Liquidation Process
+When health factor drops below 1.0:
+
+Anyone can liquidate up to 50% of the debt
+Liquidator repays borrowed tokens
+Liquidator receives collateral + 5% bonus
+Remaining collateral stays with borrower
+
+Pool Management
+Automatic Pool Creation
+Pools are created automatically when needed - you don't need to manually create them for standard operations.
+Pool Information
+Each pool tracks:
+
+Total Assets: Deposits + outstanding loans
+Available Liquidity: Tokens available for borrowing
+Utilization Rate: Percentage of pool assets currently borrowed
+Interest Rates: Current supply and borrow rates
+
+Deposit Operations
+Earning Yield
+Depositors earn yield from:
+
+Borrower Interest: Primary yield source from loan interest
+Liquidation Fees: Share of liquidation penalties
+Platform Rewards: Additional incentives (if enabled)
+
+Deposit Tokens
+Users deposit tokens to earn yield. Deposits are represented by pool shares that appreciate over time.
+Withdraw Tokens
+Users can withdraw their deposit plus earned interest anytime, subject to pool liquidity availability.
+Borrowing Operations
+Collateral Requirements
+
+Minimum Collateralization: 125% (80% liquidation threshold)
+Recommended: 150-200% for safety buffer
+Health Factor Monitoring: Track continuously to avoid liquidation
+
+Interest Accrual
+
+Compound Interest: Accrues every second
+Rate Updates: Rates adjust with each transaction
+Payment Flexibility: Partial or full repayment anytime
+
+Risk Management
+Liquidation Protection
+
+Health Factor Alerts: Monitor positions closely
+Partial Liquidation: Only 50% of debt liquidated per transaction
+Liquidation Bonus: 5% incentive for liquidators
+Grace Period: No immediate liquidation - depends on price oracle updates
+
+Asset Price Oracles
+
+Real-time Prices: Updated frequently via price oracle
+Price Stability: Protects against flash loan attacks
+Multiple Sources: Redundant price feeds for reliability
+
+Client-Side Integration Examples
+<CodeGroup>
+```javascript React Lending Interface
+import { ethers } from 'ethers'
+import { useState, useEffect } from 'react'
+export function LendingInterface({ assetAddress, apiKey }) {
+const [poolInfo, setPoolInfo] = useState(null)
+const [userPosition, setUserPosition] = useState(null)
+const [loading, setLoading] = useState(false)
+useEffect(() => {
+fetchPoolInfo()
+fetchUserPosition()
+}, [assetAddress])
+const fetchPoolInfo = async () => {
+try {
+const response = await fetch(/api/lending/pools/info/${assetAddress}, {
+headers: { 'x-api-key': apiKey }
+})
+const data = await response.json()
+setPoolInfo(data)
+} catch (error) {
+console.error('Failed to fetch pool info:', error)
+}
+}
+const fetchUserPosition = async () => {
+try {
+const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+if (accounts.length > 0) {
+const response = await fetch(/api/lending/positions/${accounts[0]}?assets=${assetAddress}, {
+headers: { 'x-api-key': apiKey }
+})
+const data = await response.json()
+setUserPosition(data.positions[0])
+}
+} catch (error) {
+console.error('Failed to fetch user position:', error)
+}
+}
+const handleDeposit = async (amount) => {
+setLoading(true)
+try {
+const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+  const response = await fetch('/api/lending/deposit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey
+    },
+    body: JSON.stringify({
+      poolAddress: poolInfo.poolAddress,
+      amount: amount.toString(),
+      userAddress: accounts[0]
+    })
+  })
+  
+  const result = await response.json()
+  console.log('Deposit successful:', result.txHash)
+  
+  // Refresh data
+  fetchPoolInfo()
+  fetchUserPosition()
+} catch (error) {
+  console.error('Deposit failed:', error)
+} finally {
+  setLoading(false)
+}
+}
+const handleBorrow = async (borrowAmount, collateralAmount) => {
+setLoading(true)
+try {
+const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+  const response = await fetch('/api/lending/borrow', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey
+    },
+    body: JSON.stringify({
+      poolAddress: poolInfo.poolAddress,
+      borrowAmount: borrowAmount.toString(),
+      collateralAmount: collateralAmount.toString(),
+      userAddress: accounts[0]
+    })
+  })
+  
+  const result = await response.json()
+  console.log('Borrow successful:', result.txHash)
+  console.log('Health factor:', result.healthFactor)
+  
+  // Refresh data
+  fetchPoolInfo()
+  fetchUserPosition()
+} catch (error) {
+  console.error('Borrow failed:', error)
+} finally {
+  setLoading(false)
+}
+}
+return (
+<div>
+{poolInfo && (
+<div>
+<h2>Pool Information</h2>
+<p>Total Assets: {poolInfo.totalAssets}</p>
+<p>Available Liquidity: {poolInfo.availableLiquidity}</p>
+<p>Supply Rate: {(parseFloat(poolInfo.supplyRate) * 100).toFixed(2)}%</p>
+<p>Borrow Rate: {(parseFloat(poolInfo.borrowRate) * 100).toFixed(2)}%</p>
+</div>
+)}
+  {userPosition && (
+    <div>
+      <h2>Your Position</h2>
+      <p>Deposited: {userPosition.depositBalance}</p>
+      <p>Borrowed: {userPosition.borrowBalance}</p>
+      <p>Collateral: {userPosition.collateralBalance}</p>
+      <p>Health Factor: {userPosition.healthFactor}</p>
+    </div>
+  )}
+  
+  <button onClick={() => handleDeposit('100')} disabled={loading}>
+    {loading ? 'Processing...' : 'Deposit 100 Tokens'}
+  </button>
+  
+  <button onClick={() => handleBorrow('50', '75')} disabled={loading}>
+    {loading ? 'Processing...' : 'Borrow 50 (75 Collateral)'}
+  </button>
+</div>
+)
+}
+
+```typescript Wagmi Integration
+import { useContractWrite, useWaitForTransaction } from 'wagmi'
+import { parseUnits } from 'viem'
+
+const LENDING_POOL_ABI = [
+  {
+    name: 'deposit',
+    type: 'function',
+    inputs: [{ name: 'amount', type: 'uint256' }],
+    outputs: [],
+    stateMutability: 'nonpayable'
+  },
+  {
+    name: 'borrow',
+    type: 'function',
+    inputs: [
+      { name: 'amount', type: 'uint256' },
+      { name: 'collateralAmount', type: 'uint256' }
+    ],
+    outputs: [],
+    stateMutability: 'nonpayable'
+  }
+] as const
+
+interface LendingProps {
+  poolAddress: `0x${string}`
+  amount: string
+  collateralAmount?: string
+  onSuccess?: (txHash: string) => void
+}
+
+export function useLendingPool({ poolAddress, amount, collateralAmount, onSuccess }: LendingProps) {
+  
+  const { write: deposit, data: depositData } = useContractWrite({
+    address: poolAddress,
+    abi: LENDING_POOL_ABI,
+    functionName: 'deposit',
+    args: [parseUnits(amount, 18)],
+    gas: 200000n
+  })
+  
+  const { write: borrow, data: borrowData } = useContractWrite({
+    address: poolAddress,
+    abi: LENDING_POOL_ABI,
+    functionName: 'borrow',
+    args: [
+      parseUnits(amount, 18),
+      parseUnits(collateralAmount || '0', 18)
+    ],
+    gas: 300000n
+  })
+  
+  const { isLoading: depositLoading } = useWaitForTransaction({
+    hash: depositData?.hash,
+    onSuccess: (receipt) => onSuccess?.(receipt.transactionHash)
+  })
+  
+  const { isLoading: borrowLoading } = useWaitForTransaction({
+    hash: borrowData?.hash,
+    onSuccess: (receipt) => onSuccess?.(receipt.transactionHash)
+  })
+  
+  return {
+    deposit,
+    borrow,
+    isLoading: depositLoading || borrowLoading,
+    depositTxHash: depositData?.hash,
+    borrowTxHash: borrowData?.hash
+  }
+}
+
+// Usage:
+// const { deposit, borrow, isLoading } = useLendingPool({
+//   poolAddress: "0x...",
+//   amount: "100",
+//   collateralAmount: "150",
+//   onSuccess: (hash) => console.log('Transaction confirmed:', hash)
+// })
+javascriptasync function monitorHealthFactor(userAddress, assetAddresses, apiKey) {
+  try {
+    const response = await fetch(`/api/lending/positions/${userAddress}?assets=${assetAddresses.join(',')}`, {
+      headers: { 'x-api-key': apiKey }
+    })
+    
+    const data = await response.json()
+    
+    for (const position of data.positions) {
+      const healthFactor = parseFloat(position.healthFactor)
+      
+      if (healthFactor !== 'safe' && healthFactor < 1.2) {
+        console.warn(`⚠️ Low health factor: ${healthFactor} for asset ${position.assetAddress}`)
+        
+        // Alert user or trigger emergency actions
+        if (healthFactor < 1.05) {
+          console.error(`🚨 CRITICAL: Health factor ${healthFactor} - Risk of liquidation!`)
+          // Trigger emergency UI or notifications
+        }
+      }
+    }
+    
+    return data.positions
+  } catch (error) {
+    console.error('Health factor monitoring failed:', error)
+    return []
+  }
+}
+
+// Usage: Monitor every 30 seconds
+// setInterval(() => {
+//   monitorHealthFactor(userAddress, [assetAddress], apiKey)
+// }, 30000)
+javascriptasync function checkLiquidationOpportunities(apiKey) {
+  try {
+    // Get all pools
+    const poolsResponse = await fetch('/api/lending/pools', {
+      headers: { 'x-api-key': apiKey }
+    })
+    const poolsData = await poolsResponse.json()
+    
+    for (const pool of poolsData.pools) {
+      // Get pool analytics to find positions
+      const analyticsResponse = await fetch(`/api/lending/analytics/pools?limit=100`, {
+        headers: { 'x-api-key': apiKey }
+      })
+      const analytics = await analyticsResponse.json()
+      
+      // Check for liquidatable positions
+      // This is a simplified example - real implementation would need
+      // to track individual user positions and health factors
+      
+      console.log(`Pool ${pool.symbol}: ${pool.totalBorrows} borrowed, ${pool.availableLiquidity} available`)
+    }
+  } catch (error) {
+    console.error('Liquidation check failed:', error)
+  }
+}
+
+async function executeLiquidation(poolAddress, borrowerAddress, repayAmount, apiKey) {
+  try {
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+    
+    const response = await fetch('/api/lending/liquidate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      },
+      body: JSON.stringify({
+        poolAddress,
+        borrowerAddress,
+        repayAmount: repayAmount.toString(),
+        liquidatorAddress: accounts[0]
+      })
+    })
+    
+    const result = await response.json()
+    console.log('Liquidation executed:', result.txHash)
+    return result
+  } catch (error) {
+    console.error('Liquidation failed:', error)
+    throw error
+  }
+}
+
+// Usage:
+// await executeLiquidation(poolAddress, borrowerAddress, "100", apiKey)
+</CodeGroup>
+Advanced Features
+Batch Operations
+Create multiple pools or update multiple prices in single transactions for gas efficiency.
+Analytics & Reporting
+
+Pool Performance: Track utilization, rates, and volume
+User Analytics: Monitor individual borrowing patterns
+Risk Metrics: Aggregate health factors and liquidation risks
+
+Price Oracle Management
+Update asset prices for accurate collateral valuations and health factor calculations.
+Error Handling
+The API returns standard HTTP status codes with detailed error messages.
+<CodeGroup>
+```json Error Response
+{
+  "error": "Insufficient collateral",
+  "details": "Collateral value 1200 USDC is below required 1250 USDC for this loan amount"
+}
+```
+</CodeGroup>
+Common error codes:
+<ResponseField name="400" type="Bad Request">
+  Invalid parameters, insufficient collateral, or pool constraints
+</ResponseField>
+<ResponseField name="401" type="Unauthorized">  
+  Invalid or missing API key
+</ResponseField>
+<ResponseField name="404" type="Not Found">
+  Pool, position, or user not found
+</ResponseField>
+<ResponseField name="500" type="Internal Server Error">
+  Smart contract interaction failure or system error
+</ResponseField>
+<ResponseField name="503" type="Service Unavailable">
+  Lending infrastructure temporarily unavailable
+</ResponseField>
+Testing Environment
+Use the Sepolia testnet for integration testing with test tokens and mock prices.
+Test scenarios:
+<ResponseField name="Standard Flow" type="string">
+Deposit → Borrow → Repay → Withdraw cycle
+</ResponseField>
+<ResponseField name="Liquidation Test" type="string">
+Create undercollateralized position and trigger liquidation
+</ResponseField>
+<ResponseField name="Rate Changes" type="string">
+Monitor dynamic interest rate adjustments
+</ResponseField>
+Your test API key allows unlimited operations on Sepolia. Test tokens and ETH available from our support team.
+Rate Limits
+Production API endpoints are rate limited per partner:
+
+Pool operations: 100 requests per minute
+Deposit/Borrow operations: 200 requests per minute
+Position queries: 500 requests per minute
+Price updates: 50 requests per minute
+
+Test environment has no rate limits but requests timeout after 30 seconds.
+Integration Notes
+
+Health Factor: Always monitor health factors to prevent liquidation
+Price Updates: Ensure timely price oracle updates for accurate valuations
+Gas Optimization: Use batch operations when possible
+Error Handling: Implement robust error handling for all operations
+Liquidation Risk: Educate users about collateralization requirements
+Interest Accrual: Account for continuous interest accrual in UI calculations

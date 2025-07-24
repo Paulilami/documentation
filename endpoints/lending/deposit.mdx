@@ -1,0 +1,70 @@
+---
+title: 'Deposit to Pool'
+api: 'POST /api/lending/deposit'
+---
+
+Deposit tokens into a lending pool to earn yield from borrower interest payments.
+
+<ParamField body="poolAddress" type="string" required>
+  Address of the lending pool contract
+</ParamField>
+
+<ParamField body="amount" type="string" required>
+  Amount of tokens to deposit (as string for precision)
+</ParamField>
+
+<ParamField body="userAddress" type="string" required>
+  Address of the user making the deposit
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/lending/deposit" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "poolAddress": "0x1234567890123456789012345678901234567890",
+    "amount": "1000",
+    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4"
+  }'
+javascriptconst response = await fetch('https://trusser-issuer-backend.vercel.app/api/lending/deposit', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    poolAddress: '0x1234567890123456789012345678901234567890',
+    amount: '1000',
+    userAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+  })
+});
+
+const data = await response.json();
+pythonimport requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/lending/deposit',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'poolAddress': '0x1234567890123456789012345678901234567890',
+        'amount': '1000',
+        'userAddress': '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+  "gasUsed": "150000"
+}
+```
+</ResponseExample>

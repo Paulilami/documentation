@@ -1,0 +1,56 @@
+---
+title: 'Get User Positions'
+api: 'GET /api/lending/positions/{userAddress}'
+---
+
+Retrieve all lending positions (deposits, borrows, collateral) for a specific user across multiple assets.
+
+<ParamField path="userAddress" type="string" required>
+  Address of the user to get positions for
+</ParamField>
+
+<ParamField query="assets" type="string" optional>
+  Comma-separated list of asset addresses to filter by
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/lending/positions/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4?assets=0x1234567890123456789012345678901234567890" \
+  -H "x-api-key: YOUR_API_KEY"
+javascriptconst response = await fetch('https://trusser-issuer-backend.vercel.app/api/lending/positions/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4?assets=0x1234567890123456789012345678901234567890', {
+  method: 'GET',
+  headers: {
+    'x-api-key': 'YOUR_API_KEY'
+  }
+});
+
+const data = await response.json();
+pythonimport requests
+
+response = requests.get(
+    'https://trusser-issuer-backend.vercel.app/api/lending/positions/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4?assets=0x1234567890123456789012345678901234567890',
+    headers={
+        'x-api-key': 'YOUR_API_KEY'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+<ResponseExample>
+```json Response
+{
+  "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+  "positions": [
+    {
+      "assetAddress": "0x1234567890123456789012345678901234567890",
+      "depositBalance": "1000.0",
+      "borrowBalance": "500.0",
+      "collateralBalance": "750.0",
+      "healthFactor": "1.5"
+    }
+  ],
+  "count": 1
+}
+```
+</ResponseExample>
