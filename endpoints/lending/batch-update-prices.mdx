@@ -1,0 +1,72 @@
+---
+title: 'Batch Update Asset Prices'
+api: 'POST /api/lending/oracle/batch-update-prices'
+---
+
+Update multiple asset prices in the lending oracle in a single transaction for gas efficiency.
+
+<ParamField body="assets" type="array" required>
+  Array of asset token addresses to update prices for
+</ParamField>
+
+<ParamField body="prices" type="array" required>
+  Array of new prices in USD (must match assets length)
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/lending/oracle/batch-update-prices" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "assets": [
+      "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+      "0xd2135CfB216b74109775236E36d4b433F1DF507B"
+    ],
+    "prices": ["100.50", "45.25"]
+  }'
+  const response = await fetch('https://trusser-issuer-backend.vercel.app/api/lending/oracle/batch-update-prices', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    assets: [
+      '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+      '0xd2135CfB216b74109775236E36d4b433F1DF507B'
+    ],
+    prices: ['100.50', '45.25']
+  })
+});
+
+const data = await response.json();
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/lending/oracle/batch-update-prices',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'assets': [
+            '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+            '0xd2135CfB216b74109775236E36d4b433F1DF507B'
+        ],
+        'prices': ['100.50', '45.25']
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+  "count": 2
+}
+```
+</ResponseExample>

@@ -138,6 +138,25 @@
               "endpoints/balancer-exchange/get-liquidation-price",
               "endpoints/balancer-exchange/get-pools"
             ]
+          },
+          {
+            "group": "Overcollaterlized Loans",
+            "pages": [
+              "stock-loans",
+                "endpoints/lending/create-pool",
+                "endpoints/lending/batch-create-pools",
+                "endpoints/lending/get-pool-info",
+                "endpoints/lending/deposit",
+                "endpoints/lending/borrow",
+                "endpoints/lending/get-positions",
+                "endpoints/lending/repay",
+                "endpoints/lending/liquidate",
+                "endpoints/lending/update-price",
+                "endpoints/lending/batch-update-prices",
+                "endpoints/lending/get-pool-analytics",
+                "endpoints/lending/get-user-analytics",
+                "endpoints/lending/sync-pool-data"
+            ]
           }
         ]
       }    ],

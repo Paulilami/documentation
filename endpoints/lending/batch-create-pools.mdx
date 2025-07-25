@@ -1,0 +1,83 @@
+---
+title: 'Batch Create Pools'
+api: 'POST /api/lending/pools/batch-create'
+---
+
+Create multiple lending pools in a single transaction for efficiency. Each pool will be configured with default settings.
+
+<ParamField body="assets" type="array" required>
+  Array of ERC20 token addresses to create lending pools for
+</ParamField>
+
+<ParamField body="names" type="array" required>
+  Array of names for the lending pools (must match assets length)
+</ParamField>
+
+<ParamField body="symbols" type="array" required>
+  Array of symbols for the lending pool tokens (must match assets length)
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/lending/pools/batch-create" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "assets": [
+      "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+      "0xd2135CfB216b74109775236E36d4b433F1DF507B"
+    ],
+    "names": ["Token A Lending Pool", "Token B Lending Pool"],
+    "symbols": ["lpTKNA", "lpTKNB"]
+  }'
+  const response = await fetch('https://trusser-issuer-backend.vercel.app/api/lending/pools/batch-create', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    assets: [
+      '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+      '0xd2135CfB216b74109775236E36d4b433F1DF507B'
+    ],
+    names: ['Token A Lending Pool', 'Token B Lending Pool'],
+    symbols: ['lpTKNA', 'lpTKNB']
+  })
+});
+
+const data = await response.json();
+pythonimport requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/lending/pools/batch-create',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'assets': [
+            '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+            '0xd2135CfB216b74109775236E36d4b433F1DF507B'
+        ],
+        'names': ['Token A Lending Pool', 'Token B Lending Pool'],
+        'symbols': ['lpTKNA', 'lpTKNB']
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+  "pools": [
+    "0x1234567890123456789012345678901234567890",
+    "0x0987654321098765432109876543210987654321"
+  ],
+  "count": 2
+}
+```
+</ResponseExample>

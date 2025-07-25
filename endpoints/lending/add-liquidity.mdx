@@ -1,0 +1,64 @@
+---
+title: 'Add Liquidity to Pool'
+api: 'POST /api/lending/pools/add-liquidity'
+---
+
+Add liquidity directly to a lending pool through the manager contract. This is typically used for initial pool seeding.
+
+<ParamField body="assetAddress" type="string" required>
+  Address of the asset to add liquidity for
+</ParamField>
+
+<ParamField body="amount" type="string" required>
+  Amount of tokens to add as liquidity
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/lending/pools/add-liquidity" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "assetAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+    "amount": "10000"
+  }'
+  const response = await fetch('https://trusser-issuer-backend.vercel.app/api/lending/pools/add-liquidity', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    assetAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+    amount: '10000'
+  })
+});
+
+const data = await response.json();
+
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/lending/pools/add-liquidity',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'assetAddress': '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+        'amount': '10000'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+  "gasUsed": "200000"
+}
+```
+</ResponseExample>

@@ -3,6 +3,14 @@ title: "Stock Tokenization API"
 description: "API documentation for licensed trading platforms to integrate one-click stock tokenization."
 ---
 
+## Smart Contract Addresses (Ethereum Sepolia)
+
+| Contract | Address |
+|----------|---------|
+| StockCertificateToken | `0x21398b44c9509dfc1d670eAff201E566b53f870f` |
+| StockPriceOracle | `0x712A97448A32ff1c73b0B909eeFB69B5333eAf67` |
+| StockTokenFactory | `0x166de8506945798E1aC312A8009102a8c377AE6B` |
+
 This API documentation is for approved partners holding the Investment Services License under MiFID II to integrate one-click tokenization of customer stocks with our infrastructure, directly into their trading platform, fully compliant with MiCA Asset-Referenced Token regulations, and operational within seconds.
 
 ## Overview
@@ -12,136 +20,6 @@ The integration follows a simple three-step flow:
 1. **Lock** - Partner locks customer's stock position in their system
 2. **Mint** - We mint tokenized certificates to customer's wallet
 3. **Unlock** - Customer burns tokens directly, partner receives notification to release original position
-
-## Authentication
-All API requests require authentication using your instance API key.
-<ParamField header="x-api-key" type="string" required>
-  Your unique API key provided during onboarding
-</ParamField>
-<CodeGroup>
-```bash Authentication Header
-curl -H "x-api-key: your-api-key-here" \
-  https://trusser-issuer-backend.vercel.app/api/stock-exchange/health
-```
-</CodeGroup>
-<CodeGroup>
-```json Success Response
-{
-  "status": "Stock exchange routes are accessible",
-  "contractsInitialized": true,
-  "timestamp": "2025-01-22T10:30:00.000Z"
-}
-```
-</CodeGroup>
-
-
-## Core Endpoints
-### Lock Position
-
-Locks a customer's stock position in preparation for tokenization.
-<ParamField body="userId" type="string" required>
-  Your internal customer identifier
-</ParamField>
-<ParamField body="stockISIN" type="string" required>
-  International Securities Identification Number of the stock
-</ParamField>
-<ParamField body="amount" type="string" required>
-  Number of shares to lock (as string to prevent precision loss)
-</ParamField>
-
-<CodeGroup>
-```bash Lock Position
-curl -X POST https://trusser-issuer-backend.vercel.app/api/stock-exchange/lock \
-  -H "Content-Type: application/json" \
-  -H "x-api-key: your-api-key-here" \
-  -d '{
-    "userId": "customer-123",
-    "stockISIN": "US0378331005",
-    "amount": "100"
-  }'
-```
-</CodeGroup>
-
-<CodeGroup>
-```json Lock Response
-{
-  "lockId": "LOCK-1642857600000-a1b2c3d4e5f6",
-  "confirmation": true,
-  "expiresIn": 3600
-}
-```
-</CodeGroup>
-
-## Mint Tokens
-Mints tokenized certificates for a locked position to customer's wallet.
-<ParamField body="lockId" type="string" required>
-  Lock identifier returned from the lock endpoint
-</ParamField>
-<ParamField body="walletAddress" type="string" required>
-  Customer's Ethereum wallet address (must be valid checksum address)
-</ParamField>
-<CodeGroup>
-```bash Mint Tokens
-curl -X POST https://trusser-issuer-backend.vercel.app/api/stock-exchange/mint \
-  -H "Content-Type: application/json" \
-  -H "x-api-key: your-api-key-here" \
-  -d '{
-    "lockId": "LOCK-1642857600000-a1b2c3d4e5f6",
-    "walletAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4"
-  }'
-```
-</CodeGroup>
-<CodeGroup>
-```json Mint Response
-{
-  "lockId": "LOCK-1642857600000-a1b2c3d4e5f6",
-  "status": "minting",
-  "message": "Minting process initiated",
-  "walletAddress": "0x1234567890123456789012345678901234567890"
-}
-```
-</CodeGroup>
-
-## Check Status
-Retrieves the current status of a lock and associated token operations.
-<CodeGroup>
-```bash Check Status
-curl https://trusser-issuer-backend.vercel.app/api/stock-exchange/status/LOCK-1642857600000-a1b2c3d4e5f6 \
-  -H "x-api-key: your-api-key-here"
-```
-</CodeGroup>
-<CodeGroup>
-```json Status Response
-{
-  "lockId": "LOCK-1642857600000-a1b2c3d4e5f6",
-  "status": "minted",
-  "stockISIN": "US0378331005",
-  "amount": "100",
-  "tokenAddress": "0xabcdef1234567890abcdef1234567890abcdef12",
-  "mintTxHash": "0x123abc456def789ghi012jkl345mno678pqr901stu234vwx567yz890",
-  "createdAt": "2025-01-22T10:30:00.000Z",
-  "mintedAt": "2025-01-22T10:32:15.000Z"
-}
-```
-</CodeGroup>
-
-The status field indicates the current state:
-<ResponseField name="status" type="string">
-  <Expandable title="possible values">
-    <ResponseField name="locked" type="string">
-      Position is locked, awaiting mint request
-    </ResponseField>
-    <ResponseField name="minting" type="string">
-      Token minting transaction is being processed
-    </ResponseField>
-    <ResponseField name="minted" type="string">
-      Tokens successfully minted to customer wallet
-    </ResponseField>
-    <ResponseField name="failed" type="string">
-      Operation failed, check error logs
-    </ResponseField>
-  </Expandable>
-</ResponseField>
 
 ## Client-Side Token Burning
 Users burn their tokens directly from their wallets. Below are implementation examples for different frameworks:
@@ -559,35 +437,6 @@ async function handleCompleteTokenBurn(tokenAddress, amount, apiKey) {
 - **Error Handling**: Always wrap in try-catch blocks
 - **Transaction Hash**: Required for the unlock endpoint
 - **Confirmation**: Wait for blockchain confirmation before calling unlock
-
-## Unlock Position
-Processes unlock request after customer burns tokens.
-<ParamField body="burnTxHash" type="string" required>
-  Transaction hash of the token burn operation
-</ParamField>
-<ParamField body="amount" type="string" required>
-  Amount of tokens burned
-</ParamField>
-<CodeGroup>
-```bash Unlock Position
-curl -X POST https://trusser-issuer-backend.vercel.app/api/stock-exchange/unlock \
-  -H "Content-Type: application/json" \
-  -H "x-api-key: your-api-key-here" \
-  -d '{
-    "burnTxHash": "0x789def012abc345ghi678jkl901mno234pqr567stu890vwx123yz456",
-    "amount": "100"
-  }'
-```
-</CodeGroup>
-<CodeGroup>
-```json Unlock Response
-{
-  "confirmation": true,
-  "lockId": "LOCK-1642857600000-a1b2c3d4e5f6",
-  "status": "unlocking"
-}
-```
-</CodeGroup>
 
 ## Webhook Events
 Your system will receive webhook notifications for key events. Configure your webhook URL during partner onboarding.
