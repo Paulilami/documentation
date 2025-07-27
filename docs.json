@@ -64,16 +64,13 @@
             "group": "Getting Started",
             "pages": [
               "overview",
-              "introduction",
-              "how-to-guide"
+              "introduction"
             ]
           },
           {
             "group": "Core Protocol",
             "pages": [
-              "protocol-architecture",
-              "performance"
-            ]
+              "protocol-architecture"            ]
           }
         ]
       },
@@ -81,9 +78,19 @@
         "tab": "Products",
         "groups": [
           {
+            "group": "Infrastructure",
+            "pages": [
+              "instances",
+              "white-label",
+              "identity-certificates",
+              "learn-oracles",
+              "payment-automations",
+              "multi-chain-bridge"
+            ]
+          },
+          {
             "group": "Tokenization",
             "pages": [
-              "token-creation",
               "token-issuance",
               "asset-management"
             ]
@@ -94,15 +101,6 @@
               "trading-platform",
               "asset-financing",
               "collateralized-loans"
-            ]
-          },
-          {
-            "group": "Infrastructure",
-            "pages": [
-              "identity-certificates",
-              "learn-oracles",
-              "payment-automations",
-              "multi-chain-bridge"
             ]
           }
         ]

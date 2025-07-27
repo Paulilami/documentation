@@ -1,0 +1,155 @@
+---
+title: 'Create Token'
+api: 'POST /api/issuance/tokens'
+---
+
+Deploy a new ERC1400 compliant security token with configurable compliance rules.
+
+<ParamField body="name" type="string" required>
+  Token name (3-32 characters)
+</ParamField>
+
+<ParamField body="symbol" type="string" required>
+  Token symbol (2-8 characters)
+</ParamField>
+
+<ParamField body="initialSupply" type="string" required>
+  Initial token supply
+</ParamField>
+
+<ParamField body="decimals" type="number" required>
+  Token decimals (0-18)
+</ParamField>
+
+<ParamField body="recipient" type="string" required>
+  Wallet address to receive initial supply
+</ParamField>
+
+<ParamField body="maxSupply" type="string" optional>
+  Maximum supply limit (defaults to initial supply)
+</ParamField>
+
+<ParamField body="maxPerWallet" type="string" optional>
+  Maximum tokens per wallet (0 = unlimited)
+</ParamField>
+
+<ParamField body="monthlyLimit" type="string" optional>
+  Monthly transfer limit per wallet (0 = unlimited)
+</ParamField>
+
+<ParamField body="authority" type="string" optional>
+  Additional authority address for compliance operations
+</ParamField>
+
+<ParamField body="feeReceiver" type="string" optional>
+  Address to receive collected fees
+</ParamField>
+
+<ParamField body="feeBps" type="number" optional>
+  Fee in basis points (100 = 1%)
+</ParamField>
+
+<ParamField body="flags" type="number" optional>
+  Bitwise flags for token features
+</ParamField>
+
+<ParamField body="assetType" type="number" optional>
+  Asset classification (0 = EQUITY, 1 = BOND, etc.)
+</ParamField>
+
+<ParamField body="headerImage" type="string" optional>
+  IPFS hash for token image
+</ParamField>
+
+<ParamField body="instanceId" type="string" optional>
+  Instance ID for token association
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/issuance/tokens" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_INSTANCE_API_KEY" \
+  -d '{
+    "name": "Real Estate Token",
+    "symbol": "RET",
+    "initialSupply": "1000000",
+    "decimals": 18,
+    "recipient": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+    "maxPerWallet": "10000",
+    "flags": 7,
+    "assetType": 3
+  }'
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/issuance/tokens', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_INSTANCE_API_KEY'
+  },
+  body: JSON.stringify({
+    name: 'Real Estate Token',
+    symbol: 'RET',
+    initialSupply: '1000000',
+    decimals: 18,
+    recipient: '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+    maxPerWallet: '10000',
+    flags: 7,
+    assetType: 3
+  })
+});
+
+const data = await response.json();
+
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/issuance/tokens',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_INSTANCE_API_KEY'
+    },
+    json={
+        'name': 'Real Estate Token',
+        'symbol': 'RET',
+        'initialSupply': '1000000',
+        'decimals': 18,
+        'recipient': '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+        'maxPerWallet': '10000',
+        'flags': 7,
+        'assetType': 3
+    }
+)
+
+data = response.json()
+
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/issuance/tokens',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_INSTANCE_API_KEY'
+    },
+    json={
+        'name': 'Real Estate Token',
+        'symbol': 'RET',
+        'initialSupply': '1000000',
+        'decimals': 18,
+        'recipient': '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+        'maxPerWallet': '10000',
+        'flags': 7,
+        'assetType': 3
+    }
+)
+
+data = response.json()
+```
+/RequestExample>
+<ResponseExample>
+```json Response
+{
+  "id": "clm1234567890abcdef",
+  "success": true
+}
+```
+</ResponseExample>

@@ -1,152 +1,108 @@
 ---
 title: "Asset Management"
-description: "Advanced token management interface with automated data fetching and role-based controls"
+description: "API-based token management and compliance controls"
 ---
 
-Manage all aspects of your security tokens through a single interface. The platform automatically fetches token data based on roles and provides complete control over transfers, compliance, and investor management.
+Manage issued tokens through our API endpoints. All operations respect the compliance rules embedded in your tokens at creation.
 
-## Automated Data Management
+## Management APIs
 
-The platform continuously monitors your tokens and presents all information in one unified interface. No manual data entry or complex integrations required.
+Token management is handled through REST APIs that enforce your configured compliance rules automatically.
 
 <Columns cols={2}>
-  <Card title="Real-time Updates" icon="list">
-    Token balances, holder counts, and transaction history update automatically across all connected networks.
+  <Card title="Token Operations" icon="coins">
+    Mint new tokens, burn existing supply, and manage transfers through simple API calls.
   </Card>
   
-  <Card title="Complete Visualization" icon="chart-line">
-    Interactive charts, holder analytics, and compliance status displayed in clear, actionable dashboards.
+  <Card title="Compliance Controls" icon="shield">
+    Freeze accounts, manage whitelists, and enforce KYC requirements programmatically.
   </Card>
 </Columns>
 
-## Core Management Functions
+## Core Functions
 
-Access all token management capabilities through role-based controls that respect your token's configuration.
+### Supply Management
+
+**Minting**: Issue new tokens to specified addresses (if enabled)
+- Automatic compliance checks before minting
+- Optional fee collection based on token configuration
+- Supply limit enforcement
+
+**Burning**: Permanently remove tokens from circulation
+- Reduces total supply
+- Updates on-chain registries
+- Maintains audit trail
+
+### Account Controls
+
+**Freeze/Unfreeze**: Temporarily halt token transfers for specific addresses
+- Instant enforcement across all operations
+- Maintains token balance while frozen
+- Reversible through API call
+
+**Whitelist Management**: Control who can hold and transfer tokens
+- Add or remove addresses in bulk
+- Automatic transfer validation
+- Works with KYC verification
+
+### Token Information
+
+**Real-time Data**: Query current token state and configuration
+- Total supply and burned amounts
+- Holder counts and distributions
+- Active restrictions and limits
+
+## Compliance Enforcement
+
+All management operations automatically enforce the compliance rules set during token creation:
+
+- **KYC Requirements**: Transfers blocked for non-verified addresses
+- **Whitelist Restrictions**: Only approved addresses can receive tokens
+- **Balance Limits**: Maximum holdings per wallet enforced
+- **Monthly Limits**: Transfer volume restrictions per period
+
+## API Endpoints
 
 ### Token Operations
+- `POST /api/token/{tokenAddress}/mint` - Issue new tokens
+- `POST /api/token/{tokenAddress}/burn` - Burn tokens
+- `GET /api/token/{tokenAddress}/info` - Get token details
+- `GET /api/tokens` - List all managed tokens
 
-<Accordion title="Transfer Management">
-  **Send Tokens**: Transfer tokens to individual addresses with automatic compliance checking.
+### Compliance Controls
+- `POST /api/token/{tokenAddress}/freeze` - Freeze account
+- `POST /api/token/{tokenAddress}/unfreeze` - Unfreeze account
+- `POST /api/token/{tokenAddress}/whitelist` - Manage whitelist
+
+## Integration Pattern
+
+```javascript
+// Example: Mint tokens with compliance check
+const mintTokens = async (tokenAddress, recipient, amount) => {
+  const response = await fetch(`/api/token/${tokenAddress}/mint`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': 'YOUR_INSTANCE_API_KEY'
+    },
+    body: JSON.stringify({
+      to: recipient,
+      amount: amount
+    })
+  });
   
-  **Bulk Distribution**: Send tokens to multiple investors simultaneously with CSV upload or manual entry.
-  
-  **Transfer Restrictions**: All transfers automatically enforce KYC, whitelist, blacklist, and other compliance rules.
-</Accordion>
+  return response.json();
+};
+```
 
-<Accordion title="Supply Management">
-  **Mint New Tokens**: Create additional tokens if minting is enabled in your token configuration.
-  
-  **Burn Tokens**: Permanently remove tokens from circulation to reduce total supply.
-  
-  **Supply Monitoring**: Track total supply, burned supply, and active circulating tokens.
-</Accordion>
+## Webhook Events
+Monitor token operations in real-time through webhook notifications:
 
-<Accordion title="Account Controls">
-  **Freeze Accounts**: Temporarily block specific addresses from token transfers while maintaining other functionality.
-  
-  **User Status Management**: Set KYC verification, whitelist approval, and other compliance statuses for individual holders.
-  
-  **Role Management**: Assign and revoke administrative roles for token management functions.
-</Accordion>
+- **token_minted** - New tokens issued
+- **token_burned** - Tokens removed from circulation
+- **account_frozen** - Account restricted
+- **whitelist_updated** - Approved addresses changed
 
-### Compliance Features
-
-<Accordion title="Investor Management">
-  **Holder Directory**: Complete list of all token holders with balances, verification status, and transaction history.
-  
-  **Whitelist Control**: Add or remove addresses from approved investor lists.
-  
-  **Blacklist Management**: Block specific addresses from receiving or sending tokens.
-  
-  **KYC Tracking**: Monitor identity verification status for all token holders.
-</Accordion>
-
-<Accordion title="Document Management">
-  **Upload Documents**: Attach legal documents, certificates, and asset information directly to tokens using IPFS storage.
-  
-  **Document Library**: Organize and categorize all token-related documents in a searchable interface.
-  
-  **Version Control**: Track document updates and maintain historical versions for compliance.
-</Accordion>
-
-<Accordion title="Asset Metadata">
-  **Tag Management**: Add, edit, and remove searchable tags to categorize token properties.
-  
-  **Header Images**: Set and update visual representations for tokens.
-  
-  **Custom Fields**: Store additional asset information and metadata.
-</Accordion>
-
-## Role-Based Access
-
-The management interface adapts to your permissions within each token's access control system.
-
-<CardGroup cols={3}>
-  <Card title="Token Creator" icon="crown">
-    **Full Control**
-    All management functions, role assignment, fee withdrawal
-  </Card>
-  
-  <Card title="Authority Role" icon="shield">
-    **Compliance Management**
-    User status, freezing, whitelist/blacklist control
-  </Card>
-  
-  <Card title="Token Holder" icon="user">
-    **Basic Operations**
-    View holdings, transfer tokens, access documents
-  </Card>
-</CardGroup>
-
-## Export and Reporting
-
-Generate reports for compliance, auditing, and record-keeping.
-
-<Columns cols={2}>
-  <Card title="Metadata Export" icon="download">
-    **JSON Format**: Complete token data, holder information, and transaction history
-    
-    **PDF Reports**: Formatted compliance reports and token details
-  </Card>
-  
-  <Card title="Custom Reports" icon="file">
-    **Holder Analytics**: Detailed breakdowns of token distribution and holder demographics
-    
-    **Transaction Reports**: Complete audit trails for regulatory compliance
-  </Card>
-</Columns>
-
-## Interface Features
-
-The management platform provides intuitive tools for complex token operations:
-
-### Bulk Operations
-
-- **Multi-address Transfers**: Send tokens to dozens of investors simultaneously
-- **Batch Status Updates**: Apply KYC or whitelist status to multiple addresses
-- **CSV Import/Export**: Upload investor lists and export holder data
-
-### Real-time Monitoring
-
-- **Live Balance Updates**: See token distributions update in real-time
-- **Transaction Alerts**: Instant notifications for large transfers or compliance events
-- **Holder Analytics**: Track investor acquisition and token concentration
-
-### Compliance Dashboard
-
-- **Status Overview**: Visual indicators for KYC completion, whitelist status, and account health
-- **Restriction Tracking**: Monitor which addresses are frozen, blacklisted, or restricted
-- **Audit Trail**: Complete history of all management actions and compliance changes
-
-## Technical Integration
-
-The management interface automatically detects and adapts to your token's specific configuration:
-
-- **Feature Detection**: Interface shows only functions enabled in your token's flags
-- **Gas Optimization**: Batch operations minimize transaction costs
-- **Error Prevention**: Pre-flight checks prevent invalid operations
-- **Multi-network Support**: Manage tokens across different blockchain networks
-
-<Info>
-All management functions respect the compliance rules and transfer restrictions built into your token smart contract. The interface prevents operations that would violate your token's programmed compliance requirements.
-</Info>
+<Note>
+All management functions are available only to authorized API keys. Token creators maintain full control while authority roles handle compliance operations.
+</Note>

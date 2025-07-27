@@ -1,142 +1,67 @@
 ---
 title: "Token Issuance"
-description: "Create compliant security tokens using verification passes from licensed issuers"
+description: "Create and manage ERC1400 compliant security tokens"
 ---
 
-Verification passes enable compliant token creation through licensed issuers. These passes contain pre-approved parameters that ensure regulatory compliance from the start.
+Token issuance allows you to create digital representations of real-world assets. Tokens are deployed on-chain with built-in compliance rules and can be managed through our APIs.
 
-## What are Verification Passes
+## Contract Addresses
 
-Verification passes (vPasses) are encrypted certificates containing approved token parameters. Licensed issuers create these passes after completing legal and regulatory review of your asset.
+<table>
+  <thead>
+    <tr>
+      <th>Contract</th>
+      <th>Address</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>TokenFactory</td>
+      <td>`0x2bcd5CFa706418EC86796ca5E7e1642E5b1B99d5`</td>
+    </tr>
+    <tr>
+      <td>AssetRegister</td>
+      <td>`0x2e406dec8c905bf3f29088a1a790202595756202`</td>
+    </tr>
+    <tr>
+      <td>TokenMetadata</td>
+      <td>`0x83565d81737dc12952397311Fb50CeEBC6e29A3b`</td>
+    </tr>
+    <tr>
+      <td>CoreToken</td>
+      <td>`0x252e54c3D82a0642AdF541D997Cd3B45c847bD4f`</td>
+    </tr>
+  </tbody>
+</table>
 
-<Columns cols={2}>
-  <Card title="Pre-approved Parameters" icon="check">
-    Token settings reviewed and approved by licensed financial institutions.
-  </Card>
-  
-  <Card title="Instant Compliance" icon="shield">
-    All regulatory requirements built into the token at creation time.
-  </Card>
-</Columns>
+## Token Features
 
-## Issuer Network
+### Compliance Controls
+- **KYC Verification**: Automatic checks for recipient wallet compliance
+- **Whitelist/Blacklist**: Control who can hold and transfer tokens
+- **Transfer Restrictions**: Set maximum holdings per wallet and monthly limits
+- **Freeze Functionality**: Temporarily halt specific accounts
 
-Any licensed financial institution can join the issuer network. Users are matched with appropriate issuers based on location and regulatory requirements.
+### Token Operations
+- **Minting**: Issue new tokens to specified addresses
+- **Burning**: Permanently remove tokens from circulation
+- **Metadata**: Attach documents and tags to tokens
+- **Fee Collection**: Optional fees for minting, burning, or transfers
 
-<Steps>
-  <Step title="Issuer Matching">
-    System recommends the nearest issuer that can fulfill your specific asset type and jurisdictional requirements.
-  </Step>
-  
-  <Step title="Free Choice">
-    Users can select any licensed issuer from the network, not just the recommended one.
-  </Step>
-  
-  <Step title="Global Coverage">
-    Access to licensed issuers worldwide for different asset types and regulatory frameworks.
-  </Step>
-  
-  <Step title="Direct Connection">
-    Work directly with your chosen issuer through their dashboard or API integration.
-  </Step>
-</Steps>
+## Creation Process
 
-## How Verification Passes Work
+1. Configure token parameters (name, symbol, supply, compliance rules)
+2. Specify recipient wallet address
+3. System checks recipient KYC status automatically
+4. Token deploys on-chain with all rules embedded
+5. Receive token contract address for management
 
-The system connects asset owners with licensed issuers through secure verification passes stored both on-chain and off-chain.
+## API Endpoints
 
-<Steps>
-  <Step title="Asset Review">
-    Licensed issuer reviews your asset documentation and determines appropriate token parameters for regulatory compliance.
-  </Step>
-  
-  <Step title="Pass Creation">
-    Issuer creates verification pass containing approved token settings. Pass is stored on-chain and encrypted data stored off-chain.
-  </Step>
-  
-  <Step title="Automatic Delivery">
-    Verification pass appears in your interface automatically when issued to your wallet address.
-  </Step>
-  
-  <Step title="One-Click Creation">
-    Select the verification pass and approve to create compliant tokens immediately.
-  </Step>
-</Steps>
+- `POST /api/issuance/tokens` - Deploy new security tokens
+- `GET /api/issuance/tokens` - List all tokens created by your instance
+- `PATCH /api/issuance/tokens/{id}` - Track deployment progress
 
-## Pass Structure
-
-Verification passes contain specific data required for compliant token creation:
-
-<Accordion title="Token Parameters">
-  **Basic Settings**: Name, symbol, supply, asset type
-  
-  **Compliance Rules**: KYC requirements, transfer restrictions, investor eligibility
-  
-  **Financial Terms**: Fee structures, supply limits, transfer limits
-</Accordion>
-
-<Accordion title="Locked Fields">
-  **Protected Parameters**: Critical compliance settings that cannot be modified by token creator
-  
-  **Flexible Parameters**: Settings that can be adjusted within approved ranges
-</Accordion>
-
-<Accordion title="Expiration">
-  **Time Limits**: Verification passes expire after set period to ensure current compliance
-  
-  **Single Use**: Each pass can only be used once to create tokens
-</Accordion>
-
-## Technical Implementation
-
-The verification pass system uses both on-chain and off-chain components for security and efficiency.
-
-### On-Chain Storage
-
-```solidity
-struct VPass {
-    string encryptedData;
-    address issuer;
-    address receiver;
-    uint256 expiresAt;
-    bool isUsed;
-    uint256 createdAt;
-}
-```
-
-### Off-Chain Encryption
-
-- Token parameters encrypted using AES-256-CBC
-- Encryption keys split between on-chain and off-chain storage
-- Only intended recipient can decrypt pass contents
-
-## Issuer Operations
-
-Licensed issuers can manage verification passes through multiple interfaces:
-
-<Columns cols={2}>
-  <Card title="Dashboard Interface" icon="browser">
-    Web-based interface for creating and managing verification passes for clients.
-  </Card>
-  
-  <Card title="API Integration" icon="code">
-    Direct API integration for issuers with existing systems and workflows.
-  </Card>
-</Columns>
-
-### Issuer Capabilities
-
-- **Pass Creation**: Generate verification passes for approved assets
-- **Pass Management**: View, deactivate, or modify active passes
-- **Client Tracking**: Monitor pass usage and token creation
-- **Compliance Reporting**: Generate reports for regulatory requirements
-
-## Security Features
-
-The verification pass system includes multiple security layers:
-
-- **Cryptographic Signatures**: All passes signed by issuer private keys
-- **Address Verification**: Passes locked to specific recipient addresses
-- **Expiration Controls**: Automatic expiration prevents stale approvals
-- **Usage Tracking**: Complete audit trail of pass creation and usage
-- **Rate Limiting**: Protection against spam and abuse
+<Note>
+All tokens are ERC1400 compliant and include transfer restrictions by default. KYC verification is checked automatically for recipient addresses.
+</Note>
