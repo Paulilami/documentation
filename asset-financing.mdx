@@ -1,153 +1,98 @@
 ---
 title: "Asset Financing"
-description: "Decentralized peer-to-peer financing for tokenized asset purchases with no intermediaries"
+description: "Peer-to-peer financing for tokenized asset purchases"
 ---
 
-The first decentralized financing system for tokenized assets. Secure any tokenized asset with a down payment and pay the rest over time, connecting borrowers directly to asset sellers without banks or financial institutions.
-
-## On-Chain Financing
-
-Direct peer-to-peer asset financing through smart contracts. Asset sellers become lenders, receiving all repayments with competitive returns. Buyers access financing for any tokenized asset with fair rates and no ongoing fees.
-
-<Steps>
-  <Step title="Select Asset">
-    Choose any tokenized asset with financing enabled. Set your preferred down payment percentage and loan duration.
-  </Step>
-  
-  <Step title="Make Down Payment">
-    Pay the required down payment (5-80% of asset value). Tokens are held in escrow until loan completion in a smart contract, fully automated.
-  </Step>
-  
-  <Step title="Monthly Payments">
-    Make monthly payments directly to the escrow contract. Interest rates calculated algorithmically based on down payment and duration.
-  </Step>
-  
-  <Step title="Asset Transfer">
-    Upon final payment, tokens transfer automatically from escrow to your wallet. No manual processes or intermediaries.
-  </Step>
-</Steps>
-
-## Key Advantages
-
-<Columns cols={2}>
-  <Card title="No Middlemen" icon="users-slash">
-    **Direct borrower-to-seller financing**
-    
-    No banks, no loan officers, no financial institutions. Smart contracts handle everything automatically.
-  </Card>
-  
-  <Card title="Zero Ongoing Fees" icon="dollar-sign">
-    **Only pay interest, nothing else**
-    
-    No origination fees, processing fees, or management charges. Just the agreed interest rate.
-  </Card>
-  
-  <Card title="Universal Access" icon="globe">
-    **Finance any tokenized asset**
-    
-    Real estate, art, collectibles, intellectual property. If it's tokenized, it can be financed.
-  </Card>
-  
-  <Card title="Fair Rates" icon="chart-bar">
-    **Algorithmic rate calculation**
-    
-    Interest rates calculated automatically based on down payment percentage and loan duration. No arbitrary pricing.
-  </Card>
-</Columns>
+Asset financing enables buyers to purchase tokens with partial down payments. Sellers act as lenders, receiving monthly payments with interest.
 
 ## How It Works
 
-### For Buyers
+<Steps>
+  <Step title="Down Payment">
+    Buyer pays 25-80% of asset value. Lower down payments result in higher interest rates.
+  </Step>
+  
+  <Step title="Escrow Lock">
+    Tokens held in smart contract escrow. Released to buyer upon full payment completion.
+  </Step>
+  
+  <Step title="Monthly Payments">
+    Automated monthly payments to seller. Interest calculated based on down payment and duration.
+  </Step>
+  
+  <Step title="Completion">
+    Final payment triggers automatic token transfer from escrow to buyer.
+  </Step>
+</Steps>
 
-The system enables asset purchases with partial down payments. Tokens are held in escrow during the financing period, transferring to the buyer upon completion.
+## Key Features
 
-<Accordion title="Down Payment Options">
-  Choose down payment between 5-80% of asset value. Higher down payments result in lower interest rates and better loan terms.
-</Accordion>
+<Columns cols={3}>
+  <Card title="Automated Escrow" icon="lock">
+    **Smart contract custody**
+    
+    Tokens locked until loan completion. No manual intervention required.
+  </Card>
+  
+  <Card title="Credit Verification" icon="shield-check">
+    **On-chain credit scores**
+    
+    Borrower history tracked. Defaults result in system-wide restrictions.
+  </Card>
+  
+  <Card title="Default Protection" icon="hands">
+    **Seller protection**
+    
+    On default: tokens return to seller, keeps down payment + 2.5% penalty.
+  </Card>
+</Columns>
 
-<Accordion title="Flexible Terms">
-  Loan durations up to 30 years. Monthly payments calculated automatically based on total loan amount plus interest.
-</Accordion>
+## Interest Rates
 
-<Accordion title="Credit Building">
-  Successful loan completion improves your credit score for better rates on future financing. Default results in being added to a redlist that restricts the user from our, and our partners ecosystem(s).
-</Accordion>
+Algorithmically calculated based on down payment percentage:
 
-### For Sellers/Lenders
+| Down Payment | Typical Rate | Max Duration |
+|--------------|--------------|--------------|
+| 25-40% | 12-15% APR | 5 years |
+| 40-60% | 8-12% APR | 10 years |
+| 60-80% | 4-8% APR | 30 years |
 
-Asset sellers receive immediate down payments and monthly income streams with competitive returns on their assets.
+## Technical Implementation
 
-<Accordion title="Immediate Liquidity">
-  Receive substantial down payment immediately while retaining asset ownership until loan completion.
-</Accordion>
+```solidity
+struct Mortgage {
+    address borrower;
+    address lender;
+    uint256 tokenAmount;
+    uint256 totalLoanAmount;
+    uint256 monthlyPayment;
+    uint256 remainingAmount;
+    MortgageStatus status;
+}
+```
 
-<Accordion title="Predictable Returns">
-  Monthly payment schedule provides predictable income stream with interest rates typically higher than traditional investments.
-</Accordion>
+**The MortgageManager contract handles:**
 
-<Accordion title="Default Protection">
-  Automatic default handling returns the asset to the seller while keeping 25% of the payments already received. In every case, the seller earns a compensation fee of min. 2,5% taken from the required down payment.
-</Accordion>
+- Payment processing and tracking
+- Interest rate calculation
+- Default detection and penalties
+- Escrow release conditions
 
-## Interest Rate Calculation
+## Configuration
+Enable financing when creating listings:
 
-Rates are calculated algorithmically based on objective factors:
+```json
+{
+  "enableMortgage": true,
+  "mortgageTerms": {
+    "maxDuration": 31536000,  // 1 year in seconds
+    "minDownPayment": 2500,    // 25% in basis points
+    "qualityBorrowers": true,  // Require good credit
+    "paymentToken": "0x..."    // USDC or ETH
+  }
+}
+```
 
-| Down Payment | Duration | Typical Rate Range |
-|--------------|----------|-------------------|
-| 5-25% | 1-5 years | 12-15% |
-| 25-50% | 1-10 years | 8-12% |
-| 50-80% | 1-30 years | 4-8% |
-
-<Info>
-Actual rates vary based on exact down payment percentage and loan duration. The system rewards higher down payments with significantly lower rates.
-</Info>
-
-## Default Protection
-
-The system protects both parties through automated escrow and penalty mechanisms:
-
-### For Lenders
-- Tokens remain in escrow until loan completion
-- Default returns tokens to original seller
-- Seller keeps 25% of all payments made plus default penalty (compensation fee)
-- No legal proceedings or collection processes needed
-
-### For Borrowers
-- Clear payment schedules with no hidden fees
-- Grace periods for late payments
-- Credit score improvements for on-time payments
-- Partial refunds on defaults based on payments made
-
-## Requirements
-
-### To Finance a Purchase
-- **Identity Verification**: Complete KYC process for compliance
-- **Down Payment**: 5-80% of asset value in accepted payment tokens
-- **Credit Standing**: Good credit score preferred for better rates
-
-### To Enable Financing on Listings
-- **Asset Verification**: Asset must be properly tokenized and verified
-- **Terms Configuration**: Set down payment requirements and maximum loan duration
-- **Quality Restrictions**: Optional restriction to borrowers with good credit only
-
-<Warning>
-This is a peer-to-peer lending system. Sellers assume credit risk in exchange for competitive returns. Buyers should ensure they can meet payment obligations before committing or they will lose a part of their funds and cannot access services anymore.
-</Warning>
-
-## Technical Features
-
-- **Automated Escrow**: Smart contracts hold tokens securely until loan completion
-- **Algorithmic Pricing**: Interest rates calculated automatically without human intervention
-- **Credit Tracking**: On-chain credit scores improve with successful loan completion
-- **Default Handling**: Automatic penalty calculation and asset return on default
-- **Payment Flexibility**: Support for ETH and ERC20 token payments
-
-## Revolutionary Impact
-
-This system enables:
-- **Portfolio Building**: Acquire valuable assets with smaller initial capital
-- **Global Access**: Finance assets regardless of geographic location
-- **Asset Liquidity**: Sellers can monetize assets while retaining ownership
-- **Fair Pricing**: Market-driven rates without institutional markup
-- **Privacy**: No extensive financial disclosure to third parties
+<Note>
+Financing terms are set per listing. Sellers control minimum down payment, maximum duration, and borrower requirements.
+</Note>

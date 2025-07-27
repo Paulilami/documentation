@@ -81,7 +81,6 @@
             "group": "Infrastructure",
             "pages": [
               "instances",
-              "white-label",
               "identity-certificates",
               "learn-oracles",
               "payment-automations",
@@ -96,8 +95,9 @@
             ]
           },
           {
-            "group": "Trading & Liquidity",
+            "group": "White-Label",
             "pages": [
+              "white-label",
               "trading-platform",
               "asset-financing",
               "collateralized-loans"

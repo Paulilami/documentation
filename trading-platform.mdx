@@ -1,97 +1,44 @@
 ---
 title: "Trading Platform"
-description: "Decentralized marketplace for tokenized asset trading with integrated compliance and financing"
+description: "Tokenized asset marketplace for your white-label deployment"
 ---
 
-A decentralized marketplace for trading tokenized real-world assets. We enable direct peer-to-peer trading of security tokens with built-in compliance and 3rd-party analytics, fractional ownership, and integrated financing options.
+The trading platform module enables peer-to-peer trading of security tokens within your white-label deployment. Available as an optional module during deployment.
 
-## How Trading Works
-
-Users trade security tokens representing fractional ownership of real-world assets. The marketplace operates entirely on-chain without centralized intermediaries controlling transactions or custody.
-
-<Steps>
-  <Step title="Identity Verification">
-    Add a KYC proof in less than 5 minutes to your identity certificate and you are ready to go.
-  </Step>
-  
-  <Step title="Asset Discovery">
-    Browse available tokenized assets or access private listings through whitelisted marketplaces.
-  </Step>
-  
-  <Step title="Execute Trades">
-    Purchase tokens directly, participate in auctions, or utilize asset financing for larger purchases.
-  </Step>
-  
-  <Step title="Asset Management">
-    Hold, transfer, or resell tokens with full ownership rights and compliance automation.
-  </Step>
-</Steps>
-
-## Trading Options
-
-The platform provides multiple ways to buy and sell tokenized assets:
+## Trading Methods
 
 <Columns cols={3}>
   <Card title="Direct Trading" icon="check">
     **Buy and sell immediately**
     
-    Set prices and execute trades instantly with available liquidity. No waiting periods or complex processes.
+    Set prices and execute trades instantly with available liquidity.
+  </Card>
+  
+  <Card title="Asset Financing" icon="credit-card">
+    **Financed purchases**
+    
+    Purchase assets with 25-80% down payments and structured payment plans.
   </Card>
   
   <Card title="Auctions" icon="gavel">
-    **Asset bidding**
+    **Competitive bidding**
     
-    Participate in auction-based price discovery for high-value assets. Coming soon.
-  </Card>
-  
-  <Card title="Asset Financing" icon="credit-card" href="/asset-financing">
-    **Financed purchases**
-    
-    Purchase assets with partial down payments and structured payment plans.
+    Price discovery for high-value assets. Coming in next update.
   </Card>
 </Columns>
 
-## Key Features
+<img src="/images/trading-interface.png" alt="Trading platform interface" />
 
-### Fractional Ownership
+## Compliance Integration
 
-Purchase any amount of tokens representing fractional asset ownership. Buy as little as 1 token or the entire asset supply based on your investment capacity.
+All trades enforce your token's compliance rules automatically:
+- KYC verification requirements
+- Transfer restrictions
+- Wallet limits
+- Geographic restrictions
 
-### Compliance Integration
-
-<Accordion title="Automated KYC Verification">
-  Identity verification requirements are enforced automatically through smart contracts. Only users with valid certificates can participate in trading.
-</Accordion>
-
-<Accordion title="Regulatory Compliance">
-  All trades comply with securities regulations through programmable transfer restrictions and automated compliance checks.
-</Accordion>
-
-<Accordion title="Private Markets">
-  Access whitelisted private marketplaces for exclusive asset offerings restricted to qualified investors based on your connected public key. Our interface handles the fetching automatically.
-</Accordion>
-
-### Admin-Key Management
-We distribute admin keys among trusted issuers and partners for compliance. Legally, we maintain control over contract updates until development is complete.
-
-### APIs
-Our APIs (coming soon) let anyone launch their own marketplace for security tokens. You can customize and deploy securely in minutes. This gives you two options: launch your project instantly on our existing marketplace with built-in buyers, or create your own marketplace from scratch.
-
-
-| Feature | Our Marketplace | Custom Marketplace |
-|---------|----------------|-------------------|
-| Setup Time | Immediate | Custom development |
-| Customization | Standard interface | Full customization |
-| Integration | Built-in | API-based |
-| Compliance | Automatic | Configurable |
+The platform connects directly to your instance's deployed tokens. No additional setup required.
 
 <Note>
-The platform currently supports security tokens created through our tokenization infrastructure. Support for general ERC1400 tokens is coming soon.
+Asset financing requires additional configuration for credit parameters and down payment requirements. Contact support for setup assistance.
 </Note>
-
-## Security Features
-
-- **Decentralized Architecture**: No central authority controls funds or trading decisions, keys are divided between the verified issuers
-- **Smart Contract Enforcement**: All compliance rules and transfer restrictions enforced automatically
-- **Transparent Operations**: All transactions and ownership changes recorded immutably on-chain
-- **Role-based Access**: Different permission levels for different types of market participants
