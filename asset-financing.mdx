@@ -78,21 +78,6 @@ struct Mortgage {
 - Default detection and penalties
 - Escrow release conditions
 
-## Configuration
-Enable financing when creating listings:
-
-```json
-{
-  "enableMortgage": true,
-  "mortgageTerms": {
-    "maxDuration": 31536000,  // 1 year in seconds
-    "minDownPayment": 2500,    // 25% in basis points
-    "qualityBorrowers": true,  // Require good credit
-    "paymentToken": "0x..."    // USDC or ETH
-  }
-}
-```
-
 <Note>
 Financing terms are set per listing. Sellers control minimum down payment, maximum duration, and borrower requirements.
 </Note>

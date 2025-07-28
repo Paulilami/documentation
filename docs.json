@@ -64,13 +64,8 @@
             "group": "Getting Started",
             "pages": [
               "overview",
-              "introduction"
+              "protocol-architecture"          
             ]
-          },
-          {
-            "group": "Core Protocol",
-            "pages": [
-              "protocol-architecture"            ]
           }
         ]
       },
@@ -78,13 +73,17 @@
         "tab": "Products",
         "groups": [
           {
-            "group": "Infrastructure",
+            "group": "Core",
             "pages": [
               "instances",
               "identity-certificates",
-              "learn-oracles",
-              "payment-automations",
-              "multi-chain-bridge"
+              "learn-oracles"
+            ]
+          },
+          {
+            "group": "Stock-Exchanges",
+            "pages": [
+              "stock-exchanges-intro"
             ]
           },
           {
