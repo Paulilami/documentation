@@ -1,0 +1,67 @@
+---
+title: "Stablecoin API"
+description: "API documentation for financial institutions to deploy and manage their own regulated stablecoins with built-in compliance and reserve management."
+---
+
+## Smart Contract Addresses (Ethereum Sepolia)
+
+| Contract | Address |
+|----------|---------|
+| StablecoinFactory | `0xf265EB7723d5493722e92C9dBF4E993d7b36D903` |
+
+## Overview
+
+This API enables banks and financial institutions to launch their own institutional-grade stablecoins with complete control over minting, burning, and compliance requirements. Each stablecoin is deployed as an independent smart contract with customizable parameters for regulatory compliance.
+
+The system provides:
+
+1. **Factory Deployment** - Deploy new stablecoins with custom parameters
+2. **Supply Management** - Mint and burn tokens with role-based access control
+3. **Compliance Integration** - Optional KYC/AML checks through our Identity Registry
+4. **Reserve Transparency** - On-chain and off-chain reserve attestation
+5. **Role Management** - Granular permissions for minting and burning operations
+
+## Authentication
+
+All API requests require authentication using your instance API key.
+
+<ParamField header="x-api-key" type="string" required>
+  Your unique API key provided during instance creation
+</ParamField>
+
+## Deployment Flow
+
+1. **Deploy Stablecoin** - Create your stablecoin with desired parameters
+2. **Grant Roles** - Assign minter/burner roles to authorized addresses
+3. **Mint Initial Supply** - Create initial token supply to designated addresses
+4. **Update Reserves** - Sync reserve data for transparency
+5. **Manage Operations** - Mint, burn, and monitor as needed
+
+## Key Features
+
+### Compliance Options
+- **KYC Required**: Enable mandatory identity verification for all transfers
+- **Monthly Limits**: Built-in minting limits per address
+- **Pausable**: Emergency pause functionality for regulatory compliance
+
+### Reserve Management
+- **On-chain URI**: Public reference to reserve attestation documents
+- **Off-chain Sync**: API endpoints to sync detailed reserve data
+- **Audit Trail**: Complete transaction history and role changes
+
+### Role-Based Access
+- **Admin Role**: Full control including pause/unpause and role management
+- **Minter Role**: Permission to create new tokens
+- **Burner Role**: Permission to destroy tokens
+
+## Testing
+
+Use Ethereum Sepolia testnet for integration testing. Test stablecoins can be deployed with minimal gas costs.
+
+## Regulatory Compliance
+
+This system is designed to meet institutional requirements including:
+- MiCA e-money token regulations
+- Basel III reserve requirements
+- AML/KYC compliance through optional identity checks
+- Complete audit trail of all operations

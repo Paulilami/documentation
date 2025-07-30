@@ -1,0 +1,97 @@
+---
+title: 'Deploy Stablecoin'
+api: 'POST /api/stablecoin/deploy'
+---
+
+Deploy a new regulated stablecoin with customizable parameters for compliance and reserve management.
+
+<ParamField body="name" type="string" required>
+  Name of the stablecoin (e.g., "Euro Stablecoin")
+</ParamField>
+
+<ParamField body="symbol" type="string" required>
+  Token symbol (e.g., "EURS")
+</ParamField>
+
+<ParamField body="decimals" type="number" default="6">
+  Number of decimal places (typically 6 for stablecoins)
+</ParamField>
+
+<ParamField body="kycRequired" type="boolean" default="false">
+  Enable mandatory KYC verification for all transfers
+</ParamField>
+
+<ParamField body="reserveDataURI" type="string" default="">
+  URI pointing to reserve attestation documents
+</ParamField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/stablecoin/deploy" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "name": "Euro Stablecoin",
+    "symbol": "EURS",
+    "decimals": 6,
+    "kycRequired": true,
+    "reserveDataURI": "https://reserves.example.com/eurs"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/stablecoin/deploy', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    name: 'Euro Stablecoin',
+    symbol: 'EURS',
+    decimals: 6,
+    kycRequired: true,
+    reserveDataURI: 'https://reserves.example.com/eurs'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/stablecoin/deploy',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'name': 'Euro Stablecoin',
+        'symbol': 'EURS',
+        'decimals': 6,
+        'kycRequired': True,
+        'reserveDataURI': 'https://reserves.example.com/eurs'
+    }
+)
+
+data = response.json()
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "success": true,
+  "stablecoinAddress": "0xf265EB7723d5493722e92C9dBF4E993d7b36D903",
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+  "name": "Euro Stablecoin",
+  "symbol": "EURS"
+}
+```
+
+</ResponseExample>

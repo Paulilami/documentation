@@ -1,0 +1,129 @@
+---
+title: 'Sync Reserve Data'
+api: 'POST /api/stablecoin/sync-reserves'
+---
+
+Synchronize off-chain reserve data for transparency and audit trail.
+
+<ParamField body="stablecoinAddress" type="string" required>
+  Address of the stablecoin contract
+</ParamField>
+
+<ParamField body="reserves" type="object" required>
+  Reserve data object
+  <Expandable title="reserves object">
+    <ParamField body="totalReserves" type="string">
+      Total reserves amount
+    </ParamField>
+    <ParamField body="currency" type="string">
+      Reserve currency (e.g., "USD", "EUR")
+    </ParamField>
+    <ParamField body="bankAccount" type="string">
+      Bank account identifier
+    </ParamField>
+    <ParamField body="custodian" type="string">
+      Custodian name
+    </ParamField>
+    <ParamField body="lastAuditDate" type="string">
+      ISO date of last audit
+    </ParamField>
+    <ParamField body="attestationUrl" type="string">
+      URL to attestation document
+    </ParamField>
+    <ParamField body="metadata" type="object">
+      Additional metadata
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/stablecoin/sync-reserves" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "stablecoinAddress": "0xf265EB7723d5493722e92C9dBF4E993d7b36D903",
+    "reserves": {
+      "totalReserves": "10000000",
+      "currency": "EUR",
+      "bankAccount": "DE89370400440532013000",
+      "custodian": "Deutsche Bank AG",
+      "lastAuditDate": "2024-01-15",
+      "attestationUrl": "https://audits.example.com/2024-01-15.pdf",
+      "metadata": {
+        "auditor": "Ernst & Young",
+        "reserveRatio": "1.05"
+      }
+    }
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/stablecoin/sync-reserves', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    stablecoinAddress: '0xf265EB7723d5493722e92C9dBF4E993d7b36D903',
+    reserves: {
+      totalReserves: '10000000',
+      currency: 'EUR',
+      bankAccount: 'DE89370400440532013000',
+      custodian: 'Deutsche Bank AG',
+      lastAuditDate: '2024-01-15',
+      attestationUrl: 'https://audits.example.com/2024-01-15.pdf',
+      metadata: {
+        auditor: 'Ernst & Young',
+        reserveRatio: '1.05'
+      }
+    }
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/stablecoin/sync-reserves',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'stablecoinAddress': '0xf265EB7723d5493722e92C9dBF4E993d7b36D903',
+        'reserves': {
+            'totalReserves': '10000000',
+            'currency': 'EUR',
+            'bankAccount': 'DE89370400440532013000',
+            'custodian': 'Deutsche Bank AG',
+            'lastAuditDate': '2024-01-15',
+            'attestationUrl': 'https://audits.example.com/2024-01-15.pdf',
+            'metadata': {
+                'auditor': 'Ernst & Young',
+                'reserveRatio': '1.05'
+            }
+        }
+    }
+)
+
+data = response.json()
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "success": true,
+  "message": "Reserve data synchronized"
+}
+```
+
+</ResponseExample>

@@ -1,0 +1,74 @@
+---
+title: 'Update Reserve Data URI'
+api: 'POST /api/stablecoin/update-reserves'
+---
+
+Update the on-chain URI pointing to reserve attestation documents.
+
+<ParamField body="stablecoinAddress" type="string" required>
+  Address of the stablecoin contract
+</ParamField>
+
+<ParamField body="reserveDataURI" type="string" required>
+  New URI for reserve attestation documents
+</ParamField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/stablecoin/update-reserves" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "stablecoinAddress": "0xf265EB7723d5493722e92C9dBF4E993d7b36D903",
+    "reserveDataURI": "https://reserves.example.com/eurs/2024-01"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/stablecoin/update-reserves', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    stablecoinAddress: '0xf265EB7723d5493722e92C9dBF4E993d7b36D903',
+    reserveDataURI: 'https://reserves.example.com/eurs/2024-01'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/stablecoin/update-reserves',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'stablecoinAddress': '0xf265EB7723d5493722e92C9dBF4E993d7b36D903',
+        'reserveDataURI': 'https://reserves.example.com/eurs/2024-01'
+    }
+)
+
+data = response.json()
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "success": true,
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+  "reserveDataURI": "https://reserves.example.com/eurs/2024-01"
+}
+```
+
+</ResponseExample>

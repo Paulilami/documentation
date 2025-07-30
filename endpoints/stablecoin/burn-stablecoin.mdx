@@ -1,0 +1,78 @@
+---
+title: 'Burn Tokens'
+api: 'POST /api/stablecoin/burn'
+---
+
+Burn stablecoin tokens to reduce supply. Requires burner role.
+
+<ParamField body="stablecoinAddress" type="string" required>
+  Address of the stablecoin contract
+</ParamField>
+
+<ParamField body="amount" type="string" required>
+  Amount of tokens to burn
+</ParamField>
+
+<ParamField body="from" type="string">
+  Address to burn from (optional, defaults to caller)
+</ParamField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/stablecoin/burn" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "stablecoinAddress": "0xf265EB7723d5493722e92C9dBF4E993d7b36D903",
+    "amount": "5000"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/stablecoin/burn', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    stablecoinAddress: '0xf265EB7723d5493722e92C9dBF4E993d7b36D903',
+    amount: '5000'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/stablecoin/burn',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'stablecoinAddress': '0xf265EB7723d5493722e92C9dBF4E993d7b36D903',
+        'amount': '5000'
+    }
+)
+
+data = response.json()
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "success": true,
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+  "amount": "5000"
+}
+```
+
+</ResponseExample>

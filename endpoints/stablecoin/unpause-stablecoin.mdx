@@ -1,0 +1,66 @@
+---
+title: 'Unpause Stablecoin'
+api: 'POST /api/stablecoin/unpause'
+---
+
+Resume stablecoin operations after emergency pause. Requires admin role.
+
+<ParamField body="stablecoinAddress" type="string" required>
+  Address of the stablecoin contract
+</ParamField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/stablecoin/unpause" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "stablecoinAddress": "0xf265EB7723d5493722e92C9dBF4E993d7b36D903"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/stablecoin/unpause', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    stablecoinAddress: '0xf265EB7723d5493722e92C9dBF4E993d7b36D903'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/stablecoin/unpause',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'stablecoinAddress': '0xf265EB7723d5493722e92C9dBF4E993d7b36D903'
+    }
+)
+
+data = response.json()
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "success": true,
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab"
+}
+```
+
+</ResponseExample>

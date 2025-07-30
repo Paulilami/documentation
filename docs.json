@@ -108,7 +108,26 @@
         "tab": "APIs",
         "groups": [
           {
-            "group": "Stock Exchange",
+            "group": "Stablecoin",
+            "pages": [
+              "stablecoin-intro",
+              "endpoints/stablecoin/deploy-stablecoin",
+              "endpoints/stablecoin/mint-stablecoin",
+              "endpoints/stablecoin/burn-stablecoin",
+              "endpoints/stablecoin/grant-role",
+              "endpoints/stablecoin/revoke-role",
+              "endpoints/stablecoin/update-reserves",
+              "endpoints/stablecoin/sync-reserves",
+              "endpoints/stablecoin/get-stablecoin-info",
+              "endpoints/stablecoin/list-stablecoins",
+              "endpoints/stablecoin/get-transactions",
+              "endpoints/stablecoin/pause-stablecoin",
+              "endpoints/stablecoin/unpause-stablecoin",
+              "endpoints/stablecoin/check-roles"
+            ]
+          },
+          {
+            "group": "Stock Tokenization",
             "pages": [
               "stock-exchanges",
               "endpoints/stock-exchange/lock-position",
@@ -118,7 +137,7 @@
             ]
           },
           {
-            "group": "Balancer Exchange",
+            "group": "Decentralized Exchange",
             "pages": [
               "balancer-exchange",
               "endpoints/balancer-exchange/create-pool",
@@ -137,7 +156,7 @@
             ]
           },
           {
-            "group": "Overcollaterlized Loans",
+            "group": "Collateralized Loans",
             "pages": [
               "stock-loans",
                 "endpoints/lending/create-pool",

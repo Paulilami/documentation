@@ -1,0 +1,82 @@
+---
+title: 'Grant Role'
+api: 'POST /api/stablecoin/grant-role'
+---
+
+Grant minter or burner role to an address for stablecoin operations.
+
+<ParamField body="stablecoinAddress" type="string" required>
+  Address of the stablecoin contract
+</ParamField>
+
+<ParamField body="account" type="string" required>
+  Address to grant role to
+</ParamField>
+
+<ParamField body="role" type="string" required>
+  Role to grant: "minter" or "burner"
+</ParamField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/stablecoin/grant-role" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "stablecoinAddress": "0xf265EB7723d5493722e92C9dBF4E993d7b36D903",
+    "account": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+    "role": "minter"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/stablecoin/grant-role', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    stablecoinAddress: '0xf265EB7723d5493722e92C9dBF4E993d7b36D903',
+    account: '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+    role: 'minter'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/stablecoin/grant-role',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'stablecoinAddress': '0xf265EB7723d5493722e92C9dBF4E993d7b36D903',
+        'account': '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+        'role': 'minter'
+    }
+)
+
+data = response.json()
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Response
+{
+  "success": true,
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+  "account": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+  "role": "minter"
+}
+```
+
+</ResponseExample>
