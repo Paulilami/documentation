@@ -1,6 +1,6 @@
 ---
 title: 'Execute Swap'
-api: 'POST /api/balancer-exchange/swap/execute'
+api: 'POST /api/balancer/swap/execute'
 ---
 
 Record the execution of a swap transaction. This endpoint is called after the user has successfully executed the swap transaction on-chain.
@@ -23,7 +23,7 @@ Record the execution of a swap transaction. This endpoint is called after the us
 
 <RequestExample>
 ```bash cURL
-curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/swap/execute" \
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer/swap/execute" \
   -H "Content-Type: application/json" \
   -H "x-api-key: YOUR_API_KEY" \
   -d '{
@@ -35,7 +35,7 @@ curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/sw
 ```
 
 ```javascript JavaScript
-const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer-exchange/swap/execute', {
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/swap/execute', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const data = await response.json();
 import requests
 
 response = requests.post(
-    'https://trusser-issuer-backend.vercel.app/api/balancer-exchange/swap/execute',
+    'https://trusser-issuer-backend.vercel.app/api/balancer/swap/execute',
     headers={
         'Content-Type': 'application/json',
         'x-api-key': 'YOUR_API_KEY'

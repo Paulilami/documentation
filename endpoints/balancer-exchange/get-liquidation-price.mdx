@@ -1,6 +1,6 @@
 ---
 title: 'Get Liquidation Price'
-api: 'GET /api/balancer-exchange/leverage/liquidation-price/{positionId}'
+api: 'GET /api/balancer/leverage/liquidation-price/{positionId}'
 ---
 
 Get the liquidation price and health metrics for a specific leveraged position.
@@ -11,12 +11,12 @@ Get the liquidation price and health metrics for a specific leveraged position.
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/leverage/liquidation-price/position123" \
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/balancer/leverage/liquidation-price/position123" \
   -H "x-api-key: YOUR_API_KEY"
 ```
 
 ```javascript JavaScript
-const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer-exchange/leverage/liquidation-price/position123', {
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/leverage/liquidation-price/position123', {
   method: 'GET',
   headers: {
     'x-api-key': 'YOUR_API_KEY'
@@ -30,7 +30,7 @@ const data = await response.json();
 import requests
 
 response = requests.get(
-    'https://trusser-issuer-backend.vercel.app/api/balancer-exchange/leverage/liquidation-price/position123',
+    'https://trusser-issuer-backend.vercel.app/api/balancer/leverage/liquidation-price/position123',
     headers={
         'x-api-key': 'YOUR_API_KEY'
     }

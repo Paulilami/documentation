@@ -1,6 +1,6 @@
 ---
 title: 'Search Pools'
-api: 'GET /api/balancer-exchange/pools/search/{stockISIN}'
+api: 'GET /api/balancer/pools/search/{stockISIN}'
 ---
 
 Search for a liquidity pool by stock ISIN. If a pool doesn't exist, it will be created automatically.
@@ -11,12 +11,12 @@ Search for a liquidity pool by stock ISIN. If a pool doesn't exist, it will be c
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/search/US0378331005" \
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/balancer/pools/search/US0378331005" \
   -H "x-api-key: YOUR_API_KEY"
 ```
 
 ```javascript JavaScript
-const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/search/US0378331005', {
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/pools/search/US0378331005', {
   method: 'GET',
   headers: {
     'x-api-key': 'YOUR_API_KEY'
@@ -30,7 +30,7 @@ const data = await response.json();
 import requests
 
 response = requests.get(
-    'https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/search/US0378331005',
+    'https://trusser-issuer-backend.vercel.app/api/balancer/pools/search/US0378331005',
     headers={
         'x-api-key': 'YOUR_API_KEY'
     }

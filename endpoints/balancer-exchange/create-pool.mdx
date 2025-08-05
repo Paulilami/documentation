@@ -1,6 +1,6 @@
 ---
 title: 'Create Pool'
-api: 'POST /api/balancer-exchange/pools/create'
+api: 'POST /api/balancer/pools/create'
 ---
 
 Create a new liquidity pool for a tokenized stock. If a pool doesn't exist for the specified stock, it will be created automatically.
@@ -27,7 +27,7 @@ Create a new liquidity pool for a tokenized stock. If a pool doesn't exist for t
 
 <RequestExample>
 ```bash cURL
-curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/create" \
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer/pools/create" \
   -H "Content-Type: application/json" \
   -H "x-api-key: YOUR_API_KEY" \
   -d '{
@@ -40,7 +40,7 @@ curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/po
 ```
 
 ```javascript JavaScript
-const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/create', {
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/pools/create', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ const data = await response.json();
 import requests
 
 response = requests.post(
-    'https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/create',
+    'https://trusser-issuer-backend.vercel.app/api/balancer/pools/create',
     headers={
         'Content-Type': 'application/json',
         'x-api-key': 'YOUR_API_KEY'

@@ -1,6 +1,6 @@
 ---
 title: 'Get Positions'
-api: 'GET /api/balancer-exchange/leverage/positions/{address}'
+api: 'GET /api/balancer/leverage/positions/{address}'
 ---
 
 Get all open leveraged positions for a specific user address.
@@ -11,12 +11,12 @@ Get all open leveraged positions for a specific user address.
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/leverage/positions/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4" \
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/balancer/leverage/positions/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4" \
   -H "x-api-key: YOUR_API_KEY"
 ```
 
 ```javascript JavaScript
-const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer-exchange/leverage/positions/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4', {
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/leverage/positions/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4', {
   method: 'GET',
   headers: {
     'x-api-key': 'YOUR_API_KEY'
@@ -30,7 +30,7 @@ const data = await response.json();
 import requests
 
 response = requests.get(
-    'https://trusser-issuer-backend.vercel.app/api/balancer-exchange/leverage/positions/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+    'https://trusser-issuer-backend.vercel.app/api/balancer/leverage/positions/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
     headers={
         'x-api-key': 'YOUR_API_KEY'
     }

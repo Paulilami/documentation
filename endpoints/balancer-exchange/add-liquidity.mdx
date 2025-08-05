@@ -1,6 +1,6 @@
 ---
 title: 'Add Liquidity'
-api: 'POST /api/balancer-exchange/pools/{poolId}/liquidity/add'
+api: 'POST /api/balancer/pools/{poolId}/liquidity/add'
 ---
 
 Add liquidity to a Balancer pool. Users provide both tokens in proportion to earn trading fees.
@@ -23,7 +23,7 @@ Add liquidity to a Balancer pool. Users provide both tokens in proportion to ear
 
 <RequestExample>
 ```bash cURL
-curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/add" \
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/add" \
   -H "Content-Type: application/json" \
   -H "x-api-key: YOUR_API_KEY" \
   -d '{
@@ -34,7 +34,7 @@ curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/po
 ```
 
 ```javascript JavaScript
-const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/add', {
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/add', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ const data = await response.json();
 import requests
 
 response = requests.post(
-    'https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/add',
+    'https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/add',
     headers={
         'Content-Type': 'application/json',
         'x-api-key': 'YOUR_API_KEY'

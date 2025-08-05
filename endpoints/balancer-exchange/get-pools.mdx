@@ -1,18 +1,18 @@
 ---
 title: 'Get All Pools'
-api: 'GET /api/balancer-exchange/pools'
+api: 'GET /api/balancer/pools'
 ---
 
 Get all active pools created by the authenticated issuer.
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools" \
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/balancer/pools" \
   -H "x-api-key: YOUR_API_KEY"
 ```
 
 ```javascript JavaScript
-const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools', {
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/pools', {
   method: 'GET',
   headers: {
     'x-api-key': 'YOUR_API_KEY'
@@ -26,7 +26,7 @@ const data = await response.json();
 import requests
 
 response = requests.get(
-    'https://trusser-issuer-backend.vercel.app/api/balancer-exchange/pools',
+    'https://trusser-issuer-backend.vercel.app/api/balancer/pools',
     headers={
         'x-api-key': 'YOUR_API_KEY'
     }
