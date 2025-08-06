@@ -25,6 +25,14 @@ Deploy a new regulated stablecoin with customizable parameters for compliance an
   URI pointing to reserve attestation documents
 </ParamField>
 
+<ParamField body="transferFeeBps" type="number" default="0">
+  Transfer fee in basis points (1 bps = 0.01%, max 1000 bps = 10%)
+</ParamField>
+
+<ParamField body="feeRecipient" type="string">
+  Address to receive transfer fees (defaults to admin if not specified)
+</ParamField>
+
 <RequestExample>
 
 ```bash cURL
@@ -36,7 +44,9 @@ curl -X POST "https://trusser-issuer-backend.vercel.app/api/stablecoin/deploy" \
     "symbol": "EURS",
     "decimals": 6,
     "kycRequired": true,
-    "reserveDataURI": "https://reserves.example.com/eurs"
+    "reserveDataURI": "https://reserves.example.com/eurs",
+    "transferFeeBps": 50,
+    "feeRecipient": "0x9876543210987654321098765432109876543210"
   }'
 ```
 
@@ -52,7 +62,9 @@ const response = await fetch('https://trusser-issuer-backend.vercel.app/api/stab
     symbol: 'EURS',
     decimals: 6,
     kycRequired: true,
-    reserveDataURI: 'https://reserves.example.com/eurs'
+    reserveDataURI: 'https://reserves.example.com/eurs',
+    transferFeeBps: 50,
+    feeRecipient: '0x9876543210987654321098765432109876543210'
   })
 });
 
@@ -73,7 +85,9 @@ response = requests.post(
         'symbol': 'EURS',
         'decimals': 6,
         'kycRequired': True,
-        'reserveDataURI': 'https://reserves.example.com/eurs'
+        'reserveDataURI': 'https://reserves.example.com/eurs',
+        'transferFeeBps': 50,
+        'feeRecipient': '0x9876543210987654321098765432109876543210'
     }
 )
 
@@ -87,7 +101,7 @@ data = response.json()
 ```json Response
 {
   "success": true,
-  "stablecoinAddress": "0xf265EB7723d5493722e92C9dBF4E993d7b36D903",
+  "stablecoinAddress": "0xBDdEB75beb9A604dE5C82495f1331E0A4E7b2f15",
   "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
   "name": "Euro Stablecoin",
   "symbol": "EURS"

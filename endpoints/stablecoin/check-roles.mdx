@@ -3,7 +3,7 @@ title: 'Check Account Roles'
 api: 'GET /api/stablecoin/roles/{stablecoinAddress}/{account}'
 ---
 
-Check which roles an account has for a specific stablecoin.
+Check which roles an account has for a specific stablecoin, plus frozen status and mint limits.
 
 <ParamField path="stablecoinAddress" type="string" required>
   Address of the stablecoin contract
@@ -16,12 +16,12 @@ Check which roles an account has for a specific stablecoin.
 <RequestExample>
 
 ```bash cURL
-curl -X GET "https://trusser-issuer-backend.vercel.app/api/stablecoin/roles/0xf265EB7723d5493722e92C9dBF4E993d7b36D903/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4" \
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/stablecoin/roles/0xBDdEB75beb9A604dE5C82495f1331E0A4E7b2f15/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4" \
   -H "x-api-key: YOUR_API_KEY"
 ```
 
 ```javascript JavaScript
-const response = await fetch('https://trusser-issuer-backend.vercel.app/api/stablecoin/roles/0xf265EB7723d5493722e92C9dBF4E993d7b36D903/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4', {
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/stablecoin/roles/0xBDdEB75beb9A604dE5C82495f1331E0A4E7b2f15/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4', {
   method: 'GET',
   headers: {
     'x-api-key': 'YOUR_API_KEY'
@@ -35,7 +35,7 @@ const data = await response.json();
 import requests
 
 response = requests.get(
-    'https://trusser-issuer-backend.vercel.app/api/stablecoin/roles/0xf265EB7723d5493722e92C9dBF4E993d7b36D903/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+    'https://trusser-issuer-backend.vercel.app/api/stablecoin/roles/0xBDdEB75beb9A604dE5C82495f1331E0A4E7b2f15/0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
     headers={
         'x-api-key': 'YOUR_API_KEY'
     }
@@ -54,8 +54,12 @@ data = response.json()
   "roles": {
     "minter": true,
     "burner": false,
+    "freezer": true,
+    "recovery": false,
     "admin": false
-  }
+  },
+  "frozen": false,
+  "mintLimit": "1000000"
 }
 ```
 

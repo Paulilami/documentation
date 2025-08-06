@@ -16,7 +16,7 @@ curl -X POST "https://trusser-issuer-backend.vercel.app/api/stablecoin/pause" \
   -H "Content-Type: application/json" \
   -H "x-api-key: YOUR_API_KEY" \
   -d '{
-    "stablecoinAddress": "0xf265EB7723d5493722e92C9dBF4E993d7b36D903"
+    "stablecoinAddress": "0xBDdEB75beb9A604dE5C82495f1331E0A4E7b2f15"
   }'
 ```
 
@@ -28,7 +28,7 @@ const response = await fetch('https://trusser-issuer-backend.vercel.app/api/stab
     'x-api-key': 'YOUR_API_KEY'
   },
   body: JSON.stringify({
-    stablecoinAddress: '0xf265EB7723d5493722e92C9dBF4E993d7b36D903'
+    stablecoinAddress: '0xBDdEB75beb9A604dE5C82495f1331E0A4E7b2f15'
   })
 });
 
@@ -45,7 +45,7 @@ response = requests.post(
         'x-api-key': 'YOUR_API_KEY'
     },
     json={
-        'stablecoinAddress': '0xf265EB7723d5493722e92C9dBF4E993d7b36D903'
+        'stablecoinAddress': '0xBDdEB75beb9A604dE5C82495f1331E0A4E7b2f15'
     }
 )
 
@@ -59,7 +59,7 @@ data = response.json()
 ```json Response
 {
   "success": true,
-  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab"
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890ab"
 }
 ```
 

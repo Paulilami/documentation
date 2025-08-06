@@ -111,19 +111,54 @@
             "group": "Stablecoin",
             "pages": [
               "stablecoin-intro",
-              "endpoints/stablecoin/deploy-stablecoin",
-              "endpoints/stablecoin/mint-stablecoin",
-              "endpoints/stablecoin/burn-stablecoin",
-              "endpoints/stablecoin/grant-role",
-              "endpoints/stablecoin/revoke-role",
-              "endpoints/stablecoin/update-reserves",
-              "endpoints/stablecoin/sync-reserves",
-              "endpoints/stablecoin/get-stablecoin-info",
-              "endpoints/stablecoin/list-stablecoins",
-              "endpoints/stablecoin/get-transactions",
-              "endpoints/stablecoin/pause-stablecoin",
-              "endpoints/stablecoin/unpause-stablecoin",
-              "endpoints/stablecoin/check-roles"
+              {
+                "group": "Deployment",
+                "pages": [
+                  "endpoints/stablecoin/deploy-stablecoin"
+                ]
+              },
+              {
+                "group": "Supply Management", 
+                "pages": [
+                  "endpoints/stablecoin/mint-stablecoin",
+                  "endpoints/stablecoin/burn-stablecoin"
+                ]
+              },
+              {
+                "group": "Role Management",
+                "pages": [
+                  "endpoints/stablecoin/grant-role",
+                  "endpoints/stablecoin/revoke-role",
+                  "endpoints/stablecoin/check-roles"
+                ]
+              },
+              {
+                "group": "Compliance & Security",
+                "pages": [
+                  "endpoints/stablecoin/freeze-account",
+                  "endpoints/stablecoin/unfreeze-account", 
+                  "endpoints/stablecoin/recover-funds",
+                  "endpoints/stablecoin/set-mint-limit",
+                  "endpoints/stablecoin/pause-stablecoin",
+                  "endpoints/stablecoin/unpause-stablecoin"
+                ]
+              },
+              {
+                "group": "Configuration",
+                "pages": [
+                  "endpoints/stablecoin/set-transfer-fee",
+                  "endpoints/stablecoin/update-reserves",
+                  "endpoints/stablecoin/sync-reserves"
+                ]
+              },
+              {
+                "group": "Data & Analytics",
+                "pages": [
+                  "endpoints/stablecoin/get-stablecoin-info",
+                  "endpoints/stablecoin/list-stablecoins",
+                  "endpoints/stablecoin/get-transactions"
+                ]
+              }
             ]
           },
           {
@@ -159,23 +194,24 @@
             "group": "Collateralized Loans",
             "pages": [
               "stock-loans",
-                "endpoints/lending/create-pool",
-                "endpoints/lending/batch-create-pools",
-                "endpoints/lending/get-pool-info",
-                "endpoints/lending/deposit",
-                "endpoints/lending/borrow",
-                "endpoints/lending/get-positions",
-                "endpoints/lending/repay",
-                "endpoints/lending/liquidate",
-                "endpoints/lending/update-price",
-                "endpoints/lending/batch-update-prices",
-                "endpoints/lending/get-pool-analytics",
-                "endpoints/lending/get-user-analytics",
-                "endpoints/lending/sync-pool-data"
+              "endpoints/lending/create-pool",
+              "endpoints/lending/batch-create-pools",
+              "endpoints/lending/get-pool-info",
+              "endpoints/lending/deposit",
+              "endpoints/lending/borrow",
+              "endpoints/lending/get-positions",
+              "endpoints/lending/repay",
+              "endpoints/lending/liquidate",
+              "endpoints/lending/update-price",
+              "endpoints/lending/batch-update-prices",
+              "endpoints/lending/get-pool-analytics",
+              "endpoints/lending/get-user-analytics",
+              "endpoints/lending/sync-pool-data"
             ]
           }
         ]
-      }    ],
+      }
+    ],
     "global": {
       "anchors": [
         {

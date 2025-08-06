@@ -7,7 +7,9 @@ description: "API documentation for financial institutions to deploy and manage 
 
 | Contract | Address |
 |----------|---------|
-| StablecoinFactory | `0xf265EB7723d5493722e92C9dBF4E993d7b36D903` |
+| StablecoinFactory | `0xBDdEB75beb9A604dE5C82495f1331E0A4E7b2f15` |
+| ReserveOracle | `0x4650E6B694b0b334718Dd39Cc3A0fcfa058b3E3b` |
+| Stablecoin Implementation | `0xC893FB728c8075321af404201EA3e833266f8cA8` |
 
 ## Overview
 
@@ -15,11 +17,13 @@ This API enables banks and financial institutions to launch their own institutio
 
 The system provides:
 
-1. **Factory Deployment** - Deploy new stablecoins with custom parameters
-2. **Supply Management** - Mint and burn tokens with role-based access control
+1. **Factory Deployment** - Deploy new stablecoins with custom parameters including transfer fees
+2. **Supply Management** - Mint and burn tokens with role-based access control and limits
 3. **Compliance Integration** - Optional KYC/AML checks through our Identity Registry
-4. **Reserve Transparency** - On-chain and off-chain reserve attestation
-5. **Role Management** - Granular permissions for minting and burning operations
+4. **Account Management** - Freeze and unfreeze addresses for regulatory compliance
+5. **Reserve Transparency** - On-chain and off-chain reserve attestation
+6. **Fund Recovery** - Recover funds from frozen accounts for regulatory purposes
+7. **Role Management** - Granular permissions for minting, burning, freezing, and recovery operations
 
 ## Authentication
 
@@ -32,27 +36,38 @@ All API requests require authentication using your instance API key.
 ## Deployment Flow
 
 1. **Deploy Stablecoin** - Create your stablecoin with desired parameters
-2. **Grant Roles** - Assign minter/burner roles to authorized addresses
-3. **Mint Initial Supply** - Create initial token supply to designated addresses
-4. **Update Reserves** - Sync reserve data for transparency
-5. **Manage Operations** - Mint, burn, and monitor as needed
+2. **Grant Roles** - Assign minter/burner/freezer roles to authorized addresses
+3. **Set Limits** - Configure monthly minting limits for compliance
+4. **Mint Initial Supply** - Create initial token supply to designated addresses
+5. **Update Reserves** - Sync reserve data for transparency
+6. **Manage Operations** - Mint, burn, freeze, and monitor as needed
 
 ## Key Features
 
 ### Compliance Options
 - **KYC Required**: Enable mandatory identity verification for all transfers
-- **Monthly Limits**: Built-in minting limits per address
+- **Monthly Limits**: Built-in minting limits per address for regulatory compliance
+- **Account Freezing**: Freeze and unfreeze addresses as required by regulators
+- **Fund Recovery**: Recover funds from frozen accounts for court orders or regulatory requirements
 - **Pausable**: Emergency pause functionality for regulatory compliance
+
+### Transfer Fees
+- **Configurable Fees**: Set transfer fees up to 10% (1000 basis points)
+- **Platform Fee Share**: 25% platform fee automatically applied to protocol
+- **Custom Recipients**: Route fees to designated addresses
 
 ### Reserve Management
 - **On-chain URI**: Public reference to reserve attestation documents
 - **Off-chain Sync**: API endpoints to sync detailed reserve data
+- **Oracle Integration**: Automatic reserve updates through SimpleReserveOracle
 - **Audit Trail**: Complete transaction history and role changes
 
 ### Role-Based Access
 - **Admin Role**: Full control including pause/unpause and role management
-- **Minter Role**: Permission to create new tokens
-- **Burner Role**: Permission to destroy tokens
+- **Minter Role**: Permission to create new tokens with limits
+- **Burner Role**: Permission to destroy tokens from self or approved accounts
+- **Freezer Role**: Permission to freeze and unfreeze accounts
+- **Recovery Role**: Permission to recover funds from frozen accounts
 
 ## Testing
 
@@ -65,3 +80,5 @@ This system is designed to meet institutional requirements including:
 - Basel III reserve requirements
 - AML/KYC compliance through optional identity checks
 - Complete audit trail of all operations
+- Account freezing capabilities for regulatory enforcement
+- Fund recovery mechanisms for court orders
