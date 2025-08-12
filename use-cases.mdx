@@ -1,0 +1,139 @@
+---
+title: "Use Cases"
+description: "Real-world implementations of Trusset's tokenization infrastructure"
+icon: "sparkles"
+---
+
+## Transform Traditional Finance with One-Click Integration
+
+<CardGroup cols={2}>
+ <Card title="Integrate an 'Invest Now' Button" icon="hand-holding-dollar">
+   Enable direct investment in compliant security tokens from any website. Every token is backed by real investment contracts under licensed brokerage rules. Support up to 149 private investors or €8 million in public raises while maintaining full issuer control.
+ </Card>
+
+ <Card title="Add 'Tokenize It' to Banking Platforms" icon="building-columns">
+   Licensed trading platforms can integrate stock tokenization with less than 20 lines of code. Issue MiCA-compliant Asset-Referenced Tokens that track stock prices through debt instruments, avoiding weeks of prospectus approvals.
+ </Card>
+
+ <Card title="Distribute Profits Automatically" icon="chart-line">
+   Send dividends to millions of token holders in a single transaction. Built-in profit distribution for security tokens, stablecoins, and tokenized stocks. Set it once and let the system handle recurring payments.
+ </Card>
+
+ <Card title="Batch Tokenization via Backend Sync" icon="link">
+   Synchronize customer and asset data securely without storage. Verify KYC for thousands of users on-chain in one batch. Mint multiple asset types after a single 10-minute setup.
+ </Card>
+
+ <Card title="Enable Instant Liquidity" icon="droplet">
+   Token holders can borrow against their assets in seconds. Deposit ERC1400 security tokens or ERC20 stock certificates as collateral. Receive USDC or other stablecoins immediately through integrated DeFi protocols.
+ </Card>
+
+ <Card title="Deploy White-Label Exchanges" icon="store">
+   Launch a complete investor platform with integrated KYC verification under your brand in minutes. Choose from tokenization, marketplace, financing, and overcollateralized-loan modules. Deploy to your domain with custom themes and access requirements.
+ </Card>
+
+ <Card title="Create Compliant Stablecoins" icon="coins">
+   Issue custom stablecoins with role-based permissions. Define minting rights, transfer restrictions, and compliance rules. Perfect for central bank digital currencies and institutional settlement tokens.
+ </Card>
+
+ <Card title="Automate Price Feeds" icon="satellite-dish">
+   Connect real-world asset prices to on-chain tokens. Set up direct oracle feeds for any tokenized asset. Vault system automatically handles transaction costs and updates.
+ </Card>
+
+ <Card title="Enable Mortgage-Style Financing" icon="house">
+   First-ever on-chain buy-now-pay-later for real assets. Buyers make down payments while assets are held in escrow. Complete monitoring interfaces for both borrowers and lenders.
+ </Card>
+
+ <Card title="Track Everything with Webhooks" icon="webhook">
+   Monitor all token operations in real-time. Receive instant notifications for mints, transfers, and compliance events. Optional secret authentication for enhanced security.
+ </Card>
+</CardGroup>
+
+## Implementation Examples
+
+### Stock Tokenization Flow
+```javascript
+// 1. Lock stock position
+const lockResponse = await trusset.stocks.lock({
+ isin: "US0378331005",
+ quantity: 100,
+ userId: "customer-123"
+});
+
+// 2. Mint tokenized certificates
+const mintResponse = await trusset.stocks.mint({
+ lockId: lockResponse.id,
+ walletAddress: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
+});
+
+// 3. Customer burns tokens when ready
+// Partner receives webhook to unlock original position
+```
+
+### Profit Distribution
+```javascript
+// One transaction, unlimited recipients.
+// Choose between fixes amounts or variable percentages.
+await trusset.tokens.distribute({
+  tokenAddress: "0x166de8506945798E1aC312A8009102a8c377AE6B",
+  recipients: investorAddresses, // Can be millions
+  amountPerToken: "0.05", // 5 cents per token
+  currency: "USDC"
+});
+```
+
+### KYC Batch Verification
+```javascript
+// Sync and verify in one call
+const batchResult = await trusset.kyc.batchVerify({
+  users: customerData, // Array of user objects
+  level: "basic", // or "enhanced"
+  createProofs: true
+});
+// All users now have on-chain verification
+```
+
+## Integration Speed
+
+<Steps>
+  <Step title="Request API Access">
+    Submit your license details and get approved within 24 hours
+  </Step>
+  <Step title="Test in Sandbox">
+    Full testing environment with mock data and test tokens
+  </Step>
+  <Step title="Go Live">
+    Deploy to production with one configuration change
+  </Step>
+</Steps>
+
+## Compliance Built-In
+
+Every transaction meets regulatory requirements:
+
+- MiCA Compliant: Asset-Referenced Tokens follow EU digital asset regulations
+- MiFID II Ready: Licensed partners maintain full regulatory compliance
+- KYC/AML Integrated: Zero-knowledge proofs preserve privacy while ensuring compliance
+- Audit Trail: Complete transaction history for regulatory reporting
+
+## Security Features
+<CardGroup cols={3}>
+  <Card title="Multi-Sig Controls" icon="shield-halved">
+    Critical operations can require multiple signatures
+  </Card>
+  <Card title="Role-Based Access" icon="user-shield">
+    Granular permissions for different user types
+  </Card>
+  <Card title="Audit Logging" icon="scroll">
+    Immutable on-chain record of all activities
+  </Card>
+</CardGroup>
+
+## Ready to Start?
+<CardGroup cols={2}>
+  <Card title="API Documentation" icon="book" href="/stablecoin-intro">
+    Complete reference for all tokenization endpoints
+  </Card>
+  <Card title="Get API Keys" icon="key" href="https://issuers.trusset.org/">
+    Request access and start building in minutes
+  </Card>
+</CardGroup>

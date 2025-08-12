@@ -64,7 +64,8 @@
             "group": "Getting Started",
             "pages": [
               "overview",
-              "protocol-architecture"          
+              "protocol-architecture",
+              "use-cases"
             ]
           }
         ]
