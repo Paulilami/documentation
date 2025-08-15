@@ -1,0 +1,77 @@
+---
+title: 'Get Pending Actions'
+api: 'GET /api/corporate-actions/pending'
+---
+
+Retrieve all pending corporate actions for your instance that are scheduled but not yet executed.
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/corporate-actions/pending" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "x-instance-id: YOUR_INSTANCE_ID"
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/corporate-actions/pending', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_TOKEN',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  }
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    'https://trusser-issuer-backend.vercel.app/api/corporate-actions/pending',
+    headers={
+        'Authorization': 'Bearer YOUR_TOKEN',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "actions": [
+    {
+      "actionId": "ACTION-SPLIT-123",
+      "stockISIN": "US0378331005",
+      "tokenAddress": "0x1234567890123456789012345678901234567890",
+      "actionType": "STOCK_SPLIT",
+      "actionData": {
+        "ratio": 2,
+        "divisor": 1
+      },
+      "scheduledTime": "2025-02-01T00:00:00Z",
+      "status": "SCHEDULED",
+      "externalReference": "SPLIT-2025-001"
+    },
+    {
+      "actionId": "ACTION-DIV-456",
+      "stockISIN": "US0378331005",
+      "tokenAddress": "0x1234567890123456789012345678901234567890",
+      "actionType": "DIVIDEND_CASH",
+      "actionData": {
+        "amount": "1000000",
+        "paymentDate": "2025-03-15T00:00:00Z",
+        "paymentToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+      },
+      "scheduledTime": "2025-03-01T00:00:00Z",
+      "status": "SCHEDULED",
+      "externalReference": "DIV-Q1-2025"
+    }
+  ],
+  "count": 2
+}
+```
+</ResponseExample>

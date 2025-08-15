@@ -1,0 +1,80 @@
+---
+title: 'Schedule Trading Halt'
+api: 'POST /api/corporate-actions/schedule/trading-halt'
+---
+
+Schedule a temporary trading halt for a tokenized stock. This will pause all transfers at the specified time.
+
+<ParamField body="stockISIN" type="string" required>
+  The ISIN of the stock to halt
+</ParamField>
+
+<ParamField body="scheduledTime" type="string" required>
+  ISO 8601 timestamp for when the trading halt should execute
+</ParamField>
+
+<ParamField body="externalReference" type="string">
+  External reference ID for tracking
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/corporate-actions/schedule/trading-halt" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "x-instance-id: YOUR_INSTANCE_ID" \
+  -d '{
+    "stockISIN": "US0378331005",
+    "scheduledTime": "2025-02-15T14:30:00Z",
+    "externalReference": "HALT-NEWS-2025"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/corporate-actions/schedule/trading-halt', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_TOKEN',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  },
+  body: JSON.stringify({
+    stockISIN: 'US0378331005',
+    scheduledTime: '2025-02-15T14:30:00Z',
+    externalReference: 'HALT-NEWS-2025'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/corporate-actions/schedule/trading-halt',
+    headers={
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer YOUR_TOKEN',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    },
+    json={
+        'stockISIN': 'US0378331005',
+        'scheduledTime': '2025-02-15T14:30:00Z',
+        'externalReference': 'HALT-NEWS-2025'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "actionId": "ACTION-HALT-1234567890",
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab"
+}
+```
+</ResponseExample>

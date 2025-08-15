@@ -119,7 +119,7 @@
                 ]
               },
               {
-                "group": "Supply Management", 
+                "group": "Supply Management",
                 "pages": [
                   "endpoints/stablecoin/mint-stablecoin",
                   "endpoints/stablecoin/burn-stablecoin"
@@ -137,7 +137,7 @@
                 "group": "Compliance & Security",
                 "pages": [
                   "endpoints/stablecoin/freeze-account",
-                  "endpoints/stablecoin/unfreeze-account", 
+                  "endpoints/stablecoin/unfreeze-account",
                   "endpoints/stablecoin/recover-funds",
                   "endpoints/stablecoin/set-mint-limit",
                   "endpoints/stablecoin/pause-stablecoin",
@@ -163,13 +163,50 @@
             ]
           },
           {
-            "group": "Stock Tokenization",
+            "group": "Stock Exchange",
             "pages": [
-              "stock-exchanges",
-              "endpoints/stock-exchange/lock-position",
-              "endpoints/stock-exchange/mint-tokens", 
-              "endpoints/stock-exchange/unlock-position",
-              "endpoints/stock-exchange/get-status"
+              "stock-exchanges-intro",
+              {
+                "group": "Position Management",
+                "pages": [
+                  "endpoints/stock-exchange/lock-position",
+                  "endpoints/stock-exchange/mint-tokens",
+                  "endpoints/stock-exchange/unlock-position",
+                  "endpoints/stock-exchange/get-status"
+                ]
+              },
+              {
+                "group": "Corporate Actions",
+                "pages": [
+                  "endpoints/stock-exchange/schedule-stock-split",
+                  "endpoints/stock-exchange/schedule-dividend",
+                  "endpoints/stock-exchange/schedule-delisting",
+                  "endpoints/stock-exchange/schedule-trading-halt",
+                  "endpoints/stock-exchange/execute-action",
+                  "endpoints/stock-exchange/execute-batch",
+                  "endpoints/stock-exchange/cancel-action",
+                  "endpoints/stock-exchange/get-pending",
+                  "endpoints/stock-exchange/get-token-actions"
+                ]
+              },
+              {
+                "group": "Dividend Management",
+                "pages": [
+                  "endpoints/stock-exchange/create-dividend-pool",
+                  "endpoints/stock-exchange/fund-pool",
+                  "endpoints/stock-exchange/close-pool",
+                  "endpoints/stock-exchange/get-pool-info"
+                ]
+              },
+              {
+                "group": "Compliance & Controls",
+                "pages": [
+                  "endpoints/stock-exchange/pause-trading",
+                  "endpoints/stock-exchange/resume-trading",
+                  "endpoints/stock-exchange/blacklist-address",
+                  "endpoints/stock-exchange/create-snapshot"
+                ]
+              }
             ]
           },
           {

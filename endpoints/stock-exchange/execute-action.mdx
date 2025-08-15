@@ -1,0 +1,53 @@
+---
+title: 'Execute Corporate Action'
+api: 'POST /api/corporate-actions/execute/{actionId}'
+---
+
+Execute a scheduled corporate action. The action must be in scheduled state and past its scheduled time.
+
+<ParamField path="actionId" type="string" required>
+  The unique identifier of the action to execute
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/corporate-actions/execute/ACTION-1234567890" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "x-instance-id: YOUR_INSTANCE_ID"
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/corporate-actions/execute/ACTION-1234567890', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_TOKEN',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  }
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/corporate-actions/execute/ACTION-1234567890',
+    headers={
+        'Authorization': 'Bearer YOUR_TOKEN',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab"
+}
+```
+</ResponseExample>

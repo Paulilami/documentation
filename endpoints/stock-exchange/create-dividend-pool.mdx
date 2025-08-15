@@ -1,0 +1,82 @@
+---
+title: 'Create Dividend Pool'
+api: 'POST /api/corporate-actions/dividend/pool/create'
+---
+
+Create a dividend distribution pool for a tokenized stock. This pool will hold funds for dividend payments to token holders.
+
+<ParamField body="stockISIN" type="string" required>
+  The ISIN of the stock
+</ParamField>
+
+<ParamField body="paymentToken" type="string" required>
+  Contract address of the payment token
+</ParamField>
+
+<ParamField body="amount" type="string" required>
+  Initial funding amount for the pool
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/corporate-actions/dividend/pool/create" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "x-instance-id: YOUR_INSTANCE_ID" \
+  -d '{
+    "stockISIN": "US0378331005",
+    "paymentToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "amount": "1000000"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/corporate-actions/dividend/pool/create', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_TOKEN',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  },
+  body: JSON.stringify({
+    stockISIN: 'US0378331005',
+    paymentToken: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    amount: '1000000'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/corporate-actions/dividend/pool/create',
+    headers={
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer YOUR_TOKEN',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    },
+    json={
+        'stockISIN': 'US0378331005',
+        'paymentToken': '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        'amount': '1000000'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+  "tokenAddress": "0x1234567890123456789012345678901234567890",
+  "paymentToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  "amount": "1000000"
+}
+```
+</ResponseExample>

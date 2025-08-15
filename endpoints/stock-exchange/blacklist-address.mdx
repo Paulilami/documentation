@@ -1,0 +1,81 @@
+---
+title: 'Blacklist Address'
+api: 'POST /api/corporate-actions/blacklist'
+---
+
+Add or remove an address from the blacklist for a specific stock token. Blacklisted addresses cannot receive or transfer the token.
+
+<ParamField body="stockISIN" type="string" required>
+  The ISIN of the stock
+</ParamField>
+
+<ParamField body="account" type="string" required>
+  The Ethereum address to blacklist or unblacklist
+</ParamField>
+
+<ParamField body="status" type="boolean" required>
+  True to blacklist, false to remove from blacklist
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/corporate-actions/blacklist" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "x-instance-id: YOUR_INSTANCE_ID" \
+  -d '{
+    "stockISIN": "US0378331005",
+    "account": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+    "status": true
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/corporate-actions/blacklist', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_TOKEN',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  },
+  body: JSON.stringify({
+    stockISIN: 'US0378331005',
+    account: '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+    status: true
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/corporate-actions/blacklist',
+    headers={
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer YOUR_TOKEN',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    },
+    json={
+        'stockISIN': 'US0378331005',
+        'account': '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4',
+        'status': True
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+  "account": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+  "blacklisted": true
+}
+```
+</ResponseExample>

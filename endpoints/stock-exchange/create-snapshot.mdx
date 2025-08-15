@@ -1,0 +1,71 @@
+---
+title: 'Create Snapshot'
+api: 'POST /api/corporate-actions/snapshot/{stockISIN}'
+---
+
+Create a balance snapshot for a tokenized stock. Snapshots record token balances at a specific point in time, useful for dividends and voting.
+
+<ParamField path="stockISIN" type="string" required>
+  The ISIN of the stock
+</ParamField>
+
+<ParamField body="purpose" type="string">
+  Description of why the snapshot is being created
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/corporate-actions/snapshot/US0378331005" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "x-instance-id: YOUR_INSTANCE_ID" \
+  -d '{
+    "purpose": "Q1 2025 Dividend Distribution"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/corporate-actions/snapshot/US0378331005', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_TOKEN',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  },
+  body: JSON.stringify({
+    purpose: 'Q1 2025 Dividend Distribution'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/corporate-actions/snapshot/US0378331005',
+    headers={
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer YOUR_TOKEN',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    },
+    json={
+        'purpose': 'Q1 2025 Dividend Distribution'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "snapshotId": "42",
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+  "totalSupply": "1000000.0"
+}
+```
+</ResponseExample>

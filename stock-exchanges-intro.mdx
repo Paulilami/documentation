@@ -1,69 +1,98 @@
 ---
-title: "Stock Exchange Integration"
-description: "Transform your exchange with instant stock tokenization, 24/7 trading, and collateralized lending"
+title: 'Stock Exchange APIs'
+description: 'Complete infrastructure for tokenizing stocks and managing corporate actions'
 ---
 
-Enable your clients to tokenize stocks in seconds, trade 24/7, and access instant liquidity—all through one API integration. No blockchain expertise required.
+The Stock Exchange API provides comprehensive functionality for tokenizing real-world stocks, managing corporate actions, and ensuring regulatory compliance.
 
-## Three Core Services
+## Overview
 
-### 1. Instant Stock Tokenization
+Our Stock Exchange infrastructure enables:
 
-Convert any stock position into MiCA-compliant Asset Reference Tokens (ARTs) with one click. Your clients lock their shares, we mint tokens instantly. No prospectus approvals, no weeks of waiting.
+- **Stock Tokenization**: Convert traditional stocks into blockchain tokens
+- **Corporate Actions**: Execute stock splits, dividends, delistings, and trading halts
+- **Lifecycle Management**: Track positions from lock to unlock
+- **Regulatory Compliance**: Built-in controls for trading halts and blacklisting
+- **Dividend Distribution**: Automated dividend pools and payments
 
-**Key Features:**
-- Automatic token creation using international stock IDs (ISINs)
-- Full MiCA compliance without securities complexity
-- Lock-mint-trade workflow completed in seconds
-- Revenue sharing on every tokenization
+## Key Features
 
-[View Tokenization APIs →](/stock-exchanges)
+<CardGroup cols={2}>
+  <Card title="Position Locking" icon="lock">
+    Lock underlying stock positions before tokenization
+  </Card>
+  
+  <Card title="Token Minting" icon="coins">
+    Mint blockchain tokens representing locked stocks
+  </Card>
+  
+  <Card title="Corporate Actions" icon="building">
+    Execute splits, dividends, and other corporate events
+  </Card>
+  
+  <Card title="Compliance Controls" icon="shield">
+    Trading halts, blacklisting, and regulatory tools
+  </Card>
+</CardGroup>
 
-### 2. Decentralized 24/7 Trading
+## Architecture
 
-Powered by Balancer V2, your clients can trade tokenized stocks around the clock. Weighted pools (80% stock / 20% USDC) handle selling pressure while providing deep liquidity.
+The Stock Exchange system consists of three main components:
 
-**Trading Options:**
-- Direct swaps between stock tokens and stablecoins
-- Liquidity provision to earn trading fees
-- Leveraged trading with 2-10x multipliers
-- Real-time price discovery through AMM mechanics
+1. **Stock Factory Contract**: Deploys and manages stock tokens
+2. **Corporate Actions Module**: Schedules and executes corporate events
+3. **Dividend Distributor**: Manages dividend pools and payments
 
-[View Exchange APIs →](/balancer-exchange)
+## Authentication
 
-### 3. Overcollateralized Lending
+All endpoints require API key authentication:
 
-Your clients can unlock liquidity without selling positions. Deposit tokenized stocks as collateral and receive USDC loans within seconds.
+```bash
+curl -H "x-api-key: YOUR_API_KEY"
+```
 
-**Lending Features:**
-- Isolated lending pools for each stock token
-- Competitive rates driven by market demand
-- Automated liquidation through Balancer pools
-- Deposit tokens to earn yield from borrowers
+For admin endpoints, include a Bearer token:
 
-[View Lending APIs →](/stock-loans)
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN"
+```
 
-## Integration Process
+## Workflow
 
-1. **Get API Access** - Create an instance and receive your API keys
-2. **Test Integration** - Use our Sepolia testnet environment
-3. **Configure Services** - Choose which services to enable
-4. **Go Live** - Deploy to your production environment
+<Steps>
+  <Step title="Lock Position">
+    Lock the underlying stock position to prevent trading
+  </Step>
+  
+  <Step title="Mint Tokens">
+    Create blockchain tokens representing the locked stocks
+  </Step>
+  
+  <Step title="Trade & Transfer">
+    Tokens can be freely traded on-chain
+  </Step>
+  
+  <Step title="Burn & Unlock">
+    Burn tokens to unlock the underlying stock position
+  </Step>
+</Steps>
 
-## Why Stock Exchanges Choose Trusset
+## API Categories
 
-**Regulatory Certainty**  
-MiCA-compliant ARTs avoid complex securities frameworks. Launch confidently across European markets.
-
-**Complete Solution**  
-The only platform offering tokenization, trading, AND lending through one integration.
-
-**Revenue Sharing**  
-Earn fees on every trade, every loan, every transaction. Our success is your success.
-
-**Zero Technical Overhead**  
-We handle all blockchain infrastructure. You focus on your clients.
-
-<Card title="Ready to Transform Your Exchange?" icon="rocket" href="/stock-exchanges">
-  Explore our complete API documentation to start integrating stock tokenization, 24/7 trading, and instant lending into your platform.
-</Card>
+<CardGroup cols={2}>
+  <Card title="Position Management" icon="arrows-rotate" href="/endpoints/stock-exchange/position-management/lock-position">
+    Lock, mint, and unlock stock positions
+  </Card>
+  
+  <Card title="Corporate Actions" icon="calendar" href="/endpoints/stock-exchange/corporate-actions/schedule-stock-split">
+    Schedule and execute corporate events
+  </Card>
+  
+  <Card title="Dividend Management" icon="money-bill" href="/endpoints/stock-exchange/dividends/create-pool">
+    Create and manage dividend distributions
+  </Card>
+  
+  <Card title="Compliance Tools" icon="gavel" href="/endpoints/stock-exchange/compliance/pause-trading">
+    Trading controls and blacklist management
+  </Card>
+</CardGroup>

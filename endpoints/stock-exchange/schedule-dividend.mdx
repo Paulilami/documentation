@@ -1,0 +1,101 @@
+---
+title: 'Schedule Dividend'
+api: 'POST /api/corporate-actions/schedule/dividend'
+---
+
+Schedule a cash dividend distribution for tokenized stock holders. The dividend will be paid in the specified payment token at the scheduled time.
+
+<ParamField body="stockISIN" type="string" required>
+  The ISIN of the stock paying dividends
+</ParamField>
+
+<ParamField body="amount" type="string" required>
+  Total dividend amount to distribute (in payment token units)
+</ParamField>
+
+<ParamField body="paymentDate" type="string" required>
+  ISO 8601 timestamp for the payment date
+</ParamField>
+
+<ParamField body="paymentToken" type="string" required>
+  Contract address of the payment token (e.g., USDC)
+</ParamField>
+
+<ParamField body="scheduledTime" type="string" required>
+  ISO 8601 timestamp for when to execute the dividend
+</ParamField>
+
+<ParamField body="externalReference" type="string">
+  External reference ID for tracking
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/corporate-actions/schedule/dividend" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "x-instance-id: YOUR_INSTANCE_ID" \
+  -d '{
+    "stockISIN": "US0378331005",
+    "amount": "1000000",
+    "paymentDate": "2025-03-15T00:00:00Z",
+    "paymentToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "scheduledTime": "2025-03-01T00:00:00Z",
+    "externalReference": "DIV-Q1-2025"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/corporate-actions/schedule/dividend', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_TOKEN',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  },
+  body: JSON.stringify({
+    stockISIN: 'US0378331005',
+    amount: '1000000',
+    paymentDate: '2025-03-15T00:00:00Z',
+    paymentToken: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    scheduledTime: '2025-03-01T00:00:00Z',
+    externalReference: 'DIV-Q1-2025'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/corporate-actions/schedule/dividend',
+    headers={
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer YOUR_TOKEN',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    },
+    json={
+        'stockISIN': 'US0378331005',
+        'amount': '1000000',
+        'paymentDate': '2025-03-15T00:00:00Z',
+        'paymentToken': '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        'scheduledTime': '2025-03-01T00:00:00Z',
+        'externalReference': 'DIV-Q1-2025'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "actionId": "ACTION-DIVIDEND-1234567890",
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab"
+}
+```
+</ResponseExample>

@@ -1,0 +1,66 @@
+---
+title: 'Execute Batch Actions'
+api: 'POST /api/corporate-actions/execute/batch'
+---
+
+Execute multiple scheduled corporate actions in a single transaction. All actions must be in scheduled state.
+
+<ParamField body="actionIds" type="string[]" required>
+  Array of action IDs to execute
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/corporate-actions/execute/batch" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "x-instance-id: YOUR_INSTANCE_ID" \
+  -d '{
+    "actionIds": ["ACTION-123", "ACTION-456", "ACTION-789"]
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/corporate-actions/execute/batch', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_TOKEN',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  },
+  body: JSON.stringify({
+    actionIds: ['ACTION-123', 'ACTION-456', 'ACTION-789']
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/corporate-actions/execute/batch',
+    headers={
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer YOUR_TOKEN',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    },
+    json={
+        'actionIds': ['ACTION-123', 'ACTION-456', 'ACTION-789']
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+  "executedCount": 3
+}
+```
+</ResponseExample>

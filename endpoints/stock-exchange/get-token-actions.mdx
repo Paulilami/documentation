@@ -1,0 +1,82 @@
+---
+title: 'Get Token Actions'
+api: 'GET /api/corporate-actions/token/{stockISIN}'
+---
+
+Retrieve all corporate actions for a specific tokenized stock, including scheduled, executed, and cancelled actions.
+
+<ParamField path="stockISIN" type="string" required>
+  The ISIN of the stock
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/corporate-actions/token/US0378331005" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "x-instance-id: YOUR_INSTANCE_ID"
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/corporate-actions/token/US0378331005', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_TOKEN',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  }
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    'https://trusser-issuer-backend.vercel.app/api/corporate-actions/token/US0378331005',
+    headers={
+        'Authorization': 'Bearer YOUR_TOKEN',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "tokenAddress": "0x1234567890123456789012345678901234567890",
+  "actions": [
+    {
+      "actionId": "ACTION-SPLIT-123",
+      "actionType": "STOCK_SPLIT",
+      "actionData": {
+        "ratio": 2,
+        "divisor": 1
+      },
+      "scheduledTime": "2025-02-01T00:00:00Z",
+      "executedAt": null,
+      "status": "SCHEDULED",
+      "txHash": "0xabc...",
+      "executionTxHash": null
+    },
+    {
+      "actionId": "ACTION-DIV-789",
+      "actionType": "DIVIDEND_CASH",
+      "actionData": {
+        "amount": "500000",
+        "paymentDate": "2024-12-15T00:00:00Z",
+        "paymentToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+      },
+      "scheduledTime": "2024-12-01T00:00:00Z",
+      "executedAt": "2024-12-01T00:05:00Z",
+      "status": "EXECUTED",
+      "txHash": "0xdef...",
+      "executionTxHash": "0x123..."
+    }
+  ],
+  "onChainActionIds": ["42", "43", "44"]
+}
+```
+</ResponseExample>
