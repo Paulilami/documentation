@@ -1,0 +1,146 @@
+---
+title: 'Batch Revoke Identities'
+api: 'POST /v1/kyc/batch/revoke'
+---
+
+Revoke multiple user KYC verifications in a single operation. Supports CSV and JSON file uploads or direct address submission.
+
+<ParamField body="file" type="file">
+  CSV or JSON file containing addresses to revoke (max 500MB)
+</ParamField>
+
+<ParamField body="addresses" type="array">
+  Array of Ethereum addresses to revoke (alternative to file upload)
+</ParamField>
+
+<RequestExample>
+```bash cURL
+# File upload
+curl -X POST "https://trusser-issuer-backend.vercel.app/v1/kyc/batch/revoke" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -F "file=@addresses.csv"
+
+# Direct addresses
+curl -X POST "https://trusser-issuer-backend.vercel.app/v1/kyc/batch/revoke" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "addresses": [
+      "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb6",
+      "0x5aAeb6053f3E94C9b9A09f33669435E7Ef1BeAed",
+      "0x223452347789Bef77e34AB890034567890CdEf12"
+    ]
+  }'
+```
+
+```javascript JavaScript
+// File upload
+const formData = new FormData();
+formData.append('file', fileInput.files[0]);
+
+const response = await fetch('https://trusser-issuer-backend.vercel.app/v1/kyc/batch/revoke', {
+  method: 'POST',
+  headers: {
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: formData
+});
+
+// Direct addresses
+const response = await fetch('https://trusser-issuer-backend.vercel.app/v1/kyc/batch/revoke', {
+  method: 'POST',
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    addresses: [
+      '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb6',
+      '0x5aAeb6053f3E94C9b9A09f33669435E7Ef1BeAed',
+      '0x223452347789Bef77e34AB890034567890CdEf12'
+    ]
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+# File upload
+with open('addresses.csv', 'rb') as f:
+    files = {'file': f}
+    response = requests.post(
+        'https://trusser-issuer-backend.vercel.app/v1/kyc/batch/revoke',
+        headers={'x-api-key': 'YOUR_API_KEY'},
+        files=files
+    )
+
+# Direct addresses
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/v1/kyc/batch/revoke',
+    headers={
+        'x-api-key': 'YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'addresses': [
+            '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb6',
+            '0x5aAeb6053f3E94C9b9A09f33669435E7Ef1BeAed',
+            '0x223452347789Bef77e34AB890034567890CdEf12'
+        ]
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "batchId": "batch_8a9b0c1d2e3f4a5b",
+    "totalRecords": 150,
+    "processedRecords": 150,
+    "txHashes": [
+      "0x8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b"
+    ],
+    "gasUsed": "1950000",
+    "status": "completed"
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:45:00.000Z",
+    "requestId": "880e8400-e29b-41d4-a716-446655440003",
+    "instanceId": "inst_2hG5kL9mN3oP"
+  }
+}
+```
+
+```json Large Batch Response (>1000 addresses)
+{
+  "success": true,
+  "data": {
+    "batchId": "batch_8a9b0c1d2e3f4a5b",
+    "totalRecords": 2500,
+    "processedRecords": 2500,
+    "txHashes": [
+      "0x8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b",
+      "0x9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c",
+      "0xac1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e"
+    ],
+    "gasUsed": "4875000",
+    "status": "completed"
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:45:00.000Z",
+    "requestId": "880e8400-e29b-41d4-a716-446655440003",
+    "instanceId": "inst_2hG5kL9mN3oP"
+  }
+}
+```
+</ResponseExample>

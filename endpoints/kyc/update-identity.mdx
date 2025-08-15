@@ -1,0 +1,87 @@
+---
+title: 'Update Identity'
+api: 'PUT /v1/kyc/update'
+---
+
+Update an existing user's KYC information including country and expiry date.
+
+<ParamField body="address" type="string" required>
+  Ethereum address of the user to update
+</ParamField>
+
+<ParamField body="country" type="string" required>
+  New ISO 3166-1 alpha-2 country code
+</ParamField>
+
+<ParamField body="expiry" type="number">
+  New Unix timestamp for verification expiry (0 for no expiry)
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X PUT "https://trusser-issuer-backend.vercel.app/v1/kyc/update" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb6",
+    "country": "GB",
+    "expiry": 1767225600
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/v1/kyc/update', {
+  method: 'PUT',
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb6',
+    country: 'GB',
+    expiry: 1767225600
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.put(
+    'https://trusser-issuer-backend.vercel.app/v1/kyc/update',
+    headers={
+        'x-api-key': 'YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'address': '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb6',
+        'country': 'GB',
+        'expiry': 1767225600
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb6",
+    "status": "updated",
+    "txHash": "0x6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f",
+    "gasUsed": "45678"
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:35:00.000Z",
+    "requestId": "660e8400-e29b-41d4-a716-446655440001",
+    "instanceId": "inst_2hG5kL9mN3oP"
+  }
+}
+```
+</ResponseExample>

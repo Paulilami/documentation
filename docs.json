@@ -109,6 +109,34 @@
         "tab": "APIs",
         "groups": [
           {
+            "group": "Identity & KYC",
+            "pages": [
+              "identity-kyc-intro",
+              {
+                "group": "Verification",
+                "pages": [
+                  "endpoints/kyc/verify-single",
+                  "endpoints/kyc/batch-verify"
+                ]
+              },
+              {
+                "group": "Management",
+                "pages": [
+                  "endpoints/kyc/update-identity",
+                  "endpoints/kyc/revoke-single",
+                  "endpoints/kyc/batch-revoke"
+                ]
+              },
+              {
+                "group": "Status",
+                "pages": [
+                  "endpoints/kyc/get-status",
+                  "endpoints/kyc/get-batch-status"
+                ]
+              }
+            ]
+          },
+          {
             "group": "Stablecoin",
             "pages": [
               "stablecoin-intro",
