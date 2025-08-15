@@ -1,0 +1,60 @@
+---
+title: 'Close Leverage Position'
+api: 'POST /api/balancer/v1/leverage/position/{positionId}/close'
+---
+
+Close an open leveraged position and realize profit/loss.
+
+<ParamField path="positionId" type="string" required>
+  The unique identifier of the position to close
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer/v1/leverage/position/12345/close" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/v1/leverage/position/12345/close', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  }
+});
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/balancer/v1/leverage/position/12345/close',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    }
+)
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "pnl": "250.50",
+    "fees": "15.25",
+    "closePrice": "198.00",
+    "txHash": "0x4f3e2d1c9b8a7f6e5d4c3b2a1f9e8d7c6b5a4f3e2d1c9b8a7f6e5d4c3b2a1f9e"
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:37:00Z",
+    "requestId": "cc0e8400-e29b-41d4-a716-446655440007",
+    "instanceId": "instance_123"
+  }
+}
+```
+</ResponseExample>

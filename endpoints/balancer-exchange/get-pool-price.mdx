@@ -1,51 +1,50 @@
 ---
 title: 'Get Pool Price'
-api: 'GET /api/balancer/pools/{poolId}/price'
+api: 'GET /api/oracle/market-data/{symbol}'
 ---
 
-Get the current price and liquidity information for a specific pool.
+Get current market price data for a stock from the unified oracle system.
 
-<ParamField path="poolId" type="string" required>
-  The unique identifier of the pool
+<ParamField path="symbol" type="string" required>
+  Stock ticker symbol (e.g., "AAPL", "MSFT")
 </ParamField>
 
 <RequestExample>
 ```bash cURL
-curl -X GET "https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/price" \
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/oracle/market-data/AAPL" \
   -H "x-api-key: YOUR_API_KEY"
 ```
 
 ```javascript JavaScript
-const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/price', {
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/oracle/market-data/AAPL', {
   method: 'GET',
   headers: {
     'x-api-key': 'YOUR_API_KEY'
   }
 });
-
-const data = await response.json();
 ```
 
 ```python Python
 import requests
 
 response = requests.get(
-    'https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/price',
+    'https://trusser-issuer-backend.vercel.app/api/oracle/market-data/AAPL',
     headers={
         'x-api-key': 'YOUR_API_KEY'
     }
 )
-
-data = response.json()
 ```
 </RequestExample>
 
 <ResponseExample>
 ```json Response
 {
-  "price": "100.50",
-  "stockBalance": "1000",
-  "pairedBalance": "100500"
+  "assetId": 1,
+  "symbol": "AAPL",
+  "name": "AAPL",
+  "price": "195.42",
+  "volatility": 18,
+  "timestamp": "2024-01-15T10:43:00Z"
 }
 ```
 </ResponseExample>

@@ -1,72 +1,61 @@
 ---
 title: 'Remove Liquidity'
-api: 'POST /api/balancer/pools/{poolId}/liquidity/remove'
+api: 'POST /api/balancer/v1/pools/{poolId}/liquidity/remove'
 ---
 
-Remove liquidity from a Balancer pool by burning LP tokens and receiving underlying tokens.
+Remove liquidity from a pool by burning BPT tokens.
 
 <ParamField path="poolId" type="string" required>
   The unique identifier of the pool
 </ParamField>
 
-<ParamField body="lpTokens" type="string" required>
-  Amount of LP tokens to burn
+<ParamField body="maxBptAmountIn" type="string" required>
+  Maximum amount of BPT tokens to burn
 </ParamField>
 
 <ParamField body="minAmountsOut" type="array">
-  Minimum amounts of underlying tokens to receive [minStockTokens, minPairedTokens]
-</ParamField>
-
-<ParamField body="userAddress" type="string" required>
-  The Ethereum address of the liquidity provider
+  Minimum amounts of each token to receive [stockTokenAmount, pairedTokenAmount]
 </ParamField>
 
 <RequestExample>
 ```bash cURL
-curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/remove" \
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer/v1/pools/0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c/liquidity/remove" \
   -H "Content-Type: application/json" \
   -H "x-api-key: YOUR_API_KEY" \
   -d '{
-    "lpTokens": "50",
-    "minAmountsOut": ["45", "4500"],
-    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4"
+    "maxBptAmountIn": "100",
+    "minAmountsOut": ["20", "400"]
   }'
 ```
 
 ```javascript JavaScript
-const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/remove', {
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/v1/pools/0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c/liquidity/remove', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
     'x-api-key': 'YOUR_API_KEY'
   },
   body: JSON.stringify({
-    lpTokens: '50',
-    minAmountsOut: ['45', '4500'],
-    userAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+    maxBptAmountIn: '100',
+    minAmountsOut: ['20', '400']
   })
 });
-
-const data = await response.json();
 ```
 
 ```python Python
 import requests
 
 response = requests.post(
-    'https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/remove',
+    'https://trusser-issuer-backend.vercel.app/api/balancer/v1/pools/0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c/liquidity/remove',
     headers={
         'Content-Type': 'application/json',
         'x-api-key': 'YOUR_API_KEY'
     },
     json={
-        'lpTokens': '50',
-        'minAmountsOut': ['45', '4500'],
-        'userAddress': '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+        'maxBptAmountIn': '100',
+        'minAmountsOut': ['20', '400']
     }
 )
-
-data = response.json()
 ```
 </RequestExample>
 
@@ -74,7 +63,17 @@ data = response.json()
 ```json Response
 {
   "success": true,
-  "txHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12"
+  "data": {
+    "bptAmount": "100",
+    "amountsOut": ["22.36", "447.21"],
+    "txHash": "0x8c7f6e5d4b3a2f1e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d9c8b7a6f5e"
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:33:00Z",
+    "requestId": "880e8400-e29b-41d4-a716-446655440003",
+    "instanceId": "instance_123"
+  }
 }
 ```
 </ResponseExample>

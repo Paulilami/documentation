@@ -1,0 +1,119 @@
+---
+title: 'Open Leverage Position'
+api: 'POST /api/balancer/v1/leverage/position/open'
+---
+
+Open a leveraged trading position on a stock token.
+
+<ParamField body="poolId" type="string" required>
+  The unique identifier of the pool
+</ParamField>
+
+<ParamField body="stockISIN" type="string" required>
+  International Securities Identification Number
+</ParamField>
+
+<ParamField body="stockToken" type="string" required>
+  Contract address of the stock token
+</ParamField>
+
+<ParamField body="collateralAmount" type="string" required>
+  Amount of collateral to deposit
+</ParamField>
+
+<ParamField body="leverage" type="number" required>
+  Leverage multiplier (1-100x)
+</ParamField>
+
+<ParamField body="isLong" type="boolean" required>
+  True for long position, false for short
+</ParamField>
+
+<ParamField body="stopLoss" type="string">
+  Stop loss price (0 for none)
+</ParamField>
+
+<ParamField body="takeProfit" type="string">
+  Take profit price (0 for none)
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer/v1/leverage/position/open" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "poolId": "0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c",
+    "stockISIN": "US0378331005",
+    "stockToken": "0x1234567890123456789012345678901234567890",
+    "collateralAmount": "1000",
+    "leverage": 10,
+    "isLong": true,
+    "stopLoss": "180",
+    "takeProfit": "220"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/v1/leverage/position/open', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    poolId: '0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c',
+    stockISIN: 'US0378331005',
+    stockToken: '0x1234567890123456789012345678901234567890',
+    collateralAmount: '1000',
+    leverage: 10,
+    isLong: true,
+    stopLoss: '180',
+    takeProfit: '220'
+  })
+});
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/balancer/v1/leverage/position/open',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'poolId': '0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c',
+        'stockISIN': 'US0378331005',
+        'stockToken': '0x1234567890123456789012345678901234567890',
+        'collateralAmount': '1000',
+        'leverage': 10,
+        'isLong': True,
+        'stopLoss': '180',
+        'takeProfit': '220'
+    }
+)
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "positionId": "12345",
+    "size": "10000",
+    "entryPrice": "195.50",
+    "liquidationPrice": "175.95",
+    "txHash": "0x3e2d1c9b8a7f6e5d4c3b2a1f9e8d7c6b5a4f3e2d1c9b8a7f6e5d4c3b2a1f9e8d"
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:36:00Z",
+    "requestId": "bb0e8400-e29b-41d4-a716-446655440006",
+    "instanceId": "instance_123"
+  }
+}
+```
+</ResponseExample>

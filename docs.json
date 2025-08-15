@@ -238,22 +238,37 @@
             ]
           },
           {
-            "group": "Decentralized Exchange",
+            "group": "Balancer V3 Exchange",
             "pages": [
-              "balancer-exchange",
-              "endpoints/balancer-exchange/create-pool",
-              "endpoints/balancer-exchange/prepare-swap",
-              "endpoints/balancer-exchange/get-quote",
-              "endpoints/balancer-exchange/add-liquidity",
-              "endpoints/balancer-exchange/remove-liquidity",
-              "endpoints/balancer-exchange/execute-swap",
-              "endpoints/balancer-exchange/prepare-leverage-open",
-              "endpoints/balancer-exchange/prepare-leverage-close",
-              "endpoints/balancer-exchange/search-pools",
-              "endpoints/balancer-exchange/get-pool-price",
-              "endpoints/balancer-exchange/get-positions",
-              "endpoints/balancer-exchange/get-liquidation-price",
-              "endpoints/balancer-exchange/get-pools"
+              "balancer-exchange-intro",
+              {
+                "group": "Pool Management",
+                "pages": [
+                  "endpoints/balancer-exchange/create-pool",
+                  "endpoints/balancer-exchange/initialize-pool",
+                  "endpoints/balancer-exchange/add-liquidity",
+                  "endpoints/balancer-exchange/remove-liquidity",
+                  "endpoints/balancer-exchange/get-pool-info",
+                  "endpoints/balancer-exchange/get-pools",
+                  "endpoints/balancer-exchange/search-pools"
+                ]
+              },
+              {
+                "group": "Trading",
+                "pages": [
+                  "endpoints/balancer-exchange/execute-swap",
+                  "endpoints/balancer-exchange/get-quote"
+                ]
+              },
+              {
+                "group": "Leveraged Trading",
+                "pages": [
+                  "endpoints/balancer-exchange/open-leverage-position",
+                  "endpoints/balancer-exchange/close-leverage-position",
+                  "endpoints/balancer-exchange/modify-leverage-position",
+                  "endpoints/balancer-exchange/get-leverage-positions"
+                ]
+              }
             ]
           },
           {

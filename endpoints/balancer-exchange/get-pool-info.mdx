@@ -1,0 +1,81 @@
+---
+title: 'Get Pool Information'
+api: 'GET /api/balancer/v1/pools/{poolId}/info'
+---
+
+Get detailed information about a specific pool including metrics and current state.
+
+<ParamField path="poolId" type="string" required>
+  The unique identifier of the pool
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/balancer/v1/pools/0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c/info" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/v1/pools/0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c/info', {
+  method: 'GET',
+  headers: {
+    'x-api-key': 'YOUR_API_KEY'
+  }
+});
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    'https://trusser-issuer-backend.vercel.app/api/balancer/v1/pools/0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c/info',
+    headers={
+        'x-api-key': 'YOUR_API_KEY'
+    }
+)
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "pool": {
+      "poolId": "0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c",
+      "poolAddress": "0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e",
+      "stockISIN": "US0378331005",
+      "stockToken": "0x1234567890123456789012345678901234567890",
+      "pairedToken": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "stockWeight": "0.8",
+      "pairedWeight": "0.2",
+      "swapFeePercentage": "0.003",
+      "hookContract": "0x7b5BC48Faf16E038676B1E83779b926129D27714",
+      "active": true,
+      "createdAt": "1705315200",
+      "creator": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+      "tokens": [
+        "0x1234567890123456789012345678901234567890",
+        "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+      ],
+      "balances": ["1100", "22000"],
+      "totalValue": "26400",
+      "totalLiquidity": "26400",
+      "volume24h": "5420"
+    },
+    "metrics": {
+      "openInterest": "125000",
+      "longInterest": "75000",
+      "shortInterest": "50000",
+      "volume24h": "5420"
+    }
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:40:00Z",
+    "requestId": "ff0e8400-e29b-41d4-a716-446655440010",
+    "instanceId": "instance_123"
+  }
+}
+```
+</ResponseExample>

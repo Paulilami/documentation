@@ -1,78 +1,97 @@
 ---
 title: 'Get Swap Quote'
-api: 'POST /api/balancer/swap/quote'
+api: 'POST /api/balancer/v1/swap/quote'
 ---
 
-Get a quote for a potential swap without preparing the transaction. This is useful for displaying prices to users before they commit to a swap.
+Get a price quote for a potential swap without executing the transaction.
 
-<ParamField body="stockISIN" type="string" required>
-  The ISIN of the stock to swap
+<ParamField body="poolId" type="string" required>
+  The unique identifier of the pool
 </ParamField>
 
-<ParamField body="direction" type="string" required>
-  The direction of the swap: "buy" or "sell"
+<ParamField body="tokenIn" type="string" required>
+  Address of the token being sold
+</ParamField>
+
+<ParamField body="tokenOut" type="string" required>
+  Address of the token being bought
 </ParamField>
 
 <ParamField body="amountIn" type="string" required>
-  The amount of tokens to swap (input amount)
+  Amount of tokens to sell
 </ParamField>
 
 <RequestExample>
 ```bash cURL
-curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer/swap/quote" \
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer/v1/swap/quote" \
   -H "Content-Type: application/json" \
   -H "x-api-key: YOUR_API_KEY" \
   -d '{
-    "stockISIN": "US0378331005",
-    "direction": "buy",
-    "amountIn": "100"
+    "poolId": "0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c",
+    "tokenIn": "0x1234567890123456789012345678901234567890",
+    "tokenOut": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "amountIn": "10"
   }'
 ```
 
 ```javascript JavaScript
-const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/swap/quote', {
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/v1/swap/quote', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
     'x-api-key': 'YOUR_API_KEY'
   },
   body: JSON.stringify({
-    stockISIN: 'US0378331005',
-    direction: 'buy',
-    amountIn: '100'
+    poolId: '0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c',
+    tokenIn: '0x1234567890123456789012345678901234567890',
+    tokenOut: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    amountIn: '10'
   })
 });
-
-const data = await response.json();
 ```
 
 ```python Python
 import requests
 
 response = requests.post(
-    'https://trusser-issuer-backend.vercel.app/api/balancer/swap/quote',
+    'https://trusser-issuer-backend.vercel.app/api/balancer/v1/swap/quote',
     headers={
         'Content-Type': 'application/json',
         'x-api-key': 'YOUR_API_KEY'
     },
     json={
-        'stockISIN': 'US0378331005',
-        'direction': 'buy',
-        'amountIn': '100'
+        'poolId': '0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c',
+        'tokenIn': '0x1234567890123456789012345678901234567890',
+        'tokenOut': '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        'amountIn': '10'
     }
 )
-
-data = response.json()
 ```
 </RequestExample>
 
 <ResponseExample>
 ```json Response
 {
-  "amountOut": "95.0",
-  "priceImpact": "0.002",
-  "swapFee": "0.003",
-  "poolId": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12"
+  "success": true,
+  "data": {
+    "expectedOutput": "197.543210",
+    "priceImpact": "125",
+    "route": [
+      {
+        "poolId": "0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c",
+        "tokenIn": "0x1234567890123456789012345678901234567890",
+        "tokenOut": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+      }
+    ],
+    "gasEstimate": "250000",
+    "swapFee": "0.592629"
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:35:00Z",
+    "requestId": "aa0e8400-e29b-41d4-a716-446655440005",
+    "instanceId": "instance_123"
+  }
 }
 ```
 </ResponseExample>

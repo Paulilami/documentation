@@ -1,0 +1,77 @@
+---
+title: 'Get Leverage Positions'
+api: 'GET /api/balancer/v1/leverage/positions'
+---
+
+Get all leverage positions for the authenticated user.
+
+<ParamField query="status" type="string" default="open">
+  Filter positions by status (open, closed, liquidated)
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/balancer/v1/leverage/positions?status=open" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/v1/leverage/positions?status=open', {
+  method: 'GET',
+  headers: {
+    'x-api-key': 'YOUR_API_KEY'
+  }
+});
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    'https://trusser-issuer-backend.vercel.app/api/balancer/v1/leverage/positions',
+    params={'status': 'open'},
+    headers={
+        'x-api-key': 'YOUR_API_KEY'
+    }
+)
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "positions": [
+      {
+        "id": "12345",
+        "positionId": "12345",
+        "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+        "poolId": "0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c",
+        "stockISIN": "US0378331005",
+        "size": "10000",
+        "collateral": "1000",
+        "leverage": "10",
+        "isLong": true,
+        "entryPrice": "195.50",
+        "liquidationPrice": "175.95",
+        "stopLoss": "180",
+        "takeProfit": "220",
+        "status": "open",
+        "openedAt": "2024-01-15T10:36:00Z",
+        "currentPrice": "198.00",
+        "unrealizedPnl": "250.50",
+        "health": 85
+      }
+    ],
+    "count": 1
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:39:00Z",
+    "requestId": "ee0e8400-e29b-41d4-a716-446655440009",
+    "instanceId": "instance_123"
+  }
+}
+```
+</ResponseExample>

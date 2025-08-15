@@ -1,72 +1,65 @@
 ---
 title: 'Add Liquidity'
-api: 'POST /api/balancer/pools/{poolId}/liquidity/add'
+api: 'POST /api/balancer/v1/pools/{poolId}/liquidity/add'
 ---
 
-Add liquidity to a Balancer pool. Users provide both tokens in proportion to earn trading fees.
+Add liquidity to an existing pool to earn trading fees and BPT tokens.
 
 <ParamField path="poolId" type="string" required>
   The unique identifier of the pool
 </ParamField>
 
-<ParamField body="amounts" type="array" required>
-  Array of token amounts to add [stockTokenAmount, pairedTokenAmount]
+<ParamField body="maxAmountsIn" type="array" required>
+  Maximum amounts of each token to add [stockTokenAmount, pairedTokenAmount]
 </ParamField>
 
-<ParamField body="minLpTokens" type="string">
-  Minimum LP tokens to receive (slippage protection)
+<ParamField body="minBptAmountOut" type="string" default="0">
+  Minimum BPT tokens to receive (slippage protection)
 </ParamField>
 
-<ParamField body="userAddress" type="string" required>
-  The Ethereum address of the liquidity provider
+<ParamField body="recipient" type="string">
+  Address to receive BPT tokens (defaults to sender)
 </ParamField>
 
 <RequestExample>
 ```bash cURL
-curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/add" \
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/balancer/v1/pools/0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c/liquidity/add" \
   -H "Content-Type: application/json" \
   -H "x-api-key: YOUR_API_KEY" \
   -d '{
-    "amounts": ["100", "10000"],
-    "minLpTokens": "95",
-    "userAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4"
+    "maxAmountsIn": ["100", "2000"],
+    "minBptAmountOut": "400"
   }'
 ```
 
 ```javascript JavaScript
-const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/add', {
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/balancer/v1/pools/0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c/liquidity/add', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
     'x-api-key': 'YOUR_API_KEY'
   },
   body: JSON.stringify({
-    amounts: ['100', '10000'],
-    minLpTokens: '95',
-    userAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+    maxAmountsIn: ['100', '2000'],
+    minBptAmountOut: '400'
   })
 });
-
-const data = await response.json();
 ```
 
 ```python Python
 import requests
 
 response = requests.post(
-    'https://trusser-issuer-backend.vercel.app/api/balancer/pools/0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12/liquidity/add',
+    'https://trusser-issuer-backend.vercel.app/api/balancer/v1/pools/0x8b1e5c3d4a2f6b9e7c5d3a2f1b8e9c7d5a3f2b1e8c9d7a5f3b2e1c8d9a7f5b3e2c/liquidity/add',
     headers={
         'Content-Type': 'application/json',
         'x-api-key': 'YOUR_API_KEY'
     },
     json={
-        'amounts': ['100', '10000'],
-        'minLpTokens': '95',
-        'userAddress': '0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4'
+        'maxAmountsIn': ['100', '2000'],
+        'minBptAmountOut': '400'
     }
 )
-
-data = response.json()
 ```
 </RequestExample>
 
@@ -74,7 +67,17 @@ data = response.json()
 ```json Response
 {
   "success": true,
-  "txHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12"
+  "data": {
+    "amountsIn": ["100", "2000"],
+    "bptAmount": "447.213595499957939",
+    "txHash": "0x2f9e8d7c6b5a4f3e2d1c9b8a7f6e5d4c3b2a1f9e8d7c6b5a4f3e2d1c9b8a7f6e"
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:32:00Z",
+    "requestId": "770e8400-e29b-41d4-a716-446655440002",
+    "instanceId": "instance_123"
+  }
 }
 ```
 </ResponseExample>
