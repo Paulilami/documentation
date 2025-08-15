@@ -268,6 +268,12 @@
                   "endpoints/balancer-exchange/modify-leverage-position",
                   "endpoints/balancer-exchange/get-leverage-positions"
                 ]
+              },
+              {
+                "group": "Oracle",
+                "pages": [
+                  "endpoints/balancer-exchange/get-pool-price"
+                ]
               }
             ]
           },
