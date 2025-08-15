@@ -109,7 +109,7 @@
         "tab": "APIs",
         "groups": [
           {
-            "group": "Identity & KYC",
+            "group": "Identity & KYC APIs",
             "pages": [
               "identity-kyc-intro",
               {
@@ -137,7 +137,7 @@
             ]
           },
           {
-            "group": "Stablecoin",
+            "group": "Stablecoin APIs",
             "pages": [
               "stablecoin-intro",
               {
@@ -191,7 +191,7 @@
             ]
           },
           {
-            "group": "Stock Exchange",
+            "group": "Stock Exchange APIs",
             "pages": [
               "stock-exchanges-intro",
               {
@@ -238,7 +238,7 @@
             ]
           },
           {
-            "group": "Balancer V3 Exchange",
+            "group": "Balancer Integration APIs",
             "pages": [
               "balancer-exchange-intro",
               {
