@@ -95,6 +95,12 @@
             ]
           },
           {
+            "group": "Raise Capital APIs",
+            "pages": [
+              "investment-framework-intro"
+            ]
+          },
+          {
             "group": "White-Label",
             "pages": [
               "white-label",
