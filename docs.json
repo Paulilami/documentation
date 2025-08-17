@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "palm",
+  "theme": "mint",
   "name": "Trusset Protocol",
   "description": "End-to-end infrastructure for tokenizing any asset",
   "colors": {
@@ -64,7 +64,6 @@
             "group": "Getting Started",
             "pages": [
               "overview",
-              "protocol-architecture",
               "use-cases"
             ]
           }
@@ -116,7 +115,13 @@
         "tab": "APIs",
         "groups": [
           {
-            "group": "Identity & KYC APIs",
+            "group": "Overview",
+            "pages": [
+              "api-intro"
+            ]
+          },
+          {
+            "group": "Identity & KYC",
             "pages": [
               "identity-kyc-intro",
               {
@@ -144,7 +149,7 @@
             ]
           },
           {
-            "group": "Stablecoin APIs",
+            "group": "Stablecoins",
             "pages": [
               "stablecoin-intro",
               {
@@ -198,7 +203,7 @@
             ]
           },
           {
-            "group": "Stock Exchange APIs",
+            "group": "Stock Tokenization",
             "pages": [
               "stock-exchanges-intro",
               {
@@ -245,7 +250,7 @@
             ]
           },
           {
-            "group": "Balancer Integration APIs",
+            "group": "24/7 Stock Trading",
             "pages": [
               "balancer-exchange-intro",
               {
