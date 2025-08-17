@@ -78,13 +78,14 @@
             "pages": [
               "instances",
               "identity-certificates",
+              "backend-synchronization",
               "learn-oracles"
             ]
           },
           {
             "group": "Stock-Exchanges",
             "pages": [
-              "stock-exchanges-intro"
+              "stock-exchanges"
             ]
           },
           {

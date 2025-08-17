@@ -1,0 +1,85 @@
+---
+title: "Backend Synchronization"
+description: "Connect existing infrastructure to blockchain without changing any code. Stream real-time data and automate on-chain operations."
+---
+
+# Backend Synchronization
+
+Bridge your traditional systems with blockchain protocols. Push data updates, execute business logic, and automate compliance—all through standard REST APIs.
+
+## How It Works
+
+Your backend systems connect to automation vaults that execute transactions on-chain. No manual wallet management. No transaction signing. Just API calls.
+
+Your Systems → REST API → Automation Vault → Smart Contracts
+
+## Core Components
+
+<CardGroup cols={2}>
+  <Card title="Automation Vaults" icon="robot" href="/automation-vaults">
+    Deploy vaults that execute transactions automatically. Fund with ETH once, runs indefinitely based on your rules.
+  </Card>
+  
+  <Card title="Data Streaming" icon="stream" href="/data-streaming">
+    Push real-time updates from your backend. NAV calculations, valuations, and corporate actions sync automatically.
+  </Card>
+  
+  <Card title="Rule Engine" icon="gavel" href="/rule-engine">
+    Set conditions for automated actions. If collateral drops 20%, trigger margin call. If rating changes, update permissions.
+  </Card>
+  
+  <Card title="Webhook Listeners" icon="webhook" href="/webhooks">
+    Receive events from your systems and propagate on-chain. Configure once, synchronize forever.
+  </Card>
+</CardGroup>
+
+## Use Cases
+
+<CardGroup cols={3}>
+  <Card title="Fund NAV Updates">
+    Stream valuations from your portfolio system directly to tokenized fund contracts
+  </Card>
+  
+  <Card title="Corporate Actions">
+    Automate dividends, splits, and distributions based on backend events
+  </Card>
+  
+  <Card title="Risk Management">
+    Trigger freeze orders and margin calls from your existing risk engines
+  </Card>
+  
+  <Card title="Compliance Updates">
+    Propagate KYC/AML status changes and implement automatic freeze orders
+  </Card>
+  
+  <Card title="Collateral Monitoring">
+    Track asset values and trigger automated adjustments when thresholds are met
+  </Card>
+  
+  <Card title="Interest Rate Updates">
+    Sync rate changes from your systems to lending protocols in real-time
+  </Card>
+</CardGroup>
+
+## Integration Methods
+
+**REST API**: Standard HTTP endpoints map your data to on-chain parameters  
+**Scheduled Sync**: Set intervals for regular updates—hourly, daily, or custom  
+**Event-Driven**: Real-time propagation through webhook listeners
+
+## What Gets Synchronized
+
+- Asset valuations and NAV calculations
+- Corporate actions (dividends, splits, distributions)
+- Compliance states and regulatory updates
+- Credit events and rating changes
+- Ownership transfers and collateral adjustments
+- Insurance status and maintenance records
+
+<Note>
+Live on Sepolia testnet. Production contracts deployed and ready for integration.
+</Note>
+
+<Tip>
+Start with Automation Vaults to understand transaction execution, then configure Data Streaming for your specific use case.
+</Tip>
