@@ -342,6 +342,56 @@
               "endpoints/lending/get-user-analytics",
               "endpoints/lending/sync-pool-data"
             ]
+          },
+          {
+            "group": "Capital Raising",
+            "pages": [
+              "endpoints/investment/overview",
+              {
+                "group": "Framework",
+                "pages": [
+                  "endpoints/investment/create-framework",
+                  "endpoints/investment/get-framework"
+                ]
+              },
+              {
+                "group": "Token Sales",
+                "pages": [
+                  "endpoints/investment/create-token-sale",
+                  "endpoints/investment/list-token-sales",
+                  "endpoints/investment/get-token-sale",
+                  "endpoints/investment/start-sale"
+                ]
+              },
+              {
+                "group": "Investments",
+                "pages": [
+                  "endpoints/investment/process-investment"
+                ]
+              },
+              {
+                "group": "Secondary Market",
+                "pages": [
+                  "endpoints/investment/create-order",
+                  "endpoints/investment/fill-order",
+                  "endpoints/investment/market-stats"
+                ]
+              },
+              {
+                "group": "Compliance",
+                "pages": [
+                  "endpoints/investment/freeze-accounts",
+                  "endpoints/investment/import-kyc"
+                ]
+              },
+              {
+                "group": "Widget Integration",
+                "pages": [
+                  "endpoints/investment/widget-info",
+                  "endpoints/investment/widget-validate"
+                ]
+              }
+            ]
           }
         ]
       }

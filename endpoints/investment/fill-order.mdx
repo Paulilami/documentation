@@ -1,0 +1,91 @@
+---
+title: 'Fill Market Order'
+api: 'POST /api/v1/investment/marketplace/fill'
+---
+
+Execute a purchase on the secondary market.
+
+## Request Body
+
+<ParamField body="orderId" type="string" required>
+  Order ID to fill
+</ParamField>
+
+<ParamField body="buyerAddress" type="string" required>
+  Ethereum address of the token buyer
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Number of tokens to purchase
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/v1/investment/marketplace/fill" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "x-instance-id: YOUR_INSTANCE_ID" \
+  -d '{
+    "orderId": "1",
+    "buyerAddress": "0x9876543210987654321098765432109876543210",
+    "amount": 500
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/v1/investment/marketplace/fill', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  },
+  body: JSON.stringify({
+    orderId: '1',
+    buyerAddress: '0x9876543210987654321098765432109876543210',
+    amount: 500
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/v1/investment/marketplace/fill',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    },
+    json={
+        'orderId': '1',
+        'buyerAddress': '0x9876543210987654321098765432109876543210',
+        'amount': 500
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "transactionHash": "0xmno345...",
+    "filled": 500,
+    "status": "PARTIALLY_FILLED"
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "instanceId": "your-instance-id"
+  }
+}
+```
+</ResponseExample>

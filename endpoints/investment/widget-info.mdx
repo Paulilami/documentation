@@ -1,0 +1,69 @@
+---
+title: 'Widget Token Info'
+api: 'GET /api/v1/widget/token-info/:tokenAddress'
+---
+
+Retrieve token sale information for the investment widget.
+
+<Note>
+  This endpoint is CORS-enabled and publicly accessible for widget integration.
+</Note>
+
+<ParamField path="tokenAddress" type="string" required>
+  ERC20 token contract address
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/v1/widget/token-info/0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/v1/widget/token-info/0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0', {
+  method: 'GET'
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    'https://trusser-issuer-backend.vercel.app/api/v1/widget/token-info/0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0'
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "tokenAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0",
+    "companyName": "TechCorp AG",
+    "companyDescription": "Leading provider of blockchain solutions",
+    "sector": "Technology",
+    "targetRaise": "1000000",
+    "tokenSupply": "1000000",
+    "companyPercentage": 10,
+    "minInvestment": "1000",
+    "maxInvestment": "50000",
+    "raised": "250000",
+    "investorCount": 45,
+    "progress": "25.00",
+    "status": "ACTIVE",
+    "isPublic": true,
+    "whitelist": [],
+    "token": {
+      "name": "TechCorp AG Token",
+      "symbol": "TECH",
+      "totalSupply": "1000000"
+    },
+    "instanceId": "your-instance-id"
+  }
+}
+```
+</ResponseExample>

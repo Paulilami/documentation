@@ -1,0 +1,146 @@
+---
+title: 'Investment Framework'
+description: 'Token-based capital raising infrastructure for institutional banking'
+---
+
+## Overview
+
+The Investment Framework provides banks with infrastructure to enable corporate clients to raise capital through tokenized securities. The system handles token creation, primary issuance, secondary trading, and compliance controls within defined legal frameworks.
+
+## Architecture
+
+### Core Components
+
+**Investment Framework**: Manages legal parameters, investment limits, and fee structures for token offerings
+
+**Company Tokens**: ERC20 tokens representing ownership or profit participation rights with transfer restrictions
+
+**Token Marketplace**: Secondary market infrastructure for peer-to-peer token trading
+
+### Smart Contract Addresses
+
+| Contract | Address |
+|----------|---------|
+| InvestmentFramework | `0xC6BAc3FA8C1a3424DeE90612963FAc4b3432ad3D` |
+| TokenMarketplace | `0x51fF8Db854E05FC9c11b0863b6Cf55dDcDbA8709` |
+
+## Token Sale Lifecycle
+
+<Steps>
+  <Step title="Framework Configuration">
+    Define legal structure, investor limits, and fee parameters
+  </Step>
+  <Step title="Token Creation">
+    Deploy ERC20 token contract with specified supply and restrictions
+  </Step>
+  <Step title="Sale Activation">
+    Enable investment acceptance with defined minimums and maximums
+  </Step>
+  <Step title="Investment Processing">
+    Handle investor purchases with automatic fee distribution
+  </Step>
+  <Step title="Secondary Trading">
+    Enable peer-to-peer trading through marketplace orders
+  </Step>
+</Steps>
+
+## Framework Parameters
+
+Each bank instance operates with customized legal frameworks:
+
+| Parameter | Description | Range |
+|-----------|-------------|-------|
+| `maxInvestors` | Maximum investors per offering | 1-10,000 |
+| `maxRaiseAmount` | Maximum raise without prospectus | Up to €8M |
+| `transactionFee` | Fee in basis points | 0-1000 |
+| `minInvestment` | Minimum investment amount | ≥1 |
+| `maxInvestment` | Maximum per investor | Variable |
+
+## Fee Distribution
+
+Transaction fees are automatically distributed:
+- **75%** to the issuing bank
+- **25%** to protocol maintenance
+
+## Compliance Features
+
+### Transfer Restrictions
+All token transfers validate through the framework contract, enabling:
+- Investor count limits
+- Whitelist enforcement
+- Account freezing
+- Trading halts
+
+### Future Minting
+Tokens can be configured for delayed minting, useful for:
+- Vesting schedules
+- Milestone-based releases
+- Regulatory compliance periods
+
+## Authentication
+
+All API requests require authentication using your instance credentials.
+
+<ParamField header="x-api-key" type="string" required>
+  Your unique API key provided during onboarding
+</ParamField>
+
+<ParamField header="x-instance-id" type="string" required>
+  Your bank's instance identifier
+</ParamField>
+
+## Response Format
+
+All API responses follow a standardized format:
+
+```json
+{
+  "success": true,
+  "data": {
+    // Response data
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "instanceId": "your-instance-id"
+  }
+}
+```
+
+## Invest Now Widget
+
+Companies embed this button on their website to enable direct investment:
+
+```html
+<script src="https://invest.yourbank.com/widget.js"></script>
+<button 
+  class="invest-now-btn" 
+  data-token="0x..." 
+  data-instance="YOUR_INSTANCE_ID"
+  data-company="CompanyName">
+  Invest Now
+</button>
+```
+
+## Webhook Events
+
+| Event                | Description              |
+|----------------------|--------------------------|
+| `SALE_STARTED`       | Token sale activated     |
+| `INVESTMENT_RECEIVED`| New investment processed |
+| `SALE_COMPLETED`     | Target raise achieved    |
+| `TOKEN_MINTED`       | Future tokens minted     |
+| `ACCOUNT_FROZEN`     | Account restricted       |
+
+## Error Codes
+
+| Code                   | Description                   |
+|------------------------|-------------------------------|
+| `FRAMEWORK_NOT_ACTIVE` | Framework not configured      |
+| `EXCEEDS_MAX_RAISE`    | Above framework limit         |
+| `SALE_NOT_ACTIVE`      | Sale not started              |
+| `BELOW_MINIMUM`        | Below minimum investment      |
+| `EXCEEDS_MAXIMUM`      | Exceeds maximum investment    |
+| `MAX_INVESTORS_REACHED`| Investor limit reached        |
+| `NOT_WHITELISTED`      | Investor not on whitelist     |

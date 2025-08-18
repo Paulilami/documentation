@@ -1,0 +1,104 @@
+---
+title: 'Process Investment'
+api: 'POST /api/v1/investment/invest'
+---
+
+Process an investment for a token sale.
+
+## Request Body
+
+<ParamField body="tokenAddress" type="string" required>
+  ERC20 token contract address
+</ParamField>
+
+<ParamField body="investorAddress" type="string" required>
+  Ethereum address of the investor
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Investment amount in EUR
+</ParamField>
+
+<ParamField body="paymentMethod" type="string" default="crypto">
+  Payment method: "crypto" or "bank"
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/v1/investment/invest" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "x-instance-id: YOUR_INSTANCE_ID" \
+  -d '{
+    "tokenAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0",
+    "investorAddress": "0x1234567890123456789012345678901234567890",
+    "amount": 5000,
+    "paymentMethod": "crypto"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/v1/investment/invest', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0',
+    investorAddress: '0x1234567890123456789012345678901234567890',
+    amount: 5000,
+    paymentMethod: 'crypto'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/v1/investment/invest',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    },
+    json={
+        'tokenAddress': '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0',
+        'investorAddress': '0x1234567890123456789012345678901234567890',
+        'amount': 5000,
+        'paymentMethod': 'crypto'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "id": "clr4jkl012",
+    "instanceId": "your-instance-id",
+    "tokenAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0",
+    "investorAddress": "0x1234567890123456789012345678901234567890",
+    "amount": "5000",
+    "paymentMethod": "crypto",
+    "transactionHash": "0xjkl012...",
+    "status": "COMPLETED",
+    "createdAt": "2024-01-15T10:30:00Z"
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "instanceId": "your-instance-id"
+  }
+}
+```
+</ResponseExample>

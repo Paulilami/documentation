@@ -1,0 +1,183 @@
+---
+title: 'Create Token Sale'
+api: 'POST /api/v1/investment/token-sale'
+---
+
+Deploy a new company token and create a token sale for capital raising.
+
+## Request Body
+
+<ParamField body="companyName" type="string" required>
+  Name of the company raising capital (max 100 characters)
+</ParamField>
+
+<ParamField body="companyDescription" type="string" required>
+  Description of the company and offering (max 5000 characters)
+</ParamField>
+
+<ParamField body="sector" type="string" required>
+  Business sector or industry (max 100 characters)
+</ParamField>
+
+<ParamField body="targetRaise" type="number" required>
+  Target amount to raise (in EUR, minimum 1000)
+</ParamField>
+
+<ParamField body="tokenSupply" type="number" required>
+  Total number of tokens to create
+</ParamField>
+
+<ParamField body="companyPercentage" type="number" required>
+  Percentage of company ownership represented by tokens (0.01-100)
+</ParamField>
+
+<ParamField body="paymentMethod" type="string" default="both">
+  Accepted payment methods: "crypto", "bank", or "both"
+</ParamField>
+
+<ParamField body="fixedInvestment" type="boolean" default="false">
+  Whether to enforce fixed investment amounts
+</ParamField>
+
+<ParamField body="minInvestment" type="number" optional>
+  Minimum investment amount per investor (overrides framework default)
+</ParamField>
+
+<ParamField body="maxInvestment" type="number" optional>
+  Maximum investment amount per investor (overrides framework default)
+</ParamField>
+
+<ParamField body="isPublic" type="boolean" default="true">
+  Whether the sale is open to all investors or whitelist only
+</ParamField>
+
+<ParamField body="whitelist" type="array" optional>
+  Array of whitelisted Ethereum addresses for private sales
+</ParamField>
+
+<ParamField body="futureMint" type="boolean" default="false">
+  Whether tokens should be minted at a future date
+</ParamField>
+
+<ParamField body="mintDate" type="string" optional>
+  ISO date string for future minting (required if futureMint is true)
+</ParamField>
+
+<ParamField body="issuerAddress" type="string" optional>
+  Ethereum address of the token issuer
+</ParamField>
+
+<ParamField body="additionalData" type="object" optional>
+  Additional metadata for the token sale
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/v1/investment/token-sale" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "x-instance-id: YOUR_INSTANCE_ID" \
+  -d '{
+    "companyName": "TechCorp AG",
+    "companyDescription": "Leading provider of blockchain solutions",
+    "sector": "Technology",
+    "targetRaise": 1000000,
+    "tokenSupply": 1000000,
+    "companyPercentage": 10,
+    "paymentMethod": "both",
+    "minInvestment": 1000,
+    "maxInvestment": 50000,
+    "isPublic": true
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/v1/investment/token-sale', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  },
+  body: JSON.stringify({
+    companyName: 'TechCorp AG',
+    companyDescription: 'Leading provider of blockchain solutions',
+    sector: 'Technology',
+    targetRaise: 1000000,
+    tokenSupply: 1000000,
+    companyPercentage: 10,
+    paymentMethod: 'both',
+    minInvestment: 1000,
+    maxInvestment: 50000,
+    isPublic: true
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/v1/investment/token-sale',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    },
+    json={
+        'companyName': 'TechCorp AG',
+        'companyDescription': 'Leading provider of blockchain solutions',
+        'sector': 'Technology',
+        'targetRaise': 1000000,
+        'tokenSupply': 1000000,
+        'companyPercentage': 10,
+        'paymentMethod': 'both',
+        'minInvestment': 1000,
+        'maxInvestment': 50000,
+        'isPublic': True
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "tokenAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0",
+    "sale": {
+      "id": "clr4def456",
+      "instanceId": "your-instance-id",
+      "tokenAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0",
+      "companyName": "TechCorp AG",
+      "companyDescription": "Leading provider of blockchain solutions",
+      "sector": "Technology",
+      "targetRaise": "1000000",
+      "tokenSupply": "1000000",
+      "companyPercentage": 10,
+      "minInvestment": "1000",
+      "maxInvestment": "50000",
+      "isPublic": true,
+      "whitelist": [],
+      "paymentMethod": "both",
+      "status": "CREATED",
+      "transactionHash": "0xdef456...",
+      "createdAt": "2024-01-15T10:30:00Z"
+    },
+    "embedCode": "<script src=\"https://invest.techcorpag.com/widget.js\"></script>\n<button \n  class=\"invest-now-btn\" \n  data-token=\"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0\"\n  data-instance=\"your-instance-id\"\n  data-company=\"TechCorp AG\">\n  Invest Now\n</button>",
+    "dashboardUrl": "https://app.trusset.org/dashboard/0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "instanceId": "your-instance-id"
+  }
+}
+```
+</ResponseExample>

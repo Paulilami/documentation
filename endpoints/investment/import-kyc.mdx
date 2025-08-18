@@ -1,0 +1,125 @@
+---
+title: 'Import KYC Data'
+api: 'POST /api/v1/investment/kyc/import'
+---
+
+Import bulk KYC data for investor verification.
+
+## Request Body
+
+<ParamField body="format" type="string" required>
+  Data format: "csv" or "json"
+</ParamField>
+
+<ParamField body="data" type="string|array" required>
+  KYC data in specified format
+</ParamField>
+
+### CSV Format
+Headers: `walletAddress,companyName,registrationNumber,legalRepresentative,email,phone,address,country,verified`
+
+### JSON Format
+Array of objects with KYC fields
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/v1/investment/kyc/import" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "x-instance-id: YOUR_INSTANCE_ID" \
+  -d '{
+    "format": "json",
+    "data": [
+      {
+        "walletAddress": "0x1234567890123456789012345678901234567890",
+        "companyName": "Example Corp",
+        "registrationNumber": "HRB123456",
+        "legalRepresentative": "John Doe",
+        "email": "john@example.com",
+        "phone": "+49123456789",
+        "address": "Main Street 1, 12345 City",
+        "country": "Germany",
+        "verified": true
+      }
+    ]
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/v1/investment/kyc/import', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  },
+  body: JSON.stringify({
+    format: 'json',
+    data: [
+      {
+        walletAddress: '0x1234567890123456789012345678901234567890',
+        companyName: 'Example Corp',
+        registrationNumber: 'HRB123456',
+        legalRepresentative: 'John Doe',
+        email: 'john@example.com',
+        phone: '+49123456789',
+        address: 'Main Street 1, 12345 City',
+        country: 'Germany',
+        verified: true
+      }
+    ]
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/v1/investment/kyc/import',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    },
+    json={
+        'format': 'json',
+        'data': [
+            {
+                'walletAddress': '0x1234567890123456789012345678901234567890',
+                'companyName': 'Example Corp',
+                'registrationNumber': 'HRB123456',
+                'legalRepresentative': 'John Doe',
+                'email': 'john@example.com',
+                'phone': '+49123456789',
+                'address': 'Main Street 1, 12345 City',
+                'country': 'Germany',
+                'verified': True
+            }
+        ]
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "imported": 1,
+    "ids": ["clr4stu901"]
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "instanceId": "your-instance-id"
+  }
+}
+```
+</ResponseExample>

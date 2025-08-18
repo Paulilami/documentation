@@ -1,0 +1,69 @@
+---
+title: 'Market Statistics'
+api: 'GET /api/v1/investment/marketplace/stats/:tokenAddress'
+---
+
+Retrieve secondary market statistics for a token.
+
+<ParamField path="tokenAddress" type="string" required>
+  ERC20 token contract address
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://trusser-issuer-backend.vercel.app/api/v1/investment/marketplace/stats/0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "x-instance-id: YOUR_INSTANCE_ID"
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/v1/investment/marketplace/stats/0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0', {
+  method: 'GET',
+  headers: {
+    'x-api-key': 'YOUR_API_KEY',
+    'x-instance-id': 'YOUR_INSTANCE_ID'
+  }
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    'https://trusser-issuer-backend.vercel.app/api/v1/investment/marketplace/stats/0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0',
+    headers={
+        'x-api-key': 'YOUR_API_KEY',
+        'x-instance-id': 'YOUR_INSTANCE_ID'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "activeOrders": 3,
+    "totalVolume": "150000",
+    "lowestAsk": "1.45",
+    "highestBid": "1.40",
+    "database": {
+      "totalOrders": 12,
+      "totalListed": "50000",
+      "totalFilled": "35000"
+    }
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "instanceId": "your-instance-id"
+  }
+}
+```
+</ResponseExample>

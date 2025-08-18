@@ -1,0 +1,93 @@
+---
+title: 'Widget Validate Investment'
+api: 'POST /api/v1/widget/validate-investment'
+---
+
+Validate an investment amount before processing.
+
+<Note>
+  This endpoint is CORS-enabled and publicly accessible for widget integration.
+</Note>
+
+## Request Body
+
+<ParamField body="tokenAddress" type="string" required>
+  ERC20 token contract address
+</ParamField>
+
+<ParamField body="investorAddress" type="string" required>
+  Ethereum address of the investor
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Investment amount in EUR
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/v1/widget/validate-investment" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tokenAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0",
+    "investorAddress": "0x1234567890123456789012345678901234567890",
+    "amount": 5000
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/v1/widget/validate-investment', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0',
+    investorAddress: '0x1234567890123456789012345678901234567890',
+    amount: 5000
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/v1/widget/validate-investment',
+    headers={
+        'Content-Type': 'application/json'
+    },
+    json={
+        'tokenAddress': '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0',
+        'investorAddress': '0x1234567890123456789012345678901234567890',
+        'amount': 5000
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "valid": true,
+    "tokenAmount": "5000.00",
+    "percentageOwned": "0.5000",
+    "currentInvestment": 0,
+    "totalInvestment": 5000,
+    "investmentAmount": 5000
+  }
+}
+```
+
+```json Error Response
+{
+  "success": false,
+  "error": "Minimum investment is €1000"
+}
+```
+</ResponseExample>
