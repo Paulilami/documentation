@@ -1,0 +1,81 @@
+---
+title: 'Burn Tokens'
+api: 'POST /api/v1/tokenization/burn'
+---
+
+Permanently remove tokens from circulation by burning them.
+
+<ParamField body="tokenAddress" type="string" required>
+  ERC20 token contract address
+</ParamField>
+
+<ParamField body="amount" type="string" required>
+  Amount of tokens to burn (will be adjusted for decimals)
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/v1/tokenization/burn" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{
+    "tokenAddress": "0x1234567890123456789012345678901234567890",
+    "amount": "10000"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/v1/tokenization/burn', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0x1234567890123456789012345678901234567890',
+    amount: '10000'
+  })
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/v1/tokenization/burn',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    json={
+        'tokenAddress': '0x1234567890123456789012345678901234567890',
+        'amount': '10000'
+    }
+)
+
+data = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "tokenAddress": "0x1234567890123456789012345678901234567890",
+    "burnedAmount": "10000",
+    "transactionHash": "0xghi789...",
+    "blockNumber": 12345681,
+    "gasUsed": "100000"
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:32:00Z",
+    "requestId": "550e8400-e29b-41d4-a716-446655440002",
+    "instanceId": null
+  }
+}
+```
+</ResponseExample>

@@ -1,0 +1,150 @@
+---
+title: 'Batch Import Assets'
+api: 'POST /api/v1/tokenization/batch/import'
+---
+
+Import and tokenize multiple assets from a CSV or JSON file in a single operation.
+
+<ParamField body="file" type="file" required>
+  CSV or JSON file containing asset data (max 10MB)
+  
+  Supported formats:
+  - `text/csv`
+  - `application/json`
+  - `application/vnd.ms-excel`
+</ParamField>
+
+<ParamField body="assetType" type="string">
+  Default asset type for all tokens (can be overridden per asset in file)
+  
+  Allowed values: `EQUITY`, `BOND`, `FUND`, `REAL_ESTATE`, `CASH_EQUIVALENT`, `COMMODITY`, `DEBT_INSTRUMENT`, `ART`, `COLLECTIBLE`, `MUSIC_RIGHTS`, `FILM_RIGHTS`, `PATENT`, `TRADEMARK`, `LICENSE_CONTRACT`, `DATA_ASSET`, `CARBON_CREDIT`, `GAME_ITEM`, `DOMAIN_NAME`, `OTHER`
+</ParamField>
+
+### File Format
+
+#### CSV Format
+```csv
+name,symbol,totalSupply,decimals,assetType,maxSupply,recipientAddress,recipientAmount
+Property Token A,PTA,1000000,18,REAL_ESTATE,5000000,0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4,1000000
+Property Token B,PTB,2000000,18,REAL_ESTATE,10000000,0xd2135CfB216b74109775236E36d4b433F1DF507B,2000000
+```
+
+#### JSON Format
+```json
+[
+  {
+    "name": "Property Token A",
+    "symbol": "PTA",
+    "totalSupply": "1000000",
+    "decimals": 18,
+    "assetType": "REAL_ESTATE",
+    "maxSupply": "5000000",
+    "recipients": [
+      {
+        "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f5b5d4",
+        "amount": "1000000"
+      }
+    ],
+    "features": {
+      "mintable": true,
+      "burnable": true,
+      "kyc": true
+    }
+  },
+  {
+    "name": "Property Token B",
+    "symbol": "PTB",
+    "totalSupply": "2000000",
+    "decimals": 18,
+    "assetType": "REAL_ESTATE",
+    "maxSupply": "10000000",
+    "recipients": [
+      {
+        "address": "0xd2135CfB216b74109775236E36d4b433F1DF507B",
+        "amount": "2000000"
+      }
+    ]
+  }
+]
+```
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://trusser-issuer-backend.vercel.app/api/v1/tokenization/batch/import" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -F "file=@assets.csv" \
+  -F "assetType=REAL_ESTATE"
+```
+
+```javascript JavaScript
+const formData = new FormData();
+formData.append('file', fileInput.files[0]);
+formData.append('assetType', 'REAL_ESTATE');
+
+const response = await fetch('https://trusser-issuer-backend.vercel.app/api/v1/tokenization/batch/import', {
+  method: 'POST',
+  headers: {
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: formData
+});
+
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+files = {
+    'file': ('assets.csv', open('assets.csv', 'rb'), 'text/csv')
+}
+
+data = {
+    'assetType': 'REAL_ESTATE'
+}
+
+response = requests.post(
+    'https://trusser-issuer-backend.vercel.app/api/v1/tokenization/batch/import',
+    headers={
+        'x-api-key': 'YOUR_API_KEY'
+    },
+    files=files,
+    data=data
+)
+
+result = response.json()
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "totalProcessed": 2,
+    "successful": 2,
+    "failed": 0,
+    "results": [
+      {
+        "success": true,
+        "asset": "Property Token A",
+        "tokenAddress": "0xabc123...",
+        "transactionHash": "0xdef456..."
+      },
+      {
+        "success": true,
+        "asset": "Property Token B",
+        "tokenAddress": "0xghi789...",
+        "transactionHash": "0xjkl012..."
+      }
+    ]
+  },
+  "error": null,
+  "metadata": {
+    "timestamp": "2024-01-15T10:35:00Z",
+    "requestId": "550e8400-e29b-41d4-a716-446655440005",
+    "instanceId": null
+  }
+}
+```
+</ResponseExample>

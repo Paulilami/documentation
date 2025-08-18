@@ -149,6 +149,41 @@
             ]
           },
           {
+            "group": "Asset Tokenization",
+            "pages": [
+              "tokenization-intro",
+              {
+                "group": "Token Management",
+                "pages": [
+                  "endpoints/tokenization/create-token",
+                  "endpoints/tokenization/mint-tokens",
+                  "endpoints/tokenization/burn-tokens",
+                  "endpoints/tokenization/transfer-tokens"
+                ]
+              },
+              {
+                "group": "Compliance",
+                "pages": [
+                  "endpoints/tokenization/update-user-status"
+                ]
+              },
+              {
+                "group": "Batch Operations",
+                "pages": [
+                  "endpoints/tokenization/batch-import"
+                ]
+              },
+              {
+                "group": "Data & Analytics",
+                "pages": [
+                  "endpoints/tokenization/get-tokens",
+                  "endpoints/tokenization/get-token-details",
+                  "endpoints/tokenization/get-balances"
+                ]
+              }
+            ]
+          },
+          {
             "group": "Stablecoins",
             "pages": [
               "stablecoin-intro",
