@@ -4,11 +4,25 @@
   "name": "Trusset Protocol",
   "description": "End-to-end infrastructure for tokenizing any asset",
   "colors": {
-    "primary": "#000",
-    "light": "#FF6B35",
-    "dark": "#E63E00"
+    "primary": "#FD4319",
+    "light": "#FD4319",
+    "dark": "#FD4319"
   },
   "favicon": "/favicon.png",
+  "fonts": {
+    "body": {
+      "family": "Questrial",
+      "weight": 400
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
+  },
   "api": {
     "mdx": {
       "server": "https://trusser-issuer-backend.vercel.app",
@@ -434,4 +448,4 @@
       "linkedin": "https://www.linkedin.com/in/paul-ilami-trusset/"
     }
   }
-}
+ }
