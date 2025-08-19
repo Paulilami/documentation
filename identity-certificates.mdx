@@ -1,5 +1,5 @@
 ---
-title: "Identity Certificates"
+title: "KYC Service"
 description: "On-chain KYC verification for compliant token transfers"
 ---
 
@@ -11,7 +11,6 @@ Issue identity certificates to enable compliant token transfers. Choose between 
   <Card title="Third-Party Verification" icon="link">
     Send verification links to individuals. Recipients complete KYC through Entrust's secure process.
   </Card>
-  
   <Card title="Manual Verification" icon="passport">
     Directly verify identities when your institution holds compliance licenses. You assume legal responsibility.
   </Card>
@@ -20,18 +19,21 @@ Issue identity certificates to enable compliant token transfers. Choose between 
 ### Core Functions
 
 **Create Verification Links**
+
 - Send to email or wallet address
 - Set custom expiry periods
 - Add notes for internal tracking
 - Monitor completion status
 
 **Manual Verification**
+
 - Input KYC data directly
 - Specify country information
 - Set verification duration
 - Immediate on-chain recording
 
 **Link Management**
+
 - View all sent links
 - Track completion rates
 - Revoke expired links
@@ -40,6 +42,7 @@ Issue identity certificates to enable compliant token transfers. Choose between 
 ## On-Chain Storage
 
 Identity data is stored on-chain as hashed values:
+
 - KYC verification status
 - Country jurisdiction
 - Issuing institution
@@ -50,6 +53,7 @@ No personal information is stored on-chain. Only verification proofs.
 ## Compliance Integration
 
 Identity certificates automatically integrate with your tokens:
+
 - Transfers blocked for non-verified addresses
 - Automatic expiry enforcement
 - Cross-token verification sharing
@@ -58,9 +62,9 @@ Identity certificates automatically integrate with your tokens:
 ## Legal Responsibility
 
 <Warning>
-Manual verification requires your institution to assume full legal responsibility for the accuracy of submitted KYC data. Ensure proper compliance procedures before enabling manual verification.
+  Manual verification requires your institution to assume full legal responsibility for the accuracy of submitted KYC data. Ensure proper compliance procedures before enabling manual verification.
 </Warning>
 
 <Note>
-Identity certificates are required for tokens with KYC flags enabled. Recipients must be verified before receiving tokens.
+  Identity certificates are required for tokens with KYC flags enabled. Recipients must be verified before receiving tokens.
 </Note>

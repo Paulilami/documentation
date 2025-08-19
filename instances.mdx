@@ -13,13 +13,12 @@ Every instance is dedicated to one service type (stablecoin instances coming soo
   <Card title="Tokenization Instance" icon="coins">
     Access to token creation, management, and white-label platform deployment services.
   </Card>
-  
   <Card title="Oracle Instance" icon="database">
     Access to asset verification, price feeds, and real-world data integration services.
   </Card>
 </Columns>
 
-<img src="/images/instances-interface.png" alt="Token-issuance interface" />
+![Token-issuance interface](/images/instances-interface.png)
 
 ## Environment Modes
 
@@ -31,23 +30,20 @@ Each instance operates in one of two modes:
 ## Instance Management
 
 ### API Keys
+
 - Each instance has a unique API key for authentication
 - Keys can be regenerated at any time through the Issuer Platform
-- All API requests require the instance key in headers
-
-### Access Control
-- Add team members with specific permissions
-- Control who can access instance settings and API keys
-- Manage service configurations per instance
+- All API requests require the instance API key in headers
 
 ### Service Isolation
+
 - Complete data separation between instances
 - Independent rate limits and usage tracking
 - Separate webhook configurations per instance
 
 ## Getting Started
 
-1. Log into the Issuer Platform
+1. Log into the [Issuer Platform](https://issuers.trusset.org/)
 2. Click "Create Instance"
 3. Select service type (Tokenization or Oracle)
 4. Choose environment (Development or Production)
@@ -56,5 +52,5 @@ Each instance operates in one of two modes:
 All subsequent API calls will require this instance API key in the `x-api-key` header.
 
 <Note>
-Instances are free to create. You only pay for the services you use through each instance.
+  Instances are free to create. You only pay for the services you use through each instance.
 </Note>
