@@ -1,146 +1,66 @@
 ---
-title: 'Introduction'
-description: 'Token-based capital raising infrastructure for institutional banking'
+title: 'Raise Capital Solution'
+description: 'Enable corporate clients to raise capital through tokenized securities'
 ---
 
-## Overview
+## What It Does
 
-Our capital raising solution provides banks with the infrastructure to enable corporate clients to raise capital through tokenized securities. The system handles token creation, primary issuance, secondary trading, and compliance controls within defined legal frameworks.
+Your corporate clients can raise capital by creating tokenized securities that investors purchase directly. The system handles everything from token creation to investment processing, with built-in compliance controls and secondary market trading. This opens a new revenue stream for your bank while providing clients with a modern, cost-effective alternative to traditional funding methods.
 
-## Architecture
+## How It Works
 
-### Core Components
+### Framework Configuration
 
-**Investment Framework**: Manages legal parameters, investment limits, and fee structures for token offerings
+Before any token sales begin, you establish the legal and operational parameters that will govern all offerings on your platform. This one-time setup defines maximum investors per offering (ranging from 1 to 10,000), investment limits, transaction fees that become your revenue share, prospectus thresholds, and whether private markets are permitted. These parameters ensure every token sale automatically complies with your regulatory requirements.
 
-**Company Tokens**: ERC20 tokens representing ownership or profit participation rights with transfer restrictions
+### Client Onboarding Process
 
-**Token Marketplace**: Secondary market infrastructure for peer-to-peer token trading
+When a corporate client wants to raise capital, they submit their funding request through your platform with their company details, financials, and funding target. They can raise up to €8 million without requiring a prospectus, making this particularly attractive for mid-market companies. The client specifies how many tokens to create, what percentage of their company these tokens represent, and whether the sale should be public or restricted to whitelisted investors.
 
-### Smart Contract Addresses
+Each funding round creates an ERC20 token that represents either company ownership or profit participation rights. These aren't just standard tokens - they include transfer restrictions enforced directly on the blockchain, ensuring compliance with your framework rules. Companies can even configure tokens for future minting, useful for vesting schedules or milestone-based releases.
 
-| Contract | Address |
-|----------|---------|
-| InvestmentFramework | `0xC6BAc3FA8C1a3424DeE90612963FAc4b3432ad3D` |
-| TokenMarketplace | `0x51fF8Db854E05FC9c11b0863b6Cf55dDcDbA8709` |
+### Investment Collection
 
-## Token Sale Lifecycle
+Once a token sale goes live, investors can purchase tokens through multiple channels. They might invest directly through your banking platform, through a widget embedded on the company's website, or via mobile apps with Web3 wallet integration. The investment process is straightforward: the investor connects their wallet, enters their investment amount, and the system automatically validates compliance with all rules before processing the transaction on the blockchain.
 
-<Steps>
-  <Step title="Framework Configuration">
-    Define legal structure, investor limits, and fee parameters
-  </Step>
-  <Step title="Token Creation">
-    Deploy ERC20 token contract with specified supply and restrictions
-  </Step>
-  <Step title="Sale Activation">
-    Enable investment acceptance with defined minimums and maximums
-  </Step>
-  <Step title="Investment Processing">
-    Handle investor purchases with automatic fee distribution
-  </Step>
-  <Step title="Secondary Trading">
-    Enable peer-to-peer trading through marketplace orders
-  </Step>
-</Steps>
+The beauty of this system is its automation. When an investment comes in, smart contracts handle everything - checking investor limits, enforcing minimums and maximums, updating the investor count, and distributing fees. Your bank receives 75% of transaction fees automatically, with the remaining 25% going to protocol maintenance.
 
-## Framework Parameters
+## Revenue Model
 
-Each bank instance operates with customized legal frameworks:
+The platform generates revenue from both primary and secondary markets. On primary investments, you typically charge a 1% transaction fee. For a client raising €1 million, this translates to €10,000 in revenue for your bank. But the revenue doesn't stop there.
 
-| Parameter | Description | Range |
-|-----------|-------------|-------|
-| `maxInvestors` | Maximum investors per offering | 1-10,000 |
-| `maxRaiseAmount` | Maximum raise without prospectus | Up to €8M |
-| `transactionFee` | Fee in basis points | 0-1000 |
-| `minInvestment` | Minimum investment amount | ≥1 |
-| `maxInvestment` | Maximum per investor | Variable |
+After the initial sale, tokens can trade on the secondary market, where you collect fees on every peer-to-peer transaction. With a typical 0.5% fee on secondary trades, a modest €5 million in annual trading volume generates an additional €25,000. As your platform grows and more tokens trade, this secondary market revenue becomes increasingly significant.
 
-## Fee Distribution
+Consider a realistic scenario: ten clients each raising €1 million would generate €100,000 in primary market fees. Add secondary market activity, and annual revenue easily exceeds €125,000 from a relatively small client base. Scale this to dozens or hundreds of clients, and the revenue potential becomes substantial.
 
-Transaction fees are automatically distributed:
-- **75%** to the issuing bank
-- **25%** to protocol maintenance
+## Compliance and Control
 
-## Compliance Features
+The platform provides comprehensive compliance controls that operate automatically. Every token sale respects the maximum investor limit of 149 for prospectus-free offerings, with the system maintaining an accurate count and preventing excess investors from participating. For private sales, whitelist enforcement ensures only approved investors can participate.
 
-### Transfer Restrictions
-All token transfers validate through the framework contract, enabling:
-- Investor count limits
-- Whitelist enforcement
-- Account freezing
-- Trading halts
+Transfer restrictions go beyond simple buying and selling. The system integrates with KYC providers to verify investor identities, can freeze accounts when necessary, halt trading in emergency situations, and enforce geographic restrictions. Every transaction is logged on the blockchain, creating an immutable audit trail for regulatory reporting.
 
-### Future Minting
-Tokens can be configured for delayed minting, useful for:
-- Vesting schedules
-- Milestone-based releases
-- Regulatory compliance periods
+Your compliance team has real-time visibility into all activity. They can monitor investment flows, maintain investor registries, generate regulatory reports, and intervene when necessary. This combination of automation and oversight ensures regulatory compliance while minimizing operational overhead.
 
-## Authentication
+## Technical Architecture
 
-All API requests require authentication using your instance credentials.
+The solution consists of three main smart contracts deployed on the blockchain. The InvestmentFramework contract manages all rules and compliance logic, ensuring every transaction follows your configured parameters. Each client gets their own CompanyToken contract, a customized ERC20 token with built-in transfer restrictions. The TokenMarketplace contract facilitates secondary trading while maintaining compliance controls.
 
-<ParamField header="x-api-key" type="string" required>
-  Your unique API key provided during onboarding
-</ParamField>
+Integration with your existing systems happens through a REST API that uses standard authentication headers. Your developers can choose between a fully managed service where we handle all infrastructure, a self-hosted deployment on your servers, or a hybrid approach using your frontend with our blockchain infrastructure. Most banks prefer the hybrid model, maintaining control of the user experience while leveraging our proven blockchain backend.
 
-<ParamField header="x-instance-id" type="string" required>
-  Your bank's instance identifier
-</ParamField>
+## Implementation Process
 
-## Response Format
+Getting started typically takes four weeks from contract signing to first client onboarding. The first week focuses on framework configuration and API provisioning, ensuring your parameters align with regulatory requirements. Week two handles technical integration, connecting your banking systems, KYC providers, and payment gateways.
 
-All API responses follow a standardized format:
+The third week is dedicated to comprehensive testing. Your team will process test transactions end-to-end, validate compliance rules, and train staff on the platform. By week four, you're ready to onboard your first client and begin marketing the service to your corporate banking customers.
 
-```json
-{
-  "success": true,
-  "data": {
-    // Response data
-  },
-  "error": null,
-  "metadata": {
-    "timestamp": "2024-01-15T10:30:00Z",
-    "requestId": "550e8400-e29b-41d4-a716-446655440000",
-    "instanceId": "your-instance-id"
-  }
-}
-```
+Throughout implementation, you'll have dedicated support from our team. We provide technical documentation, integration assistance, and best practices based on successful deployments at other banks. Post-launch, our 24/7 support ensures any issues are quickly resolved.
 
-## Invest Now Widget
+## Security Measures
 
-Companies embed this button on their website to enable direct investment:
+Security is paramount in tokenized securities. All smart contracts undergo professional audits before deployment, with multi-signature controls preventing unauthorized changes. The blockchain provides an immutable record of all transactions, while decentralized infrastructure ensures no single point of failure.
 
-```html
-<script src="https://invest.yourbank.com/widget.js"></script>
-<button 
-  class="invest-now-btn" 
-  data-token="0x..." 
-  data-instance="YOUR_INSTANCE_ID"
-  data-company="CompanyName">
-  Invest Now
-</button>
-```
+Platform security matches banking standards with end-to-end encryption, role-based access control, two-factor authentication for all users, and regular penetration testing. Your security team receives detailed reports of all security measures and can request additional audits at any time.
 
-## Webhook Events
+## Next Steps
 
-| Event                | Description              |
-|----------------------|--------------------------|
-| `SALE_STARTED`       | Token sale activated     |
-| `INVESTMENT_RECEIVED`| New investment processed |
-| `SALE_COMPLETED`     | Target raise achieved    |
-| `TOKEN_MINTED`       | Future tokens minted     |
-| `ACCOUNT_FROZEN`     | Account restricted       |
-
-## Error Codes
-
-| Code                   | Description                   |
-|------------------------|-------------------------------|
-| `FRAMEWORK_NOT_ACTIVE` | Framework not configured      |
-| `EXCEEDS_MAX_RAISE`    | Above framework limit         |
-| `SALE_NOT_ACTIVE`      | Sale not started              |
-| `BELOW_MINIMUM`        | Below minimum investment      |
-| `EXCEEDS_MAXIMUM`      | Exceeds maximum investment    |
-| `MAX_INVESTORS_REACHED`| Investor limit reached        |
-| `NOT_WHITELISTED`      | Investor not on whitelist     |
+Contact our team to discuss your specific requirements and timeline. We'll provide a detailed implementation plan tailored to your bank's needs and regulatory environment. [Click here](https://www.trusset.org/contact) to contact us.

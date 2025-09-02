@@ -71,6 +71,7 @@
             "group": "Getting Started",
             "pages": [
               "overview",
+              "legal-framework",
               "use-cases"
             ]
           }
@@ -104,7 +105,8 @@
           {
             "group": "Capital Raising",
             "pages": [
-              "investment-framework-intro"
+              "investment-framework-intro",
+              "widget-intro"
             ]
           },
           {
