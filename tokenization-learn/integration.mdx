@@ -40,51 +40,6 @@ headers: {
 }
 ```
 
-### Core Operations
-
-**Token Management**
-```javascript
-// Create new token
-POST /api/tokenization/create-token
-{
-  "name": "Asset Token",
-  "symbol": "AST",
-  "assetType": "EQUITY",
-  "features": ["kyc", "whitelist"]
-}
-
-// Mint tokens
-POST /api/tokenization/mint-tokens
-{
-  "tokenAddress": "0x...",
-  "recipients": [
-    {"address": "0x...", "amount": "1000000"}
-  ]
-}
-```
-
-**Compliance Controls**
-```javascript
-// Update user status
-POST /api/tokenization/update-user-status
-{
-  "tokenAddress": "0x...",
-  "userAddress": "0x...",
-  "status": {
-    "whitelisted": true,
-    "kycVerified": true
-  }
-}
-```
-
-**Batch Operations**
-```javascript
-// Import from CSV
-POST /api/tokenization/batch-import
-Content-Type: multipart/form-data
-file: assets.csv
-```
-
 ### Available API Sets
 
 <Card title="Tokenization APIs" icon="coin" href="/tokenization-intro">
@@ -102,23 +57,6 @@ file: assets.csv
 <Card title="Stablecoins" icon="dollar-sign" href="/stablecoin-intro">
   Deploy and manage stablecoin infrastructure
 </Card>
-
-## Webhook Integration
-
-Subscribe to real-time events:
-
-```javascript
-POST /api/webhooks/subscribe
-{
-  "url": "https://your-system.com/webhook",
-  "events": [
-    "token.created",
-    "token.minted",
-    "token.transferred",
-    "compliance.updated"
-  ]
-}
-```
 
 ### Event Types
 | Event | Description |
@@ -206,18 +144,6 @@ Connect with existing infrastructure:
 - API rate: 100 requests/second
 - Webhook delivery: 10,000/hour
 - Data retention: 90 days
-
-## Support & Resources
-
-### Documentation
-- [API Reference](/tokenization-intro)
-- [Integration Examples](https://github.com/trusset/examples)
-- [SDK Libraries](https://www.npmjs.com/org/trusset)
-
-### Technical Support
-- Email: support@trusset.org
-- Slack: [Join workspace](https://trusset.slack.com)
-- Office hours: Weekly integration sessions
 
 <Note>
 All API operations respect the compliance rules configured in your tokens. The platform automatically handles gas management, nonce tracking, and transaction retry logic.
