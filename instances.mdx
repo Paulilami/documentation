@@ -9,14 +9,21 @@ Instances are isolated environments that control access to Trusset's API service
 
 Every instance is dedicated to one service type (stablecoin instances coming soon):
 
-<Columns cols={2}>
+<Columns cols={1}>
   <Card title="Tokenization Instance" icon="coins">
     Access to token creation, management, and white-label platform deployment services.
   </Card>
-  <Card title="Oracle Instance" icon="database">
-    Access to asset verification, price feeds, and real-world data integration services.
+  <Card title="Synchronization Instance" icon="database">
+    Access to our synchronization and oracle services.
+  </Card>
+   <Card title="Stablecoin Instance" icon="coin">
+    Access to stablecoin issuance, management services, monitoring, conversion workdlows, and more.
   </Card>
 </Columns>
+
+<Note>
+  Stablecoin instances are not mandatory, you can access our stablecoin APIs through your **tokenization** instance API keys.
+</Note>
 
 ![Token-issuance interface](/images/instances-interface.png)
 

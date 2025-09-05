@@ -1,156 +1,195 @@
 ---
 title: "Collateralized Loans"
-description: "The first solution enabling overcollateralized loans using security tokens as collateral"
+description: "Unified lending infrastructure for all tokenized assets"
 ---
 
-We are officially the first system that solves the $2 trillion problem: making illiquid security tokens useful for borrowing. Transform baskets of ERC1400 security tokens into fungible, DeFi-compatible collateral through our Asset Wrapper System.
+Access instant liquidity without selling your tokenized assets. Our unified loan engine automatically adapts to different token types - Light Tokens, Fat Tokens, Stock Tokens, and standard ERC20s - providing consistent lending through a single integration.
 
-<Card title="Explore the Blog Post" icon="link" href="https://medium.com/@Trusset/how-we-solved-the-2-trillion-problem-overcollateralized-loans-for-security-tokens-e3fee6845a64">
-  Read our detailed technical analysis of the $2 trillion problem and how we solved it.
-</Card>
+## Unified Loan Architecture
 
-## The Problem
+The loan system combines three solutions into one adaptable interface. Deploy once, support all asset types.
 
-Security tokens representing real-world assets are completely useless for borrowing. You own $100,000 worth of tokenized real estate or corporate bonds? You cannot use them as collateral for loans.
+### Adaptive Engine Selection
 
-Traditional DeFi lending protocols cannot handle ERC1400 security tokens because:
+The system automatically detects token type and routes to the appropriate engine:
 
-- **Liquidity Crisis**: Cannot easily sell ERC1400 tokens if borrowers default
-- **Valuation Complexity**: Each token has different risk profiles and characteristics  
-- **Fragmented Markets**: No unified market for security tokens makes liquidation impossible
-- **Compliance Overhead**: Transfer restrictions prevent selling tokens to anyone during liquidation
+| Token Type | Engine | Collateral Features |
+|------------|--------|---------------------|
+| **Light Tokens (ERC1400)** | Light Engine | Compliance-checked transfers, force recovery support |
+| **Fat Tokens** | Fat Engine | Asset-specific parameters, specialized liquidation |
+| **Stock Tokens** | Stock Engine | Trading price oracles, automatic price feeds |
+| **ERC20 Tokens** | Base Engine | Standard collateral with manual oracle updates |
 
-Result: Trillions of dollars in tokenized assets sitting idle, generating no additional utility despite being on-chain.
+Each engine handles the specific requirements of its token type while presenting a unified interface for borrowers and lenders.
 
-## The Solution
+## Instance-Based Liquidity
 
-Our Asset Wrapper System transforms illiquid security tokens into highly liquid, fungible assets that work seamlessly with overcollateralized lending. Its like an ERC20-based index fund backed by RWAs and fully on-chain.
+Liquidity operates at the instance level, providing issuers complete control over their lending markets.
+
+### Instance Isolation
+
+Each instance maintains separate liquidity pools. Banks create multiple instances for different operations:
+
+- **Instance A**: Premium clients with favorable rates
+- **Instance B**: Standard retail lending terms
+- **Instance C**: High-risk assets with strict parameters
+
+Tokens from one instance cannot access liquidity from another, maintaining risk boundaries and operational control.
+
+### Global Liquidity Option
+
+Enable one instance as a global pool to maximize capital efficiency:
+
+```
+Instance Configuration:
+├── Standard Instance 1: Isolated pool for real estate tokens
+├── Standard Instance 2: Isolated pool for corporate bonds
+└── Global Instance: Shared liquidity for all issuer's tokens
+```
+
+When global liquidity is enabled, borrowers from any of your instances access the shared pool while maintaining issuer-level isolation from other organizations.
+
+## Value Registry Integration
+
+The Value Register serves as the central pricing mechanism for all collateralized loans. Every asset must be registered with current valuation data.
+
+### Oracle Types
+
+Configure oracles during token issuance or update them later:
+
+<Accordion title="Synchronization Oracle">
+Automatically fetches data from defined endpoints when requested by the value register. Configure custom mapping to translate external data formats into the standard value structure. Updates occur on-demand when loans require current pricing.
+</Accordion>
+
+<Accordion title="Manual Oracle">
+Requires issuer verification for each value update. Provides maximum control over pricing data with audit trails for every change. Suitable for illiquid assets or those requiring expert valuation.
+</Accordion>
+
+<Accordion title="Stock Token Oracle">
+Built-in oracle for stock tokens using trading prices. Automatically feeds from actual market prices and trading volumes. No manual configuration required - instant loan availability.
+</Accordion>
+
+### Value Update Workflow
 
 <Steps>
-  <Step title="Deposit Security Tokens">
-    Deposit your ERC1400 security tokens into a vault. Real estate, bonds, equity, and other assets create a diversified basket. Security tokens created with our tools can be added instantly with one click. The vault accepts tokens created with our security token tool or partner tools that use our oracle.
+  <Step title="Asset Registration">
+    Token ID automatically registers in value register on issuance
   </Step>
   
-  <Step title="Receive Wrapper Tokens">
-    Get Trusset (TRST) tokens - fully fungible ERC20 tokens representing proportional ownership of the entire asset basket.
+  <Step title="Oracle Assignment">
+    One oracle per asset, configured by issuer
   </Step>
   
-  <Step title="Use as Collateral">
-    Use TRST tokens as collateral for overcollateralized loans in any DeFi protocol or our lending system.
+  <Step title="Price Request">
+    Loan engine requests current value when user deposits collateral
   </Step>
   
-  <Step title="Redeem or Trade">
-    Trade TRST tokens freely or redeem them for proportional shares of underlying ERC1400 assets at any time.
+  <Step title="Value Sync">
+    Oracle provides price data through configured mechanism
+  </Step>
+  
+  <Step title="Risk Calculation">
+    System calculates LTV ratio and loan terms based on fresh data
   </Step>
 </Steps>
 
-## How It Works
+## Borrowing Process
 
-### Asset Vault Architecture
+The borrowing workflow adapts to handle any supported token type through the Adaptable Escrow Vault:
 
-The system accepts multiple ERC1400 security tokens meeting quality criteria. Diversification through basketing dramatically reduces the liquidity risk of any individual asset.
+### Collateral Deposit
 
-<Accordion title="Asset Acceptance">
-  Whitelist approved ERC1400 tokens with minimum quality and liquidity thresholds. Real-time compliance checking ensures only verified assets enter the vault.
-</Accordion>
+Users select assets and amounts for collateral. The system checks the Adaptable Escrow Vault for asset inclusion. New assets require one-time addition to the vault, then become permanently available for all users.
 
-<Accordion title="Valuation System">
-  Oracle price feeds provide real-time asset valuations and risk assessments. Dynamic weight adjustments maintain basket stability.
-</Accordion>
+### Loan Calculation
 
-<Accordion title="Compliance Bridge">
-  Maintains unbroken legal ownership transfer while enabling fungible trading. Redemption rights preserve regulatory compliance.
-</Accordion>
+Based on the value register data and risk profile:
+- **LTV Ratio**: 40-80% depending on asset volatility
+- **Interest Rate**: 4-12% APR based on risk assessment
+- **Liquidation Threshold**: 80-85% of maximum LTV
+- **Monitoring Frequency**: Hourly to weekly based on asset type
 
-<Warning>
-Please note: The asset vault can only accept ERC1400-based tokens from issuers that have implemented our RWA orcale (Trusset Verify) into their tokenization service, otherwise only our platform-internal created tokens can be used.
-</Warning>
+### Fund Disbursement
 
-### Wrapper Token Mechanics
+Stablecoin loans disburse from the instance's liquidity vault immediately upon collateral lock. No waiting periods or manual approvals for qualified collateral.
 
-Trusset (TRST) tokens are ERC20 tokens backed 1:1 by locked security tokens with direct redemption rights.
+## Liquidation System
 
-| Action | Process | Result |
-|--------|---------|---------|
-| **Deposit** | Lock ERC1400s → Mint TRST | Fungible tokens representing asset ownership |
-| **Trade** | Full ERC20 fungibility | No compliance checks on wrapper trading |
-| **Redeem** | Burn TRST → Get ERC1400s | Proportional assets with legal rights |
-| **Lend** | Use TRST as collateral | Access to DeFi lending markets |
+Automated liquidation protects lenders while maximizing borrower recovery value:
 
-### Multi-Tier Liquidation
+### Liquidation Triggers
 
-The breakthrough innovation: multiple layers of liquidity protection that solve the core liquidation problem.
+The system monitors positions continuously:
+- Price drops approaching liquidation threshold
+- Missed payments
+- Regulatory or compliance violations
+- Manual issuer intervention for legal requirements
+
+### Liquidation Process
 
 <Columns cols={2}>
-  <Card title="Primary Liquidity" icon="coins">
-    **Wrapper Token Trading**
-    
-    TRST tokens trade on decentralized exchanges with deep liquidity pools. Most liquidations happen instantly.
+  <Card title="Automated Marketplace" icon="arrows-rotate">
+    Assets list on the marketplace at 5-10% discount for quick sale
   </Card>
   
-  <Card title="Extended Auctions" icon="gavel">
-    **Individual Asset Sales**
-    
-    Time-extended auctions for individual security tokens with proper price discovery mechanisms.
+  <Card title="Issuer Buyback Hook" icon="hook">
+    Banks can configure automatic purchase of liquidated assets at discount
   </Card>
 </Columns>
 
-<Info>
-All assets can be liquidated by selling them. Auctions only happen for high-quality assets that meet specific criteria (currently private). These assets are mainly bought by our company to passively build an asset portfolio at lower rates
-</Info>
+The issuer buyback option enables banks to build portfolios of verified assets at favorable prices. Since banks verified the assets themselves, they trust the data and can acquire quality collateral efficiently.
 
-## Key Advantages
+## Integration Options
 
-### Capital Efficiency
+### White-Label Module
 
-- **Lower Collateralization**: Significantly lower ratios than traditional RWA lending due to superior liquidity architecture
-- **Productive Assets**: Previously idle security tokens become active DeFi collateral
-- **Cross-Asset Liquidity**: Real estate tokens provide liquidity for bond token borrowers
+Deploy the loans module in your white-label platform through the Issuer Platform interface. Users access lending directly within your branded environment.
 
-### Technical Innovation
+Module features:
+- Deposit and borrow interfaces
+- Position management dashboards
+- Liquidation monitoring
+- Analytics and reporting
 
-- **True Fungibility**: Creates DeFi compatibility while maintaining regulatory compliance
-- **Legal Chain Preservation**: Unbroken ownership transfer for legal requirements
-- **Automated Liquidation**: Smart contract enforcement with multiple fallback layers
+### API Integration
 
-### Market Impact
+Integrate lending into existing applications (register for accessing our overcollateralized loan APIs).
 
-<Warning>
-This system unlocks massive capital efficiency comparable to when ETH became usable as collateral - expanding the entire DeFi market.
-</Warning>
+## Risk Management
 
-## Use Cases
+### Dynamic Risk Profiles
 
-### For Asset Holders
-- Access liquidity without selling underlying assets
-- Generate borrowing power from tokenized real estate, bonds, or equity
-- Participate in DeFi while maintaining asset exposure
+The system adjusts parameters based on asset characteristics:
 
-### For DeFi Protocols
-- Trillions in new collateral assets become available
-- Deeper liquidity pools and more stable lending markets
-- Bridge between traditional finance and decentralized finance
+**Stable Assets** (real estate, bonds): Higher LTV, lower monitoring frequency
 
-### For Institutions
-- Put tokenized assets to work immediately after tokenization
-- Lower borrowing costs through efficient liquidation mechanisms
-- Regulatory compliant DeFi participation
+**Volatile Assets** (stocks, commodities): Lower LTV, continuous monitoring
 
-## Technical Features
+**New Assets**: Conservative parameters until history establishes
 
-- **Asset Vault**: Securely holds deposited security tokens with compliance validation
-- **Wrapper Token**: ERC20 representation with full DeFi compatibility
-- **Price Oracle**: Real-time valuations and risk assessments  
-- **Lending Protocol**: Overcollateralized borrowing with automatic liquidation
-- **Redemption Engine**: Direct conversion to underlying assets with legal compliance
+### Issuer Controls
 
-## The Impact
+Banks maintain full control over their lending markets:
+- Set accepted collateral types per instance
+- Configure maximum exposure limits
+- Adjust liquidation parameters
+- Pause lending during market stress
+- Override automated decisions when required
 
-This system creates a positive feedback loop that grows the entire ecosystem:
+## Liquidation Bot Contract
 
-1. **More Liquid Collateral** → Lower borrowing costs
-2. **Lower Costs** → More adoption  
-3. **More Adoption** → Better liquidity
-4. **Better Liquidity** → Even lower costs
+Issuers deploy liquidation bots during setup to handle automated liquidations:
 
-The compounding effects unlock the $10 trillion RWA market by making tokenized assets actually useful instead of just digital certificates.
+```
+Bot Configuration:
+├── Discount Rate: 5-15% below market price
+├── Execution Speed: Immediate or delayed
+├── Buyback Priority: Issuer, whitelist, or public
+└── Fee Structure: Platform and issuer splits
+```
+
+The bot operates autonomously but respects issuer preferences and compliance requirements.
+
+<Note>
+Stock tokens provide instant collateral utility through automatic price feeds. Other token types require oracle configuration during issuance for loan eligibility.
+</Note>

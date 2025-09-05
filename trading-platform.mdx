@@ -1,44 +1,190 @@
 ---
 title: "Trading Platform"
-description: "Tokenized asset marketplace for your white-label deployment"
+description: "Multi-asset trading infrastructure for tokenized securities and ERC20 tokens"
 ---
 
-The trading platform module enables peer-to-peer trading of security tokens within your white-label deployment. Available as an optional module during deployment.
+The trading platform module adapts to your token type automatically. Security tokens route through compliance-checked markets while ERC20 tokens connect to automated market makers. Configure through the Issuer Platform or integrate via API.
 
-## Trading Methods
+## Trading Infrastructure
+
+### Security Token Marketplace
+
+Security tokens (ERC1400) trade through structured mechanisms that maintain compliance throughout the transaction lifecycle. Each trade validates KYC status, transfer restrictions, and wallet limits before execution.
 
 <Columns cols={3}>
-  <Card title="Direct Trading" icon="check">
-    **Buy and sell immediately**
-    
-    Set prices and execute trades instantly with available liquidity.
+  <Card title="Direct Listings" icon="tag">
+    Fixed-price sales with immediate settlement and automatic compliance checks
   </Card>
   
   <Card title="Asset Financing" icon="credit-card">
-    **Financed purchases**
-    
-    Purchase assets with 25-80% down payments and structured payment plans.
+    Purchase with 25-80% down payment and structured monthly payments
   </Card>
   
   <Card title="Auctions" icon="gavel">
-    **Competitive bidding**
-    
-    Price discovery for high-value assets. Coming in next update.
+    Time-bound competitive bidding for price discovery on unique assets
   </Card>
 </Columns>
 
-<img src="/images/trading-interface.png" alt="Trading platform interface" />
+The marketplace operates at the instance level - only tokens issued within the same instance appear in the marketplace. This isolation ensures proper compliance boundaries and simplified management.
+
+### ERC20 Token Trading
+
+Stock tokens and standard ERC20s utilize Balancer V3 liquidity pools for continuous 24/7 trading with custom hooks. The automated market maker eliminates order books and manual matching.
+
+Pool mechanics:
+- Automatic price discovery based on token ratios
+- 0.3% swap fees distributed to liquidity providers
+- No minimum trade sizes or time restrictions
+- Instant execution without counterparty matching
+
+## Asset Financing Details
+
+The financing module enables structured purchases through smart contract enforcement. Sellers become lenders, earning interest while maintaining token security through escrow.
+
+### Down Payment Structure
+
+Lower down payments increase risk, reflected in higher interest rates:
+
+| Down Payment | Interest Rate | Maximum Term | Monthly Payment |
+|--------------|--------------|--------------|-----------------|
+| 25-40% | 12-15% APR | 5 years | Higher monthly burden |
+| 40-60% | 8-12% APR | 10 years | Moderate payments |
+| 60-80% | 4-8% APR | 30 years | Lower monthly cost |
+
+### Financing Workflow
+
+<Steps>
+  <Step title="Listing Creation">
+    Seller sets minimum down payment, maximum duration, and acceptable borrower criteria
+  </Step>
+  
+  <Step title="Purchase Initiation">
+    Buyer selects down payment percentage within seller's parameters and loan duration
+  </Step>
+  
+  <Step title="Escrow Lock">
+    Tokens transfer to smart contract escrow, released only upon full payment
+  </Step>
+  
+  <Step title="Payment Collection">
+    Monthly automated payments process on schedule with principal and interest
+  </Step>
+  
+  <Step title="Completion or Default">
+    Full payment releases tokens to buyer. Default returns tokens to seller plus penalties
+  </Step>
+</Steps>
+
+### Default Protection
+
+The system protects sellers through multiple mechanisms:
+
+**Immediate Penalties**: Seller keeps the down payment plus 2.5% penalty fee on default
+
+**Credit Tracking**: Defaulters receive on-chain credit marks affecting future financing access
+
+**Automatic Reversion**: Tokens return to seller automatically without manual intervention
+
+**Payment History**: Complete payment records stored on-chain for dispute resolution
+
+## Configuration Options
+
+### Module Setup
+
+Configure the trading platform through the Issuer Platform interface:
+
+```
+Trading Permissions:
+├── List Assets: Allow token holders to create listings
+├── Buy Assets: Enable purchase functionality
+├── Create Auctions: Permit auction creation
+└── Use Financing: Allow financed purchases
+
+Trading Features:
+├── Instant Buy: Direct purchase at listed prices
+├── Auction System: Time-based bidding
+├── Escrow Service: Secure transaction settlement
+└── Rating System: Buyer/seller reputation tracking
+```
+
+### Liquidity Pool Management
+
+For ERC20 tokens using Balancer pools:
+
+**Initial Setup**: Deploy pools with starting liquidity and weight ratios through the interface
+
+**Fee Configuration**: Set swap fees between 0.1% and 1% based on volatility expectations
+
+**Liquidity Incentives**: Configure rewards for liquidity providers to bootstrap markets
+
+**Access Control**: Determine who can provide liquidity - public, whitelist, or issuer-only
+
+## API Integration
+
+While the module deploys through the Issuer Platform, programmatic access enables automation:
+
+### Creating Listings
+```javascript
+POST /api/marketplace/list
+{
+  tokenAddress: "0x...",
+  amount: "1000",
+  price: "50000",
+  acceptFinancing: true,
+  minDownPayment: 40,
+  maxDuration: 60
+}
+```
+
+### Executing Trades
+```javascript
+POST /api/marketplace/buy
+{
+  listingId: "listing_123",
+  financingOption: {
+    downPayment: 50,
+    durationMonths: 36
+  }
+}
+```
+
+### Pool Operations
+```javascript
+POST /api/balancer/swap
+{
+  tokenIn: "0x...",
+  tokenOut: "0x...",
+  amount: "1000",
+  minAmountOut: "950"
+}
+```
 
 ## Compliance Integration
 
-All trades enforce your token's compliance rules automatically:
-- KYC verification requirements
-- Transfer restrictions
-- Wallet limits
-- Geographic restrictions
+All trades enforce token-level compliance automatically. The platform checks:
 
-The platform connects directly to your instance's deployed tokens. No additional setup required.
+**Identity Verification**: KYC status validation before any transfer
+
+**Transfer Restrictions**: Blacklists, whitelists, and freeze status
+
+**Regulatory Limits**: Maximum holders, minimum holdings, geographic restrictions
+
+**Time Locks**: Vesting schedules and transfer moratoriums
+
+Failed compliance checks reject transactions before blockchain execution, saving gas costs and maintaining regulatory adherence.
+
+## Market Analytics
+
+The trading platform provides comprehensive analytics through dashboards and API endpoints:
+
+- Volume metrics by token and time period
+- Price movements and liquidity depth
+- Financing utilization and default rates
+- User activity and retention metrics
+- Compliance rejection reasons and patterns
+
+Export data for reporting or integrate with existing business intelligence tools through the API.
 
 <Note>
-Asset financing requires additional configuration for credit parameters and down payment requirements. Contact support for setup assistance.
+Trading platforms operate at the instance level. Tokens from different instances cannot trade together, maintaining clear compliance and operational boundaries.
 </Note>
