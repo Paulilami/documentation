@@ -98,8 +98,11 @@
           {
             "group": "Tokenization",
             "pages": [
-              "token-issuance",
-              "asset-management"
+              "tokenization-learn/overview",
+              "tokenization-learn/light-tokens",
+              "tokenization-learn/fat-tokens",
+              "tokenization-learn/tokenization-studio",
+              "tokenization-learn/integration"
             ]
           },
           {
@@ -408,13 +411,13 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Website",
+          "anchor": "Homepage",
           "href": "https://trusset.org",
           "icon": "globe"
         },
         {
-          "anchor": "Demo",
-          "href": "https://demo.trusset.org",
+          "anchor": "Token-Studio",
+          "href": "https://studio.trusset.org",
           "icon": "play"
         }
       ]

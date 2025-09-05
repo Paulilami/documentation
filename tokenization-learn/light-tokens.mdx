@@ -1,0 +1,156 @@
+---
+title: "Light Tokens"
+description: "Streamlined security tokens for existing assets"
+---
+
+Light Tokens provide a standardized framework for tokenizing assets with existing legal structures. Each token is an ERC20 implementation enhanced with comprehensive compliance and management features.
+
+## Core Features
+
+### Standard Operations
+- ERC20 compatible transfers and approvals
+- Configurable decimal places (default 18)
+- Unlimited or capped supply options
+- Batch operations for efficiency
+
+### Compliance Controls
+- **KYC Required**: Optional identity verification before transfers
+- **Whitelist**: Restrict transfers to approved addresses
+- **Account Freezing**: Suspend specific addresses from operations
+- **Force Transfer**: Authority-controlled movements for legal compliance
+- **Recovery Transfer**: Recover tokens from lost accounts
+
+### Fee Structure
+Optional fees for operations:
+- Mint fee (paid by minting authority)
+- Transfer fee (paid by sender)  
+- Burn fee (paid by token holder)
+- Platform receives 25%, issuer receives 75%
+
+## Deployment Parameters
+
+```solidity
+struct TokenParams {
+    string name;           // Token name
+    string symbol;         // Token symbol
+    uint8 decimals;        // Decimal places (default 18)
+    string assetType;      // Asset classification
+    address issuer;        // Token issuer address
+    address authority;     // Administrative address
+    address feeRecipient;  // Fee collection address
+    InitialSupply supply;  // Initial distribution
+    Fees fees;            // Fee configuration
+    uint256[] flags;      // Feature flags
+    Tags[] tags;          // Metadata tags
+    Documents[] documents; // Reference documents
+}
+```
+
+## Feature Flags
+
+| Flag | Function | Description |
+|------|----------|-------------|
+| `0` | KYC_REQUIRED | Require identity verification |
+| `1` | UNLIMITED_SUPPLY | No maximum supply cap |
+| `2` | FORCE_TRANSFER | Enable forced movements |
+| `3` | PAUSABLE | Global pause capability |
+| `4` | BLACKLIST | Block specific addresses |
+| `5` | RECOVERY_TRANSFER | Recover from lost accounts |
+| `6` | FEE_TRANSFER | Charge transfer fees |
+| `7` | FEE_MINT | Charge minting fees |
+| `8` | FEE_BURN | Charge burning fees |
+
+## Issuer Operations
+
+### Supply Management
+```solidity
+// Mint new tokens
+function mint(address to, uint256 amount) external payable
+
+// Burn existing tokens  
+function burn(uint256 amount) external payable
+
+// Batch operations
+function batchMint(address[] calldata recipients, uint256[] calldata amounts) external payable
+```
+
+### Compliance Management
+```solidity
+// Freeze/unfreeze accounts
+function freezeAccount(address account, bool frozen) external
+
+// Force transfer (if enabled)
+function forceTransfer(address from, address to, uint256 amount, string calldata reason) external
+
+// Recovery transfer (if enabled)
+function recoveryTransfer(address from, address to, uint256 amount, string calldata reason) external
+```
+
+### Configuration Updates
+```solidity
+// Update metadata
+function setTokenURI(string calldata uri) external
+function setDocumentURI(string calldata uri) external
+
+// Modify fees
+function setTransferFee(uint256 fee) external
+function setMintFee(uint256 fee) external
+function setBurnFee(uint256 fee) external
+
+// Change addresses
+function setAuthority(address newAuthority) external
+function setFeeRecipient(address newRecipient) external
+```
+
+## Integration with Supporting Infrastructure
+
+### ValueRegister Integration
+Store and retrieve on-chain valuation data:
+```solidity
+// Update token value
+valueRegister.updateValue(tokenAddress, newValue, documentURI);
+
+// Retrieve current value
+(uint256 value, string memory uri, uint64 timestamp) = valueRegister.getValue(tokenAddress);
+```
+
+### SupplyMonitor Integration
+Track supply changes for transparency:
+```solidity
+// Automatic recording on mint/burn
+supplyMonitor.recordMint(tokenAddress, amount);
+supplyMonitor.recordBurn(tokenAddress, amount);
+
+// Query historical data
+SupplyChange[] memory recent = supplyMonitor.getRecentChanges(tokenAddress);
+```
+
+### RegisterAdapter Integration
+Connect with external registries:
+```solidity
+// Configure adapter
+registerAdapter.setTokenAdapter(tokenAddress, adapterAddress);
+
+// Automatic registry updates on transfers
+```
+
+## Events
+
+| Event | Description |
+|-------|-------------|
+| `Transfer` | Standard ERC20 transfer |
+| `Approval` | Standard ERC20 approval |
+| `Frozen` | Account freeze status change |
+| `ForceTransfer` | Forced movement executed |
+| `RecoveryTransfer` | Recovery operation executed |
+| `AuthorityChanged` | Authority address updated |
+| `FeesUpdated` | Fee configuration changed |
+| `MetadataUpdated` | Token metadata modified |
+
+## Security
+
+- Issuer retains ultimate control
+- Authority has operational permissions
+- No backdoors or admin overrides
+- All actions emit events for transparency
+- Optional features must be explicitly enabled at creation

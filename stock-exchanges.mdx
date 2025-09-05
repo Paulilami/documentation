@@ -1,545 +1,229 @@
 ---
-title: "Stock Tokenization API"
-description: "API documentation for licensed trading platforms to integrate one-click stock tokenization."
+title: "Stock Tokenization Infrastructure"
+description: "Complete ecosystem for tokenizing stocks with 24/7 trading and collateralized lending"
 ---
 
-## Smart Contract Addresses (Ethereum Sepolia)
+Our stock tokenization infrastructure transforms traditional equities into blockchain-based tokens, enabling 24/7 trading, instant settlement, and DeFi functionality while maintaining regulatory compliance through MiCA Asset-Referenced Token (ART) framework.
 
-| Contract | Address |
-|----------|---------|
-| StockTokenFactory | `0x8cd74faF07fa10Ce6EBD9c3098817E0D599f4089` |
-| StockCertificateToken | `0x8cd74faF07fa10Ce6EBD9c3098817E0D599f4089` |
-| StockPriceOracle | `0xBD0615585170c99E23d8137D7B2371b8C1Af3d6D` |
-| CorporateActionsModule | `0x6e065e174cE46e8c420DBd81751554f3B093Cc53` |
-| DividendDistributor | `0x35fFE93142F746eD80bF6772166B3c140aB906fd` |
+## Complete Stock Ecosystem
 
-This API documentation is for approved partners holding the Investment Services License under MiFID II to integrate one-click tokenization of customer stocks with our infrastructure, directly into their trading platform, fully compliant with MiCA Asset-Referenced Token regulations, and operational within seconds.
+### Three Integrated Components
 
-## Overview
-We issue MiCA Asset-Referenced Tokens (ARTs) that track stock prices without conferring ownership rights. This avoids complex MiFID II securities frameworks that require weeks of prospectus approvals per stock. Users get price exposure through debt instruments rather than actual securities, similar to how CFDs and traditional bank certificates work in Europe.
-The integration follows a simple three-step flow:
-
-1. **Lock** - Partner locks customer's stock position in their system
-2. **Mint** - We mint tokenized certificates to customer's wallet
-3. **Unlock** - Customer burns tokens directly, partner receives notification to release original position
-
-## Client-Side Token Burning
-Users burn their tokens directly from their wallets. Below are implementation examples for different frameworks:
-
-<CodeGroup>
-```javascript Ethers v5 React Hook
-import { ethers } from 'ethers'
-import { useState } from 'react'
-
-const TOKEN_ABI = [
-  "function burn(uint256 amount)",
-  "function balanceOf(address account) view returns (uint256)",
-  "function decimals() view returns (uint8)"
-]
-
-export function useBurnTokens() {
-  const [burning, setBurning] = useState(false)
+<CardGroup cols={3}>
+  <Card title="Stock Tokenization" icon="lock">
+    Convert traditional stocks into blockchain tokens through licensed broker integration
+  </Card>
   
-  const burnTokens = async (tokenAddress, amount, provider) => {
-    setBurning(true)
-    try {
-      const signer = provider.getSigner()
-      const contract = new ethers.Contract(tokenAddress, TOKEN_ABI, signer)
-      const decimals = await contract.decimals()
-      const burnAmount = ethers.utils.parseUnits(amount.toString(), decimals)
-      
-      const tx = await contract.burn(burnAmount, {
-        gasLimit: 200000
-      })
-      const receipt = await tx.wait()
-      
-      return {
-        success: true,
-        txHash: receipt.transactionHash,
-        gasUsed: receipt.gasUsed.toString(),
-        blockNumber: receipt.blockNumber
-      }
-    } catch (error) {
-      throw new Error(`Burn failed: ${error.message}`)
-    } finally {
-      setBurning(false)
-    }
-  }
+  <Card title="24/7 Trading" icon="chart-line">
+    Decentralized trading via Balancer weighted pools with up to 100x leverage
+  </Card>
   
-  return { burnTokens, burning }
-}
+  <Card title="Collateralized Lending" icon="coins">
+    Borrow against tokenized stock positions with automated liquidation protection
+  </Card>
+</CardGroup>
 
-// Usage:
-// const { burnTokens, burning } = useBurnTokens()
-// const result = await burnTokens(tokenAddress, "100", provider)
-// console.log("Burn TX Hash:", result.txHash)
-```
+## How It Works
 
-```javascript Ethers v6 Modern
-import { ethers } from 'ethers'
+### Tokenization Flow
 
-const TOKEN_ABI = [
-  "function burn(uint256 amount)",
-  "function decimals() view returns (uint8)"
-]
-
-async function burnTokensV6(tokenAddress, amount, signer) {
-  try {
-    const contract = new ethers.Contract(tokenAddress, TOKEN_ABI, signer)
-    const decimals = await contract.decimals()
-    const burnAmount = ethers.parseUnits(amount.toString(), decimals)
-    
-    const tx = await contract.burn(burnAmount, {
-      gasLimit: 200000n
-    })
-    const receipt = await tx.wait()
-    
-    return {
-      success: true,
-      txHash: receipt.hash,
-      gasUsed: receipt.gasUsed.toString(),
-      blockNumber: receipt.blockNumber
-    }
-  } catch (error) {
-    throw new Error(`Burn failed: ${error.shortMessage || error.message}`)
-  }
-}
-
-// Usage:
-// const result = await burnTokensV6(tokenAddress, "100", signer)
-// await notifyBackendUnlock(result.txHash, "100")
-```
-
-```typescript Wagmi React Hook
-import { useContractWrite, useWaitForTransaction, usePrepareContractWrite } from 'wagmi'
-import { parseUnits } from 'viem'
-import { useState } from 'react'
-
-const TOKEN_ABI = [
-  {
-    name: 'burn',
-    type: 'function',
-    inputs: [{ name: 'amount', type: 'uint256' }],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  }
-] as const
-
-interface BurnTokensProps {
-  tokenAddress: `0x${string}`
-  amount: string
-  onSuccess?: (txHash: string) => void
-  onError?: (error: Error) => void
-}
-
-export function useBurnTokens({ tokenAddress, amount, onSuccess, onError }: BurnTokensProps) {
-  const [burnAmount] = useState(() => parseUnits(amount, 18))
+<Steps>
+  <Step title="Position Lock">
+    Licensed broker locks customer's stock position in traditional system
+  </Step>
   
-  const { config } = usePrepareContractWrite({
-    address: tokenAddress,
-    abi: TOKEN_ABI,
-    functionName: 'burn',
-    args: [burnAmount],
-    gas: 200000n
-  })
+  <Step title="Token Minting">
+    Blockchain tokens minted representing the locked stocks (1:1 ratio)
+  </Step>
   
-  const { write, data } = useContractWrite({
-    ...config,
-    onError: (error) => onError?.(new Error(error.message))
-  })
+  <Step title="Trading & DeFi">
+    Tokens trade 24/7 on-chain with access to lending and leverage
+  </Step>
   
-  const { isLoading } = useWaitForTransaction({
-    hash: data?.hash,
-    onSuccess: (receipt) => {
-      onSuccess?.(receipt.transactionHash)
-    }
-  })
+  <Step title="Redemption">
+    Burn tokens to unlock original stock position at broker
+  </Step>
+</Steps>
+
+### Regulatory Structure
+
+Tokens are issued as MiCA Asset-Referenced Tokens (ARTs) that track stock prices without conferring ownership rights. This structure:
+- Avoids complex MiFID II securities frameworks
+- Enables instant deployment (seconds vs weeks)
+- Provides price exposure through debt instruments
+- Maintains full regulatory compliance
+
+## Use Cases
+
+### For Retail Traders
+- **24/7 Trading**: Trade stocks anytime, including weekends and holidays
+- **Instant Settlement**: No T+2 waiting period
+- **Global Access**: Trade any tokenized stock from anywhere
+- **DeFi Integration**: Use stocks as collateral for loans
+
+### For Institutional Traders
+- **After-Hours Liquidity**: Access deep liquidity pools outside market hours
+- **Cross-Border Trading**: Eliminate international settlement friction
+- **Capital Efficiency**: Up to 100x leverage with automated risk management
+- **Arbitrage Opportunities**: Exploit price differences between traditional and token markets
+
+### For Brokers & Exchanges
+- **New Revenue Streams**: Earn fees from tokenization and DeFi activity
+- **Extended Trading Hours**: Offer 24/7 trading to customers
+- **Reduced Settlement Risk**: Instant blockchain settlement
+- **Regulatory Compliance**: Built-in KYC/AML and trading controls
+
+## Technical Infrastructure
+
+### Smart Contract Architecture
+
+| Component | Function | Network |
+|-----------|----------|---------|
+| StockTokenFactory | Deploys and manages stock tokens | Ethereum Sepolia |
+| BalancerV3PoolManager | Weighted pools for 24/7 trading | Ethereum Sepolia |
+| LendingPoolFactory | Isolated lending pools per stock | Ethereum Sepolia |
+| CorporateActionsModule | Handles splits, dividends, corporate events | Ethereum Sepolia |
+| UnifiedOracle | Multi-source price aggregation | Ethereum Sepolia |
+
+### Key Features
+
+**Tokenization**
+- One-click integration for licensed brokers
+- Automatic KYC/compliance checks
+- Corporate action support (splits, dividends)
+- Trading halt enforcement
+
+**24/7 Trading**
+- 80/20 weighted pools (stock/stablecoin)
+- Up to 100x leverage positions
+- Automated market making
+- TWAP price tracking
+
+**Lending Markets**
+- Isolated pools per stock
+- Dynamic interest rates
+- Balancer-integrated liquidations
+- Cross-pool collateral
+
+## Integration Options
+
+### Tokenization
+
+<Card title="Stock Tokenization API" icon="lock" href="/stock-exchanges-intro">
+  Lock positions, mint tokens, and manage corporate actions
+</Card>
+
+Partners with Investment Services License under MiFID II can integrate one-click tokenization directly into their trading platforms.
+
+### Trading
+
+<Card title="24/7 Trading API" icon="chart-line" href="/balancer-exchange-intro">
+  Create weighted pools and enable leveraged trading
+</Card>
+
+Protocols can create Balancer pools for tokenized stocks, enabling decentralized trading with advanced features.
+
+### Lending
+
+<Card title="Collateralized Loans API" icon="coins" href="/stock-loans">
+  Deploy lending pools with automated liquidation
+</Card>
+
+Platforms can offer overcollateralized loans against tokenized stock positions with Balancer-integrated liquidations.
+
+## Market Dynamics
+
+### Price Discovery
+Tokenized stocks maintain price parity with underlying assets through:
+- **Arbitrage Mechanisms**: Traders exploit price differences
+- **Oracle Integration**: Real-time price feeds from multiple sources
+- **Redemption Guarantee**: 1:1 burn-to-unlock maintains peg
+
+### Liquidity Provision
+Deep liquidity through:
+- **Weighted Pools**: 80/20 ratio optimizes capital efficiency
+- **LP Incentives**: Yield from trading fees and lending
+- **Cross-Pool Routing**: Aggregated liquidity across pools
+
+### Risk Management
+Comprehensive risk controls:
+- **Automated Liquidations**: Via Balancer AMM execution
+- **Health Factor Monitoring**: Real-time position tracking
+- **Circuit Breakers**: Emergency pause functionality
+- **Insurance Funds**: Protection against bad debt
+
+## Compliance & Security
+
+### Regulatory Compliance
+- **MiCA Compliant**: Asset-Referenced Token framework
+- **KYC/AML**: Integrated identity verification
+- **Trading Controls**: Halts, blacklisting, and restrictions
+- **Audit Trail**: Complete on-chain transaction history
+
+### Security Features
+- **Non-Custodial**: Users control their tokens
+- **Immutable Contracts**: No admin keys or backdoors
+- **Oracle Security**: Multi-source price validation
+- **Slippage Protection**: Maximum price deviation limits
+
+## Benefits
+
+### Efficiency Gains
+| Traditional Stock Trading | Tokenized Stock Trading |
+|--------------------------|------------------------|
+| Market hours only (9:30-4:00) | 24/7 trading availability |
+| T+2 settlement | Instant settlement |
+| Geographic restrictions | Global accessibility |
+| Limited collateral use | DeFi composability |
+| Manual corporate actions | Automated on-chain execution |
+
+### Cost Reduction
+- No clearing house fees
+- Reduced settlement costs
+- Automated compliance
+- Efficient capital utilization
+
+## Getting Started
+
+### For Brokers
+1. Obtain MiFID II Investment Services License
+2. Request API credentials
+3. Integrate tokenization endpoints
+4. Test on Sepolia network
+5. Launch with selected stocks
+
+### For Traders
+1. Connect wallet (MetaMask/WalletConnect)
+2. Complete KYC verification
+3. Deposit funds or stocks
+4. Start trading 24/7
+
+### For Developers
+1. Review API documentation
+2. Deploy test pools on Sepolia
+3. Integrate smart contracts
+4. Build trading interfaces
+
+## Support & Resources
+
+<CardGroup cols={2}>
+  <Card title="API Documentation" icon="book" href="/stock-exchanges-intro">
+    Complete API reference for all endpoints
+  </Card>
   
-  return {
-    burnTokens: write,
-    isLoading,
-    txHash: data?.hash
-  }
-}
-
-// Usage Component:
-// const { burnTokens, isLoading, txHash } = useBurnTokens({
-//   tokenAddress: "0x...",
-//   amount: "100",
-//   onSuccess: (hash) => notifyBackendUnlock(hash, "100")
-// })
-```
-
-```javascript Web3.js Implementation
-import Web3 from 'web3'
-
-const TOKEN_ABI = [
-  {
-    name: 'burn',
-    type: 'function',
-    inputs: [{ name: 'amount', type: 'uint256' }],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  }
-]
-
-async function burnTokensWeb3(tokenAddress, amount, account) {
-  try {
-    const web3 = new Web3(window.ethereum)
-    const contract = new web3.eth.Contract(TOKEN_ABI, tokenAddress)
-    
-    const decimals = await contract.methods.decimals().call()
-    const burnAmount = web3.utils.toBN(amount).mul(web3.utils.toBN(10).pow(web3.utils.toBN(decimals)))
-    
-    const tx = await contract.methods.burn(burnAmount.toString()).send({
-      from: account,
-      gas: 200000
-    })
-    
-    return {
-      success: true,
-      txHash: tx.transactionHash,
-      gasUsed: tx.gasUsed,
-      blockNumber: tx.blockNumber
-    }
-  } catch (error) {
-    throw new Error(`Burn failed: ${error.message}`)
-  }
-}
-
-// Usage:
-// const result = await burnTokensWeb3(tokenAddress, "100", userAccount)
-// await fetch('/api/unlock', { 
-//   method: 'POST', 
-//   body: JSON.stringify({ burnTxHash: result.txHash, amount: "100" }) 
-// })
-```
-
-```typescript Viem Modern Alternative
-import { createWalletClient, custom, parseUnits, getContract } from 'viem'
-import { sepolia } from 'viem/chains'
-
-const TOKEN_ABI = [
-  {
-    name: 'burn',
-    type: 'function',
-    inputs: [{ name: 'amount', type: 'uint256' }],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  },
-  {
-    name: 'decimals',
-    type: 'function',
-    inputs: [],
-    outputs: [{ name: '', type: 'uint8' }],
-    stateMutability: 'view'
-  }
-] as const
-
-async function burnTokensViem(tokenAddress: `0x${string}`, amount: string, account: `0x${string}`) {
-  try {
-    const client = createWalletClient({
-      chain: sepolia,
-      transport: custom(window.ethereum!)
-    })
-    
-    const contract = getContract({
-      address: tokenAddress,
-      abi: TOKEN_ABI,
-      client
-    })
-    
-    const decimals = await contract.read.decimals()
-    const burnAmount = parseUnits(amount, decimals)
-    
-    const hash = await contract.write.burn([burnAmount], {
-      account,
-      gas: 200000n
-    })
-    
-    return {
-      success: true,
-      txHash: hash,
-      timestamp: Date.now()
-    }
-  } catch (error: any) {
-    throw new Error(`Burn failed: ${error.shortMessage || error.message}`)
-  }
-}
-
-// Usage:
-// const result = await burnTokensViem("0x...", "100", "0x...")
-// console.log("Transaction hash:", result.txHash)
-```
-
-```javascript RainbowKit + Wagmi
-import { useContractWrite, useWaitForTransaction, useAccount } from 'wagmi'
-import { parseUnits } from 'viem'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
-
-const TOKEN_ABI = [
-  {
-    name: 'burn',
-    type: 'function',
-    inputs: [{ name: 'amount', type: 'uint256' }],
-    outputs: [],
-    stateMutability: 'nonpayable'
-  }
-] as const
-
-export function BurnTokenButton({ tokenAddress, amount, onBurnComplete }) {
-  const { address, isConnected } = useAccount()
-  const { openConnectModal } = useConnectModal()
+  <Card title="Smart Contracts" icon="code" href="https://github.com/trusset/contracts">
+    Open-source contract implementations
+  </Card>
   
-  const { write: burnTokens, data } = useContractWrite({
-    address: tokenAddress,
-    abi: TOKEN_ABI,
-    functionName: 'burn',
-    args: [parseUnits(amount.toString(), 18)],
-    gas: 200000n
-  })
+  <Card title="Integration Support" icon="headset" href="mailto:support@trusset.org">
+    Technical support for partners
+  </Card>
   
-  const { isLoading } = useWaitForTransaction({
-    hash: data?.hash,
-    onSuccess: async (receipt) => {
-      await onBurnComplete(receipt.transactionHash)
-    }
-  })
-  
-  if (!isConnected) {
-    return (
-      <button onClick={openConnectModal}>
-        Connect Wallet to Burn Tokens
-      </button>
-    )
-  }
-  
-  return (
-    <button onClick={() => burnTokens?.()} disabled={isLoading}>
-      {isLoading ? 'Burning...' : `Burn ${amount} Tokens`}
-    </button>
-  )
-}
+  <Card title="Compliance Guide" icon="shield" href="/compliance">
+    Regulatory framework and requirements
+  </Card>
+</CardGroup>
 
-// Usage:
-// <BurnTokenButton 
-//   tokenAddress="0x..." 
-//   amount="100"
-//   onBurnComplete={(txHash) => notifyUnlock(txHash)} 
-// />
-```
-
-```javascript Vanilla JavaScript MetaMask
-async function burnTokensMetaMask(tokenAddress, amount) {
-  try {
-    if (!window.ethereum) {
-      throw new Error('MetaMask not installed')
-    }
-    
-    await window.ethereum.request({ method: 'eth_requestAccounts' })
-    
-    const accounts = await window.ethereum.request({ method: 'eth_accounts' })
-    const account = accounts[0]
-    
-    // Get decimals first
-    const decimalsData = '0x313ce567' // decimals() function selector
-    const decimalsResult = await window.ethereum.request({
-      method: 'eth_call',
-      params: [{
-        to: tokenAddress,
-        data: decimalsData
-      }, 'latest']
-    })
-    const decimals = parseInt(decimalsResult, 16)
-    
-    // Calculate burn amount
-    const burnAmount = (BigInt(amount) * BigInt(10 ** decimals)).toString(16)
-    const paddedAmount = burnAmount.padStart(64, '0')
-    
-    // burn(uint256) function selector + amount
-    const data = '0x42966c68' + paddedAmount
-    
-    const txHash = await window.ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [{
-        from: account,
-        to: tokenAddress,
-        data: data,
-        gas: '0x30d40' // 200000 in hex
-      }]
-    })
-    
-    return {
-      success: true,
-      txHash: txHash,
-      account: account
-    }
-  } catch (error) {
-    throw new Error(`MetaMask burn failed: ${error.message}`)
-  }
-}
-
-// Usage:
-// const result = await burnTokensMetaMask("0x...", "100")
-// await notifyBackendUnlock(result.txHash, "100")
-```
-
-```javascript Complete Integration Flow
-// After burning tokens, notify backend to unlock position
-async function handleCompleteTokenBurn(tokenAddress, amount, apiKey) {
-  try {
-    // Step 1: Burn tokens (choose any method above)
-    const burnResult = await burnTokens(tokenAddress, amount)
-    console.log('Tokens burned:', burnResult.txHash)
-    
-    // Step 2: Wait a moment for blockchain confirmation
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    // Step 3: Notify backend to unlock position
-    const unlockResponse = await fetch('/api/stock-exchange/unlock', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey
-      },
-      body: JSON.stringify({
-        burnTxHash: burnResult.txHash,
-        amount: amount.toString()
-      })
-    })
-    
-    if (!unlockResponse.ok) {
-      throw new Error('Failed to unlock position')
-    }
-    
-    const unlockResult = await unlockResponse.json()
-    console.log('Position unlocked:', unlockResult)
-    
-    return {
-      burnTxHash: burnResult.txHash,
-      unlockConfirmation: unlockResult.confirmation,
-      lockId: unlockResult.lockId
-    }
-  } catch (error) {
-    console.error('Complete burn process failed:', error)
-    throw error
-  }
-}
-
-// Usage:
-// const result = await handleCompleteTokenBurn("0x...", "100", "your-api-key")
-// console.log("Full process complete:", result)
-```
-</CodeGroup>
-
-### Integration Notes
-- **Token Address**: Obtained from the mint response or status check
-- **Amount**: Must match the amount you want to unlock (usually full position)
-- **Gas Limit**: Set to 200,000 for safety (actual usage ~50,000-100,000)
-- **Error Handling**: Always wrap in try-catch blocks
-- **Transaction Hash**: Required for the unlock endpoint
-- **Confirmation**: Wait for blockchain confirmation before calling unlock
-
-## Webhook Events
-Your system will receive webhook notifications for key events. Configure your webhook URL during partner onboarding.
-Event Authentication
-All webhooks include HMAC-SHA256 signature for verification:
-<ParamField header="X-Webhook-Signature" type="string">
-  HMAC-SHA256 hash of the payload using your webhook secret
-</ParamField>
-<ParamField header="X-Event-Type" type="string">
-  Type of event being delivered
-</ParamField>
-<ParamField header="X-Partner-Id" type="string">
-  Your partner identifier
-</ParamField>
-Position Locked
-Sent when a position is successfully locked and ready for minting.
-<CodeGroup>
-```json position.locked
-{
-  "lockId": "LOCK-1642857600000-a1b2c3d4e5f6",
-  "stockISIN": "US0378331005",
-  "amount": "100",
-  "tokenAddress": "0xabcdef1234567890abcdef1234567890abcdef12",
-  "mintTxHash": "0x123abc456def789ghi012jkl345mno678pqr901stu234vwx567yz890"
-}
-```
-</CodeGroup>
-Tokens Burned
-Sent when customer burns tokens and requests position unlock.
-<CodeGroup>
-```json tokens.burned
-{
-  "lockId": "LOCK-1642857600000-a1b2c3d4e5f6",
-  "userId": "customer-123",
-  "stockISIN": "US0378331005", 
-  "amount": "100",
-  "burnTxHash": "0x789def012abc345ghi678jkl901mno234pqr567stu890vwx123yz456"
-}
-```
-</CodeGroup>
-Position Unlock Requested
-Sent when the system detects token burn and initiates unlock process.
-<CodeGroup>
-```json position.unlock_requested
-{
-  "lockId": "LOCK-1642857600000-a1b2c3d4e5f6",
-  "userId": "customer-123",
-  "stockISIN": "US0378331005",
-  "amount": "100",
-  "burnTxHash": "0x789def012abc345ghi678jkl901mno234pqr567stu890vwx123yz456"
-}
-```
-</CodeGroup>
-
-## Error Handling
-The API returns standard HTTP status codes and structured error responses.
-<CodeGroup>
-```json Error Response
-{
-  "error": "Invalid wallet address format",
-  "details": "Address must be a valid Ethereum checksum address"
-}
-```
-</CodeGroup>
-
-### Common error codes:
-<ResponseField name="400" type="Bad Request">
-  Invalid parameters or malformed request
-</ResponseField>
-<ResponseField name="401" type="Unauthorized">  
-  Invalid or missing API key
-</ResponseField>
-<ResponseField name="403" type="Forbidden">
-  Access denied for requested resource
-</ResponseField>
-<ResponseField name="404" type="Not Found">
-  Lock ID or resource not found
-</ResponseField>
-<ResponseField name="503" type="Service Unavailable">
-  Smart contract infrastructure unavailable
-</ResponseField>
-
-## Testing Environment
-Use the Sepolia testnet for integration testing. All operations mirror production behavior but use test tokens without value.
-- Test ISIN codes for different scenarios:
-<ResponseField name="US0378331005" type="string">
-  Apple Inc. - Standard successful flow
-</ResponseField>
-<ResponseField name="TEST0000001" type="string">
-  Simulated network delay (5-10 seconds)
-</ResponseField>
-<ResponseField name="FAIL0000001" type="string">
-  Simulated minting failure for error handling tests
-</ResponseField>
-Your test API key allows unlimited operations on Sepolia. Request test ETH from our support team if needed for gas fees.
-
-## Rate Limits
-Production API endpoints are rate limited per partner:
-
-- Lock/Mint operations: 100 requests per minute
-- Status checks: 500 requests per minute
-- Webhook deliveries: Retry up to 5 times with exponential backoff
-
-Test environment has no rate limits but requests timeout after 30 seconds.
+<Note>
+Currently operating on Ethereum Sepolia testnet. Mainnet deployment available for licensed partners.
+</Note>
