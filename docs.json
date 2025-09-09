@@ -419,6 +419,11 @@
           "anchor": "Token-Studio",
           "href": "https://studio.trusset.org",
           "icon": "play"
+        },
+        {
+          "anchor": "Whitepaper Generator",
+          "href": "https://mica-whitepapers.com",
+          "icon": "file"
         }
       ]
     }
