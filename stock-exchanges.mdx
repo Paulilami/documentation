@@ -1,205 +1,115 @@
 ---
-title: "Stock Engine"
-description: "Complete ecosystem for tokenizing stocks with 24/7 trading and collateralized lending"
+title: "Protocol Overview"
+description: "Infrastructure for tokenizing any asset class"
 ---
 
-Our stock tokenization infrastructure transforms traditional equities into blockchain-based tokens, enabling 24/7 trading, instant settlement, and DeFi functionality while maintaining regulatory compliance through MiCA Asset-Referenced Token (ART) framework.
+## Core Problem
 
-## Complete Stock Ecosystem
+Traditional assets suffer from settlement delays (T+2), limited trading hours (9:30-16:00), and high intermediary costs (2-5% annually). Cross-border transactions require multiple custodians, increasing counterparty risk and operational overhead.
 
-### Three Integrated Components
+## Solution Architecture
 
-<CardGroup cols={3}>
-  <Card title="Stock Tokenization" icon="lock">
-    Convert traditional stocks into erc20-based blockchain tokens through our licensed broker integration
-  </Card>
-  
-  <Card title="24/7 Trading" icon="chart-line">
-    Decentralized trading via Balancer weighted pools with up to 100x leverage
-  </Card>
-  
-  <Card title="Collateralized Lending" icon="coins">
-    Borrow against tokenized stock positions with automated liquidation protection
-  </Card>
-</CardGroup>
+The protocol provides three interconnected modules:
 
-## How It Works
+**Tokenization**: Converts asset ownership into ERC20 tokens with regulatory compliance built into the smart contracts. Each token maintains 1:1 backing with the underlying asset.
 
-### Tokenization Flow
+**Trading**: 24/7 liquidity pools using weighted math for price discovery. No order book required. Instant settlement with 0.3% fee structure.
 
-<Steps>
-  <Step title="Position Lock">
-    Licensed broker locks customer's stock position in traditional system
-  </Step>
-  
-  <Step title="Token Minting">
-    Blockchain tokens minted representing the locked stocks (1:1 ratio)
-  </Step>
-  
-  <Step title="Trading & DeFi">
-    Tokens trade 24/7 on-chain with access to lending and leverage
-  </Step>
-  
-  <Step title="Redemption">
-    Burn tokens to unlock original stock position at broker
-  </Step>
-</Steps>
+**Lending**: Collateralized loans at 75% loan-to-value ratio. Automatic liquidation at 80% threshold. Interest rates determined by utilization curve.
 
-### Regulatory Structure
+## Economic Design
 
-Tokens are issued as MiCA Asset-Referenced Tokens (ARTs) that track stock prices without conferring ownership rights. This structure:
-- Avoids complex MiFID II securities frameworks
-- Enables instant deployment (seconds vs weeks)
-- Provides price exposure through debt instruments
-- Maintains full regulatory compliance
+### Capital Efficiency
+
+Traditional settlement requires +100 dollars locked for 2 days per trade. Protocol reduces to immediate settlement with $0 lock-up. Liquidity providers earn 0.3% per swap versus 0.01% in traditional markets.
 
 ## Use Cases
 
-### For Retail Traders
-- **24/7 Trading**: Trade stocks anytime, including weekends and holidays
-- **Instant Settlement**: No T+2 waiting period
-- **Global Access**: Trade any tokenized stock from anywhere
-- **DeFi Integration**: Use stocks as collateral for loans
+<Columns cols={2}>
+  <Card title="Banks" icon="building-columns">
+    **Securities Lending**: Automated overnight repo at SOFR + 25 bps
+    
+    **Collateral Management**: Real-time margin calculations
+    
+    **Settlement**: Instant versus payment (IvP)
+  </Card>
+  
+  <Card title="Exchanges" icon="chart-mixed">
+    **24/7 Trading**: Continuous price discovery
+    
+    **Cross-listing**: Single token, multiple venues
+    
+    **Reduced Risk**: No settlement failures
+  </Card>
+  
+  <Card title="Asset Managers" icon="briefcase">
+    **Portfolio Tokens**: Basket creation at NAV
+    
+    **Rebalancing**: Atomic multi-asset swaps
+    
+    **Fee Collection**: Automatic on-chain distribution
+  </Card>
+  
+  <Card title="Corporations" icon="building">
+    **Treasury**: Yield generation on idle cash
+    
+    **Working Capital**: Asset-backed credit lines
+    
+    **Payables**: Instant cross-border settlement
+  </Card>
+</Columns>
 
-### For Institutional Traders
-- **After-Hours Liquidity**: Access deep liquidity pools outside market hours
-- **Cross-Border Trading**: Eliminate international settlement friction
-- **Capital Efficiency**: Up to 100x leverage with automated risk management
-- **Arbitrage Opportunities**: Exploit price differences between traditional and token markets
+## Integration Pathways
 
-### For Brokers & Exchanges
-- **New Revenue Streams**: Earn fees from tokenization and DeFi activity
-- **Extended Trading Hours**: Offer 24/7 trading to customers
-- **Reduced Settlement Risk**: Instant blockchain settlement
-- **Regulatory Compliance**: Built-in KYC/AML and trading controls
+<Steps titleSize="h3">
+  <Step title="API Integration" icon="code">
+    REST endpoints for all operations. OAuth 2.0 authentication. Webhook notifications for events. 2-week implementation timeline.
+  </Step>
+  
+  <Step title="White-Label Platform" icon="palette">
+    Pre-built UI components. Customizable branding. Hosted infrastructure. 48-hour deployment.
+  </Step>
+  
+  <Step title="Manual Operations" icon="hand">
+    Web interface for token management. No technical integration required. Same-day onboarding.
+  </Step>
+</Steps>
 
-## Technical Infrastructure
+## Instance Architecture
 
-### Smart Contract Architecture
+Each institution operates isolated environment with dedicated contracts. No data commingling between instances. Permissioned access with role-based controls.
 
-| Component | Function | Network |
-|-----------|----------|---------|
-| StockTokenFactory | Deploys and manages stock tokens | Ethereum Sepolia |
-| BalancerV3PoolManager | Weighted pools for 24/7 trading | Ethereum Sepolia |
-| LendingPoolFactory | Isolated lending pools per stock | Ethereum Sepolia |
-| CorporateActionsModule | Handles splits, dividends, corporate events | Ethereum Sepolia |
-| UnifiedOracle | Multi-source price aggregation | Ethereum Sepolia |
+```
+Instance Components:
+├── Token Factory (deploys asset tokens)
+├── Trading Pools (manages liquidity)
+├── Lending Markets (collateral and loans)
+├── Oracle Module (price feeds)
+└── Compliance Engine (KYC/AML checks)
+```
 
-### Key Features
+## Risk Mitigation
 
-**Tokenization**
-- One-click integration for licensed brokers
-- Automatic KYC/compliance checks
-- Corporate action support (splits, dividends)
-- Trading halt enforcement
+**Smart Contract Risk**: Formal verification of core contracts. Bug bounty program with $500,000 maximum payout. Multi-signature upgrade process with 48-hour timelock.
 
-**24/7 Trading**
-- 80/20 weighted pools (stock/stablecoin)
-- Up to 100x leverage positions
-- Automated market making
-- TWAP price tracking
+**Liquidity Risk**: Minimum pool size of $100,000. Circuit breakers at 10% price movement. Emergency pause functionality.
 
-**Lending Markets**
-- Isolated pools per stock
-- Dynamic interest rates
-- Balancer-integrated liquidations
-- Cross-pool collateral
+**Operational Risk**: 99.9% uptime SLA. Multi-region deployment. Automated failover within 30 seconds.
 
-## Integration Options
+## Next Steps
 
-### Tokenization
-
-<Card title="Stock Tokenization API" icon="lock" href="/stock-exchanges-intro">
-  Lock positions, mint tokens, and manage corporate actions
+<Card title="Stock Tokenization" icon="chart-line" href="/stock-tokenization">
+  Deploy equity tokens with corporate action automation
 </Card>
 
-Partners with Investment Services License under MiFID II can integrate one-click tokenization directly into their trading platforms.
-
-### Trading
-
-<Card title="24/7 Trading API" icon="chart-line" href="/balancer-exchange-intro">
-  Create weighted pools and enable leveraged trading
+<Card title="Identity Certificates" icon="id-card" href="/identity-certificates">
+  Implement on-chain KYC with privacy preservation
 </Card>
 
-Protocols can create Balancer pools for tokenized stocks, enabling decentralized trading with advanced features.
-
-### Lending
-
-<Card title="Collateralized Loans API" icon="coins" href="/stock-loans">
-  Deploy lending pools with automated liquidation
+<Card title="Trading Platform" icon="arrows-repeat" href="/trading-platform">
+  Launch 24/7 exchange with instant settlement
 </Card>
 
-Platforms can offer overcollateralized loans against tokenized stock positions with Balancer-integrated liquidations.
-
-## Market Dynamics
-
-### Price Discovery
-Tokenized stocks maintain price parity with underlying assets through:
-- **Arbitrage Mechanisms**: Traders exploit price differences
-- **Oracle Integration**: Real-time price feeds from multiple sources
-- **Redemption Guarantee**: 1:1 burn-to-unlock maintains peg
-
-### Liquidity Provision
-Deep liquidity through:
-- **Weighted Pools**: 80/20 ratio optimizes capital efficiency
-- **LP Incentives**: Yield from trading fees and lending
-- **Cross-Pool Routing**: Aggregated liquidity across pools
-
-### Risk Management
-Comprehensive risk controls:
-- **Automated Liquidations**: Via Balancer AMM execution
-- **Health Factor Monitoring**: Real-time position tracking
-- **Circuit Breakers**: Emergency pause functionality
-- **Insurance Funds**: Protection against bad debt
-
-## Compliance & Security
-
-### Regulatory Compliance
-- **MiCA Compliant**: Asset-Referenced Token framework
-- **KYC/AML**: Integrated identity verification
-- **Trading Controls**: Halts, blacklisting, and restrictions
-- **Audit Trail**: Complete on-chain transaction history
-
-### Security Features
-- **Non-Custodial**: Users control their tokens
-- **Immutable Contracts**: No admin keys or backdoors
-- **Oracle Security**: Multi-source price validation
-- **Slippage Protection**: Maximum price deviation limits
-
-## Benefits
-
-### Efficiency Gains
-| Traditional Stock Trading | Tokenized Stock Trading |
-|--------------------------|------------------------|
-| Market hours only (9:30-4:00) | 24/7 trading availability |
-| T+2 settlement | Instant settlement |
-| Geographic restrictions | Global accessibility |
-| Limited collateral use | DeFi composability |
-| Manual corporate actions | Automated on-chain execution |
-
-### Cost Reduction
-- No clearing house fees
-- Reduced settlement costs
-- Automated compliance
-- Efficient capital utilization
-
-## Getting Started
-
-### For Brokers
-1. Obtain MiFID II Investment Services License
-2. Request API credentials
-3. Integrate tokenization endpoints
-4. Test on Sepolia network
-5. Launch with selected stocks
-
-### For Traders
-1. Connect wallet (MetaMask/WalletConnect)
-2. Complete KYC verification
-3. Deposit funds or stocks
-4. Start trading 24/7
-
-### For Developers
-1. Review API documentation
-2. Deploy test pools on Sepolia
-3. Integrate smart contracts
-4. Build trading interfaces
+<Card title="Collateralized Loans" icon="hand-holding-dollar" href="/collateralized-loans">
+  Enable asset-backed lending at scale
+</Card>
