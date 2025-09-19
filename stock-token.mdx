@@ -5,23 +5,24 @@ description: "Transform traditional equity positions into blockchain tokens with
 
 ## Architecture
 
-The stock tokenization engine operates through a three-phase process that maintains strict custody verification and regulatory compliance.
+The stock tokenization engine operates through a three-phase process that maintains strict custody verification and compliance with the German eWpG.
 
 ### Position Lifecycle
 
 <Steps>
   <Step title="Position Locking">
-    Custodian confirms physical share custody through API verification. Lock receipt generates unique identifier `LOCK-{timestamp}-{hash}` for tracking. Position remains immobilized until burn transaction occurs.
+    Custodian confirms physical share custody through API verification. Lock receipt generates unique identifier `LOCK-{timestamp}-{hash}` for tracking. Position is registered in the crypto-securities register and remains immobilized until burn transaction occurs.
   </Step>
   
   <Step title="Token Minting">
-    Factory contract deploys ERC20 token with snapshot capability. Minting occurs at 1:1 ratio with 18 decimal precision. Token address deterministically derived from stock ISIN.
+    Factory contract deploys ERC20 token with snapshot capability. Minting occurs at 1:1 ratio with 18 decimal precision. Token address deterministically derived from stock ISIN and linked to the eWpG register entry.
   </Step>
   
   <Step title="Position Unlocking">
-    Burn transaction destroys tokens on-chain. Custodian receives unlock instruction with burn proof. Physical shares released to original holder. A token is convertable 1:1 with the underlying stock.
+    Burn transaction destroys tokens on-chain. Custodian receives unlock instruction with burn proof. Register entry is updated and physical shares released to the original holder. A token is convertible 1:1 with the registered stock position.
   </Step>
 </Steps>
+
 
 ## Economic Model
 
@@ -77,10 +78,11 @@ Payment execution requires:
 <Card title="Token Lifecycle" icon="coins">
   **Minting Latency**: 15-30 seconds for blockchain confirmation
   
-  **Trading Venue**: Immediate availability on Balancer pools post-mint
+  **Trading Venue**: Immediate availability on regulated markets or DLT Pilot platforms post-mint
   
-  **Redemption Time**: 2-4 hours for custodian processing
+  **Redemption Time**: 2-4 hours for custodian processing and register update
 </Card>
+
 
 ### Corporate Action Automation
 

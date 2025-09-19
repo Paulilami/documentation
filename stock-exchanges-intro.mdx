@@ -3,17 +3,18 @@ title: 'Introduction'
 description: 'Complete infrastructure for tokenizing stocks and managing corporate actions'
 ---
 
-The Stock Exchange API provides comprehensive functionality for tokenizing real-world stocks, managing corporate actions, and ensuring regulatory compliance.
+The Stock Exchange API provides the functionality for issuing eWpG-compliant electronic securities (including tokenized stocks), managing corporate actions, and ensuring regulatory compliance under German and EU law.
 
 ## Overview
 
 Our Stock Exchange infrastructure enables:
 
-- **Stock Tokenization**: Convert traditional stocks into blockchain tokens
+- **Electronic Stock Issuance (eWpG)**: Convert traditional stocks into electronic securities recorded in the German crypto-securities register
 - **Corporate Actions**: Execute stock splits, dividends, delistings, and trading halts
-- **Lifecycle Management**: Track positions from lock to unlock
-- **Regulatory Compliance**: Built-in controls for trading halts and blacklisting
+- **Lifecycle Management**: Track positions from lock to unlock with register updates
+- **Regulatory Compliance**: Built-in controls for register operations, trading halts, and blacklisting
 - **Dividend Distribution**: Automated dividend pools and payments
+
 
 ## Key Features
 
@@ -55,21 +56,22 @@ curl -H "x-api-key: YOUR_API_KEY"
 
 <Steps>
   <Step title="Lock Position">
-    Lock the underlying stock position to prevent trading
+    Lock the underlying stock position and record in the eWpG crypto-securities register
   </Step>
   
   <Step title="Mint Tokens">
-    Create blockchain tokens representing the locked stocks
+    Create blockchain tokens linked to the registered electronic securities
   </Step>
   
   <Step title="Trade & Transfer">
-    Tokens can be freely traded on-chain
+    Tokens can be traded on regulated venues or DLT Pilot infrastructures
   </Step>
   
   <Step title="Burn & Unlock">
-    Burn tokens to unlock the underlying stock position
+    Burn tokens to update the register and release the underlying stock position
   </Step>
 </Steps>
+
 
 ## API Categories
 
