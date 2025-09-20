@@ -72,7 +72,8 @@
             "pages": [
               "overview",
               "legal-framework",
-              "use-cases"
+              "use-cases",
+              "testing-suite"
             ]
           }
         ]

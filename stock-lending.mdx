@@ -15,7 +15,7 @@ The lending system operates through isolated instances that separate risk betwee
   <Card title="Instance Isolation" icon="vault">
     Each institution operates independent lending markets
   </Card>
-  <Card title="Dynamic Pricing" icon="percentage">
+  <Card title="Dynamic Pricing" icon="chart-line">
     Interest rates adjust with supply and demand
   </Card>
   <Card title="Automated Risk" icon="shield">
@@ -172,7 +172,7 @@ When losses occur, the protocol follows this absorption order:
 
 The lending system requires several external components:
 
-<Card title="Oracle Network" icon="broadcast-tower">
+<Card title="Oracle Network" icon="building">
   Real-time price feeds for collateral valuation. System halts if oracles fail or become stale beyond 15 minutes.
 </Card>
 
@@ -332,23 +332,3 @@ Coordinated attack on price feeds:
 3. Protocol suffers losses when prices correct
 
 **Defense**: Multi-oracle validation, TWAP usage, deviation limits, delayed execution
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card title="Stock Tokenization" icon="coins" href="/stock-exchanges">
-    Create tokenized stocks for collateral use
-  </Card>
-  
-  <Card title="Trading Markets" icon="chart-line" href="/stock-trading">
-    Establish liquid markets for your stocks
-  </Card>
-  
-  <Card title="API Documentation" icon="code" href="/stock-loans">
-    Technical implementation reference
-  </Card>
-  
-  <Card title="Risk Parameters" icon="sliders" href="/white-label">
-    Configure your lending instance
-  </Card>
-</CardGroup>
