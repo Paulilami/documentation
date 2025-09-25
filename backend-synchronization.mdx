@@ -3,9 +3,7 @@ title: "Backend Synchronization"
 description: "Connect existing infrastructure to blockchain without changing any code. Stream real-time data and automate on-chain operations."
 ---
 
-# Backend Synchronization
-
-Bridge your traditional systems with blockchain protocols. Push data updates, execute business logic, and automate compliance—all through standard REST APIs.
+Bridge your traditional systems with blockchain protocols. Push data updates, execute business logic, and automate compliance—all through standard REST APIs. This framework builds a unified synchronization-layer between CeFi and DeFi for financial institutions, while maintaining their independency.
 
 ## How It Works
 
@@ -16,19 +14,19 @@ Your Systems → REST API → Automation Vault → Smart Contracts
 ## Core Components
 
 <CardGroup cols={2}>
-  <Card title="Automation Vaults" icon="robot" href="/automation-vaults">
+  <Card title="Automation Vaults" icon="robot">
     Deploy vaults that execute transactions automatically. Fund with ETH once, runs indefinitely based on your rules.
   </Card>
   
-  <Card title="Data Streaming" icon="link" href="/data-streaming">
+  <Card title="Data Streaming" icon="link">
     Push real-time updates from your backend. NAV calculations, valuations, and corporate actions sync automatically.
   </Card>
   
-  <Card title="Rule Engine" icon="gavel" href="/rule-engine">
+  <Card title="Rule Engine" icon="gavel">
     Set conditions for automated actions. If collateral drops 20%, trigger margin call. If rating changes, update permissions.
   </Card>
   
-  <Card title="Webhook Listeners" icon="webhook" href="/webhooks">
+  <Card title="Webhook Listeners" icon="webhook">
     Receive events from your systems and propagate on-chain. Configure once, synchronize forever.
   </Card>
 </CardGroup>
@@ -79,9 +77,5 @@ Your Systems → REST API → Automation Vault → Smart Contracts
 - Insurance status and maintenance records
 
 <Note>
-Live on Sepolia testnet. Production contracts deployed and ready for integration.
+You can try all functionalities with snchronyization test-data for free in our [testing suite](/testing-suite).
 </Note>
-
-<Tip>
-Start with Automation Vaults to understand transaction execution, then configure Data Streaming for your specific use case.
-</Tip>
