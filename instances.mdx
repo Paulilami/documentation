@@ -3,7 +3,7 @@ title: "Instances"
 description: "Isolated environments for accessing Trusset services"
 ---
 
-Instances are isolated environments that control access to Trusset's API services. Each instance operates independently with its own API key and configuration.
+Instances are isolated environments that control access to Trusset's API services on your chosen blockchain network. Each instance operates independently with its own API key and configuration.
 
 ## Instance Types
 
@@ -13,7 +13,7 @@ Every instance is dedicated to one service type (stablecoin instances coming soo
   <Card title="Tokenization Instance" icon="coins">
     Access to token creation, management, and white-label platform deployment services.
   </Card>
-  <Card title="Synchronization Instance" icon="database">
+  <Card title="Synchronization (Oracle) Instance" icon="database">
     Access to our synchronization and oracle services.
   </Card>
    <Card title="Stablecoin Instance" icon="coin">
@@ -25,28 +25,39 @@ Every instance is dedicated to one service type (stablecoin instances coming soo
   Stablecoin instances are not mandatory, you can access our stablecoin APIs through your **tokenization** instance API keys.
 </Note>
 
+## Integrated Blockchains
+Your instance's services (and the underlying smart contracts) will automatically adapt to the chosen blockchain network when the instance is created. The network cannot be changed after the instance is created. We will soon integrate our own bridge. 
+
+<Columns cols={2}>
+  <Card title="Ethereum">
+    Mainnet + Sepolia Testnet for development instances.
+  </Card>
+  <Card title="Solana">
+    Mainnet + Devnet for development instances.
+  </Card>
+</Columns>
+
 ![Token-issuance interface](/images/instances-interface.png)
 
 ## Environment Modes
 
 Each instance operates in one of two modes:
 
-- **Development**: For testing and integration. Full API access without affecting production data.
-- **Production**: For live operations with real assets and transactions.
+- **Development**: For testing and integration. Full API access without affecting production data. Automatically deploys contracts on testnet.
+- **Production**: For live operations with real assets and transactions. Automatically deploys contracts on mainnet.
 
-## Instance Management
+## API Keys
+Visit [API Key Management](/api-key-management)
 
-### API Keys
 
-- Each instance has a unique API key for authentication
-- Keys can be regenerated at any time through the Issuer Platform
-- All API requests require the instance API key in headers
-
-### Service Isolation
+## Service Isolation
 
 - Complete data separation between instances
 - Independent rate limits and usage tracking
 - Separate webhook configurations per instance
+
+## Limits
+You get a general limit of five tokenization- and five synchronization instances. 
 
 ## Getting Started
 

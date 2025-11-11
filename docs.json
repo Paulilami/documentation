@@ -84,6 +84,7 @@
           {
             "group": "Core",
             "pages": [
+              "api-key-management",
               "instances",
               "identity-certificates",
               "backend-synchronization",
@@ -91,7 +92,7 @@
             ]
           },
           {
-            "group": "Stock-Exchanges",
+            "group": "Stock-Engine",
             "pages": [
               "stock-exchanges",
               "stock-token",
@@ -423,18 +424,13 @@
           "anchor": "Token-Studio",
           "href": "https://studio.trusset.org",
           "icon": "play"
-        },
-        {
-          "anchor": "Whitepaper Generator",
-          "href": "https://mica-whitepapers.com",
-          "icon": "file"
         }
       ]
     }
   },
   "logo": {
-    "light": "/logo/logoDark.png",
-    "dark": "/logo/logo.png"
+    "light": "/logo/patchOrange.png",
+    "dark": "/logo/patchOrange.png"
   },
   "navbar": {
     "links": [
@@ -445,7 +441,7 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Sign In",
+      "label": "Get started",
       "href": "https://issuers.trusset.org"
     }
   },

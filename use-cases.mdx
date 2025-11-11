@@ -1,139 +1,180 @@
 ---
 title: "Use Cases"
-description: "Real-world implementations of Trusset's tokenization infrastructure"
+description: "What banks are building with infrastructure they own"
 ---
 
-## Transform Traditional Finance with One-Click Integration
+## The Transformation
 
-<CardGroup cols={2}>
- <Card title="Allow to integrate an 'Invest Now' Button" icon="hand-holding-dollar">
-  Enable corporate clients to raise capital with compliant tokenized securities directly on their website via one 'Invest Now' button. Each issuance follows your bank’s framework, supporting up to 149 private investors or €8M in public raises while preserving full issuer control
- </Card>
+Traditional capital markets operate 9-to-5 with T+2 settlement and manual processes. Trusset infrastructure removes those constraints.
 
- <Card title="Add 'Tokenize It' to Trading Platforms" icon="building-columns">
-   Licensed trading platforms can integrate stock tokenization with less than 20 lines of code. Issue eWpG-compliant electronic securities registered in the crypto-securities register, alongside MiCA-compliant tokens for other asset classes. Avoid weeks of prospectus procedures by leveraging exemptions and automated register operations.
- </Card>
+Here's what becomes possible:
 
- <Card title="Distribute Profits Automatically" icon="chart-line">
-   Send dividends to millions of token holders in a single transaction. Built-in profit distribution for security tokens, stablecoins, and tokenized stocks. Set it once and let the system handle recurring payments.
- </Card>
+## Core Capabilities
 
- <Card title="Batch Tokenization via Backend Sync" icon="link">
-   Synchronize customer and asset data securely without storage. Verify KYC for thousands of users on-chain in one batch. Mint multiple asset types after a single 10-minute setup.
- </Card>
+### 24/7 Asset Trading
 
- <Card title="Enable Instant Liquidity" icon="droplet">
-   Token holders can borrow against their assets in seconds. Deposit ERC1400 security tokens or ERC20 stock certificates as collateral. Receive USDC or other stablecoins immediately through integrated DeFi protocols.
- </Card>
+Markets never close. Customers trade stocks, bonds, commodities, or any tokenized asset around the clock. Settlement happens in seconds, not days.
 
- <Card title="Deploy White-Label Exchanges" icon="store">
-   Launch a complete investor platform with integrated KYC verification under your brand in minutes. Choose from tokenization, marketplace, financing, and overcollateralized-loan modules. Deploy to your domain with custom themes and access requirements.
- </Card>
+No market hours. No waiting periods. No batch processing.
 
- <Card title="Create Compliant Stablecoins" icon="coins">
-   Issue custom stablecoins with role-based permissions. Define minting rights, transfer restrictions, and compliance rules. Perfect for central bank digital currencies and institutional settlement tokens.
- </Card>
+Your institution captures trading fees continuously. We take a small share. You own the infrastructure.
 
- <Card title="Automate Price Feeds" icon="satellite-dish">
-   Connect real-world asset prices to on-chain tokens. Set up direct oracle feeds for any tokenized asset. Vault system automatically handles transaction costs and updates.
- </Card>
+### Instant Borrowing Against Assets
 
- <Card title="Enable Mortgage-Style Financing" icon="house">
-   First-ever on-chain buy-now-pay-later for real assets. Buyers make down payments while assets are held in escrow. Complete monitoring interfaces for both borrowers and lenders.
- </Card>
+Security tokens were dead capital. We made them instantly liquid collateral.
 
- <Card title="Track Everything with Webhooks" icon="webhook">
-   Monitor all token operations in real-time. Receive instant notifications for mints, transfers, and compliance events. Optional secret authentication for enhanced security.
- </Card>
-</CardGroup>
+Customers deposit tokenized shares and borrow against them immediately. Deploy lending solutions with your parameters—price feeds, collateral ratios, liquidation thresholds all automated.
+
+No loan applications. No waiting for approval. No manual collateral management.
+
+### Seconds-Fast Asset Transfers
+
+Send tokenized assets as easily as sending a payment. Transfer stocks, bonds, or fund shares between accounts in seconds.
+
+Built-in compliance ensures only verified investors can receive transfers. Your KYC rules enforce automatically.
+
+### Automated Corporate Actions
+
+Distribute dividends to millions of token holders in a single transaction. Set profit distribution rules once; the system handles recurring payments.
+
+Stock splits, rights issues, tender offers—all executable on-chain with complete audit trails.
 
 ## Implementation Examples
 
-### Stock Tokenization Flow
+### Stock Exchange Integration
+
+<Steps>
+  <Step title="Lock Physical Position">
+    Customer's stock position locks in your custody system
+  </Step>
+  
+  <Step title="Mint Token Certificates">
+    Issue eWpG-compliant electronic securities via crypto-securities register
+  </Step>
+  
+  <Step title="Enable 24/7 Trading">
+    Customers trade tokenized stocks anytime, anywhere
+  </Step>
+  
+  <Step title="Burn on Redemption">
+    Customer redeems tokens; original position unlocks automatically
+  </Step>
+</Steps>
+
+Less than 20 lines of code. Full regulatory compliance. Zero prospectus procedures by leveraging legal exemptions.
+
+### Capital Raising Platform
+
+Enable corporate clients to raise capital directly on their website with one "Invest Now" button.
+
+Each issuance follows your bank's framework. Support up to 149 private investors or €8M in public raises. Full issuer control maintained throughout.
+
+The bank provides the compliant framework. The issuer controls their capital raise. Investors get instant liquidity through secondary markets.
+
+### Backend Synchronization
+
+Connect your existing systems without storing data externally:
+
 ```javascript
-// 1. Lock stock position
-const lockResponse = await trusset.stocks.lock({
- isin: "US0378331005",
- quantity: 100,
- userId: "customer-123"
-});
-
-// 2. Mint tokenized certificates
-const mintResponse = await trusset.stocks.mint({
- lockId: lockResponse.id,
- walletAddress: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0"
-});
-
-// 3. Customer burns tokens when ready
-// Partner receives webhook to unlock original position
-```
-
-### Profit Distribution
-```javascript
-// One transaction, unlimited recipients.
-// Choose between fixes amounts or variable percentages.
-await trusset.tokens.distribute({
-  tokenAddress: "0x166de8506945798E1aC312A8009102a8c377AE6B",
-  recipients: investorAddresses, // Can be millions
-  amountPerToken: "0.05", // 5 cents per token
-  currency: "USDC"
-});
-```
-
-### KYC Batch Verification
-```javascript
-// Sync and verify in one call
-const batchResult = await trusset.kyc.batchVerify({
-  users: customerData, // Array of user objects
-  level: "basic", // or "enhanced"
+// Sync customer data and verify KYC in one batch
+const verification = await trusset.kyc.batchVerify({
+  users: customerData,
+  level: "enhanced",
   createProofs: true
 });
-// All users now have on-chain verification
+
+// Mint multiple asset types after 10-minute setup
+const tokens = await trusset.tokens.batchMint({
+  assets: assetData,
+  recipients: verifiedInvestors
+});
 ```
+
+Verify thousands of users on-chain in one operation. Mint multiple asset types without manual processing.
+
+### Overcollateralized Lending
+
+Deploy isolated lending markets for any tokenized asset class:
+
+- Real estate tokens as collateral for liquidity
+- Security tokens backing instant credit lines
+- Commodity tokens enabling 24/7 financing
+
+Automated risk evaluation, liquidation, and settlement. Your institution defines loan-to-value ratios and manages risk parameters.
+
+### White-Label Investor Platform
+
+Launch a complete branded platform in minutes:
+
+- Tokenization workflows
+- Marketplace for secondary trading
+- Overcollateralized loan modules
+- Integrated KYC verification
+
+Deploy to your domain. Custom themes. Your access requirements. We handle hosting and maintenance.
+
+## Compliance Built-In
+
+Every implementation meets regulatory standards:
+
+- **MiCA Compliant:** Asset-Referenced and E-Money Tokens follow EU digital asset regulations
+- **eWpG Compliant:** Stock tokens issued as electronic securities via German crypto-securities register
+- **MiFID II Ready:** Licensed partners maintain full compliance for trading and custody
+- **KYC/AML Integrated:** Zero-knowledge proofs preserve privacy while ensuring verification
+- **Complete Audit Trails:** Immutable transaction history for regulatory reporting
+
+## Advanced Features
+
+<CardGroup cols={2}>
+  <Card title="Price Feed Automation" icon="satellite-dish">
+    Connect real-world asset prices to on-chain tokens. Direct oracle feeds for any tokenized asset.
+  </Card>
+  
+  <Card title="Custom Stablecoins" icon="coins">
+    Issue institutional stablecoins with role-based permissions and transfer restrictions.
+  </Card>
+  
+  <Card title="Real-Time Monitoring" icon="webhook">
+    Receive instant notifications for mints, transfers, and compliance events via webhooks.
+  </Card>
+  
+  <Card title="Mortgage-Style Financing" icon="house">
+    First-ever on-chain buy-now-pay-later for real assets with automated escrow.
+  </Card>
+</CardGroup>
 
 ## Integration Speed
 
 <Steps>
   <Step title="Request API Access">
-    Submit your license details and get approved within 24 hours
+    Submit license details. Get approved within 24 hours.
   </Step>
+  
   <Step title="Test in Sandbox">
-    Full testing environment with mock data and test tokens
+    Full testing environment with mock data and testnet deployment.
   </Step>
-  <Step title="Go Live">
-    Deploy to production with one configuration change
+  
+  <Step title="Deploy to Production">
+    One configuration change. Your infrastructure goes live.
   </Step>
 </Steps>
 
-## Compliance Built-In
+## The Result
 
-Every transaction meets regulatory requirements:
+Banks that integrate Trusset infrastructure don't just add blockchain features. They transform how capital markets operate.
 
-- MiCA Compliant: Asset-Referenced and E-Money Tokens follow EU digital asset regulations
-- eWpG Compliant: Stock tokens issued as electronic securities via the German crypto-securities register
-- MiFID II Ready: Licensed partners maintain full regulatory compliance for trading and custody
-- KYC/AML Integrated: Zero-knowledge proofs preserve privacy while ensuring compliance
-- Audit Trail: Complete transaction history for regulatory reporting
+Save over 95% of traditional costs. No intermediaries. No manual processing. No market hours.
 
-## Security Features
-<CardGroup cols={3}>
-  <Card title="Multi-Sig Controls" icon="shield-halved">
-    Critical operations can require multiple signatures
-  </Card>
-  <Card title="Role-Based Access" icon="user-shield">
-    Granular permissions for different user types
-  </Card>
-  <Card title="Audit Logging" icon="scroll">
-    Immutable on-chain record of all activities
-  </Card>
-</CardGroup>
+Your customers get instant access to liquidity, 24/7 trading, and programmable finance.
 
-## Ready to Start?
+You keep the revenue. You control the infrastructure. You maintain independence.
+
 <CardGroup cols={2}>
-  <Card title="API Documentation" icon="book" href="/stablecoin-intro">
-    Complete reference for all tokenization endpoints
+  <Card title="Start Building" icon="key" href="https://issuers.trusset.org/">
+    Request API access and deploy your first instance
   </Card>
-  <Card title="Get API Keys" icon="key" href="https://issuers.trusset.org/">
-    Request access and start building in minutes
+  
+  <Card title="Explore the APIs" icon="code" href="/api-intro">
+    Complete technical documentation and integration guides
   </Card>
 </CardGroup>
