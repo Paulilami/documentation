@@ -1,0 +1,148 @@
+---
+title: "Lending Frameworks"
+description: "Asset-specific lending implementations with unified interfaces"
+---
+
+Lending markets adapt to different token types through specialized frameworks that account for asset-specific characteristics. Gold-backed tokens use different risk parameters than real estate tokens, but all frameworks expose identical interfaces for consistent integration.
+
+## Framework Architecture
+
+Each asset category gets a dedicated lending framework optimized for its unique properties. Commodity tokens emphasize short-term liquidity with conservative LTVs, while real estate tokens support longer holding periods with higher LTVs reflecting lower volatility.
+
+Despite implementation differences, all frameworks implement the same core functions—deposit collateral, borrow, repay, withdraw. Your integration code works across all asset types without modification, with backend systems selecting the appropriate framework automatically.
+
+## Asset-Specific Configurations
+
+<Tabs>
+    <Tab title="Commodity Tokens">
+        **Collateral Factor:** 70-75%
+        **Liquidation Threshold:** 80-85%
+        **Typical APR:** 5-12% based on utilization
+
+        Commodity markets prioritize liquidity and fast liquidations. Lower collateral factors account for price volatility in metal and agricultural markets. Shorter typical loan durations (30-180 days) match commodity trading cycles.
+
+        Oracle prices update from trading pools every 5 minutes, ensuring rapid response to market movements. Liquidation bots execute within minutes of threshold breaches to minimize slippage risk.
+    </Tab>
+    
+    <Tab title="Real Estate Tokens">
+        **Collateral Factor:** 60-70%
+        **Liquidation Threshold:** 75-80%
+        **Typical APR:** 4-8% based on utilization
+
+        Real estate frameworks emphasize stability with longer loan terms (1-10 years). Property valuations update quarterly or annually based on professional appraisals rather than continuous oracle feeds.
+
+        Higher liquidation thresholds provide buffer against slow property market adjustments. Liquidation processes may include grace periods allowing borrowers to arrange refinancing before asset seizure.
+    </Tab>
+    
+    <Tab title="Stock Tokens">
+        **Collateral Factor:** 50-65%
+        **Liquidation Threshold:** 70-75%
+        **Typical APR:** 6-15% based on utilization
+
+        Stock token markets balance liquidity needs with volatility protection. Individual stock collateral receives lower LTVs than diversified portfolios to account for company-specific risk.
+
+        Oracle integration with stock trading pools enables real-time pricing during market hours. After-hours borrowing may face higher interest rates or reduced LTVs reflecting price uncertainty.
+    </Tab>
+</Tabs>
+
+## Interest Rate Models
+
+All frameworks use jump rate models that increase borrowing costs as utilization rises. This naturally balances supply and demand—high utilization triggers higher rates, attracting more liquidity providers while encouraging borrower repayment.
+
+| Utilization | Interest Rate Behavior | Market Impact |
+|-------------|----------------------|---------------|
+| 0-50% | Base rate + gradual increase | Abundant liquidity, low rates |
+| 50-80% | Moderate increases (kink point) | Balanced market conditions |
+| 80-100% | Steep jump in rates | Capital scarcity, urgent liquidity needed |
+
+Rate parameters configure per asset type based on expected utilization patterns and capital availability. Stable assets with deep liquidity pools use gentler rate curves while volatile assets implement steeper jumps to maintain safety margins.
+
+## Oracle Integration
+
+Lending markets consume prices from multiple sources depending on asset characteristics:
+
+**Trading Pool Oracles:** Real-time prices from AMM pools for actively traded tokens. Calculate from reserve ratios weighted by pool composition. Update automatically with every trade.
+
+**Manual Price Feeds:** Bank-provided valuations for illiquid assets like private real estate or unlisted equity. Cryptographically signed price updates validated on-chain before acceptance.
+
+**Hybrid Approaches:** Combine pool prices during high liquidity periods with manual overrides during market disruptions or thin trading conditions.
+
+<Accordion title="Price Feed Selection Logic">
+The framework selects appropriate price sources automatically:
+
+```typescript
+function getCollateralValue(token: address): uint256 {
+    // Check if active trading pool exists
+    if (hasActiveTradingPool(token)) {
+        const poolPrice = getTradingPoolPrice(token);
+        const lastUpdate = getPoolLastUpdate(token);
+        
+        // Use pool price if recently updated
+        if (block.timestamp - lastUpdate < STALENESS_THRESHOLD) {
+            return poolPrice;
+        }
+    }
+    
+    // Fall back to manual feed
+    const manualPrice = getManualPriceFeed(token);
+    require(manualPrice.confidence > MIN_CONFIDENCE, "PRICE_UNRELIABLE");
+    
+    return manualPrice.value;
+}
+```
+
+This logic ensures borrowers receive fair valuations while protecting lenders from stale or manipulated prices.
+</Accordion>
+
+## Collateral Acceptance
+
+Market administrators configure which tokens qualify as collateral based on regulatory approval, liquidity requirements, and risk tolerance. Not all tokenized assets from an institution automatically become accepted collateral.
+
+<ParamField path="acceptedCollateral" type="address[]">
+  List of token contracts approved for use as loan collateral
+</ParamField>
+
+<ParamField path="collateralFactor" type="uint256">
+  Percentage of collateral value available for borrowing (e.g., 7500 = 75%)
+</ParamField>
+
+<ParamField path="liquidationThreshold" type="uint256">
+  LTV percentage triggering liquidation (e.g., 8000 = 80%)
+</ParamField>
+
+<ParamField path="liquidationPenalty" type="uint256">
+  Bonus percentage for liquidators (e.g., 500 = 5%)
+</ParamField>
+
+These parameters configure independently per collateral type. A market might accept both gold and silver tokens but assign gold 75% collateral factor while silver gets 70% due to higher volatility.
+
+## Cross-Framework Compatibility
+
+Users can deposit multiple collateral types in a single position when frameworks support multi-collateral positions. A borrower might pledge both commodity tokens and real estate tokens, with combined valuation determining total borrowing capacity.
+
+Health factor calculations aggregate across all collateral types, using the lowest common liquidation threshold to ensure conservative risk management. This prevents gaming liquidation rules by mixing high and low threshold assets.
+
+<Warning>
+Each institution deploys independent lending markets. Collateral deposited in Bank A's market cannot borrow from Bank B's market, even if both accept the same token types. Maintain separate positions per institution.
+</Warning>
+
+## Framework Selection
+
+The platform automatically routes loan requests to appropriate frameworks based on collateral token type. Users don't select frameworks manually—deposit a commodity token and the system uses the commodity framework, deposit real estate tokens and it switches to the real estate framework.
+
+API integrations remain identical regardless of underlying framework. Call the same `openPosition`, `depositCollateral`, and `borrow` endpoints—backend routing handles framework selection transparently.
+
+<CardGroup cols={2}>
+    <Card title="Custom Hooks" icon="webhook" href="/new/learn/lending/hooks">
+        Liquidation automation and advanced integrations
+    </Card>
+    <Card title="Controllers" icon="sliders" href="/new/learn/lending/controllers">
+        Market configuration and risk parameters
+    </Card>
+    <Card title="Loan Initialization" icon="file-circle-plus" href="/new/learn/lending/loan-initialization">
+        Opening positions and borrowing process
+    </Card>
+    <Card title="API Reference" icon="code" href="/api-reference/lending/frameworks">
+        Framework-specific endpoints
+    </Card>
+</CardGroup>

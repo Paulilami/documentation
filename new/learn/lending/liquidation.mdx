@@ -1,0 +1,223 @@
+---
+title: "Liquidation"
+description: "Automated position closure when collateral value falls below safety thresholds"
+---
+
+Liquidation protects lending markets from insolvency by automatically closing unhealthy positions before debt exceeds collateral value. When positions breach liquidation thresholds, liquidators repay debt and seize collateral at discounted prices.
+
+## Liquidation Triggers
+
+Positions liquidate when health factors drop below 1.0, indicating debt value exceeds safe borrowing limits based on collateral. Health factors calculate continuously as collateral prices fluctuate and interest accrues.
+
+```typescript
+// Health factor calculation
+healthFactor = (collateralValue × collateralFactor) / totalDebt
+
+// Example position:
+collateralValue = $20,000 (100 gold tokens @ $200 each)
+collateralFactor = 0.75 (75% LTV)
+totalDebt = $16,000 ($15,000 principal + $1,000 interest)
+
+healthFactor = ($20,000 × 0.75) / $16,000 = 0.9375
+
+// Health < 1.0 = Liquidatable
+```
+
+Multiple factors cause health factor deterioration:
+
+**Collateral Price Decline:** Primary trigger—falling asset values reduce collateral worth while debt remains constant.
+
+**Interest Accumulation:** Continuous interest accrual increases debt, lowering health factors even with stable collateral prices.
+
+**Interest Rate Increases:** Rising market rates accelerate interest accumulation, compounding health factor decline.
+
+**Multiple Collateral Depreciation:** Positions with diversified collateral face compounded risk if multiple assets decline simultaneously.
+
+## Liquidation Process
+
+<Steps>
+  <Step title="Health Monitoring">
+    Liquidation bots query all active positions every few blocks, calculating current health factors based on latest oracle prices and accrued interest.
+  </Step>
+
+  <Step title="Profitability Check">
+    When unhealthy positions detect, bots calculate liquidation profitability considering gas costs, collateral seizure amounts, and liquidation penalties.
+  </Step>
+
+  <Step title="Debt Repayment">
+    Liquidator transfers USDC to lending market, repaying up to 50% of position debt. Partial liquidations prevent excessive collateral seizure.
+  </Step>
+
+  <Step title="Collateral Seizure">
+    Market transfers collateral to liquidator at current price plus liquidation penalty (typically 5%). Liquidator receives $1.05 of collateral per $1.00 debt repaid.
+  </Step>
+
+  <Step title="Position Update">
+    Market reduces position debt by repaid amount, removes seized collateral, and recalculates health factor. Position remains open if debt remains.
+  </Step>
+</Steps>
+
+## Liquidation Calculations
+
+The market determines collateral seizure amounts using current oracle prices and configured liquidation penalties:
+
+<Accordion title="Seizure Calculation Example">
+Position details:
+- Debt: $16,000
+- Collateral: 100 gold tokens @ $200 = $20,000
+- Liquidation penalty: 5%
+
+Liquidator repays: $8,000 (50% of debt)
+
+Collateral seizure calculation:
+```typescript
+debtRepaid = $8,000
+liquidationBonus = 5% = 0.05
+seizureValue = debtRepaid × (1 + liquidationBonus)
+seizureValue = $8,000 × 1.05 = $8,400
+
+collateralPrice = $200 per token
+tokensSeized = seizureValue / collateralPrice
+tokensSeized = $8,400 / $200 = 42 tokens
+```
+
+After liquidation:
+- Remaining debt: $8,000
+- Remaining collateral: 58 tokens × $200 = $11,600
+- New health factor: ($11,600 × 0.75) / $8,000 = 1.0875
+- Position healthy again
+</Accordion>
+
+## Partial Liquidations
+
+Markets limit single liquidation transactions to 50% of total debt, preventing complete position closure from one liquidator. This protects borrowers from losing entire collateral positions during temporary price volatility.
+
+| Liquidation Type | Debt Coverage | Collateral Seized | Use Case |
+|-----------------|---------------|-------------------|----------|
+| Minimum (10%) | 10% of debt | ~11% of collateral | Gentle position correction |
+| Standard (25%) | 25% of debt | ~26% of collateral | Typical liquidation size |
+| Maximum (50%) | 50% of debt | ~53% of collateral | Deep underwater positions |
+
+Multiple liquidators can execute sequential partial liquidations if positions remain unhealthy after initial liquidation. This creates competitive markets where fastest execution wins.
+
+## Liquidator Incentives
+
+Liquidation penalties incentivize rapid execution by providing profit opportunities. A 5% penalty means liquidators profit $400 on every $8,000 debt repaid (minus gas costs).
+
+<CodeGroup>
+```typescript Calculate Liquidation Profit
+async function calculateProfit(positionId: number): Promise<number> {
+    const position = await market.getPosition(positionId);
+    const gasPrice = await provider.getGasPrice();
+    
+    // Estimate gas costs
+    const estimatedGas = 250000; // Typical liquidation gas usage
+    const gasCost = gasPrice * estimatedGas;
+    
+    // Calculate max debt to cover (50%)
+    const maxDebt = position.totalDebt * 0.5;
+    
+    // Calculate collateral value seized
+    const seizureValue = maxDebt * 1.05; // 5% bonus
+    
+    // Profit = Seized collateral value - Debt repaid - Gas
+    const profit = seizureValue - maxDebt - gasCost;
+    
+    return profit;
+}
+```
+
+```typescript Execute Profitable Liquidation
+async function liquidateIfProfitable(positionId: number) {
+    const profit = await calculateProfit(positionId);
+    
+    // Only liquidate if profit exceeds minimum threshold
+    if (profit > MINIMUM_PROFIT) {
+        // Approve USDC for debt repayment
+        await usdc.approve(marketAddress, maxDebtToCover);
+        
+        // Execute liquidation
+        const tx = await market.liquidate(positionId, maxDebtToCover);
+        const receipt = await tx.wait();
+        
+        console.log(`Liquidated position ${positionId}`);
+        console.log(`Profit: $${profit / 1e6} USDC`);
+    }
+}
+```
+</CodeGroup>
+
+## Liquidation Protection
+
+Borrowers can protect positions from liquidation through several strategies:
+
+**Add Collateral:** Deposit additional tokens increasing collateral value and health factor. This requires no debt repayment.
+
+**Repay Debt:** Pay down principal reducing total debt and improving health factor. Even small repayments can restore health above 1.0.
+
+**Swap Collateral:** Replace volatile collateral with stable assets if market supports multiple collateral types, reducing price risk.
+
+**Close Position:** Fully repay and exit before liquidation occurs, avoiding liquidation penalties and preserving all collateral.
+
+**Set Alerts:** Configure notifications warning when health factors approach 1.2, providing time to take protective action.
+
+<Warning>
+Liquidations execute without borrower approval or notification. Monitor positions continuously and maintain safety buffers well above liquidation thresholds. Target health factors of 1.5+ for volatile assets.
+</Warning>
+
+## Cascade Liquidations
+
+Rapid market crashes can trigger liquidation cascades where seized collateral sells on markets, depressing prices further and triggering additional liquidations. Markets implement several protections:
+
+**Partial Liquidation Limits:** 50% maximum prevents single transactions from flooding markets with seized assets.
+
+**Circuit Breakers:** Automatic market pauses during extreme volatility protect against cascade effects.
+
+**Oracle Staleness Checks:** Reject liquidations if price feeds haven't updated recently, preventing liquidations on stale data.
+
+**Liquidation Delays:** Optional cooldown periods between liquidations of the same position prevent rapid cascade effects.
+
+## Bad Debt Handling
+
+Rarely, collateral prices drop so rapidly that liquidations cannot execute before debt exceeds collateral value. This creates "bad debt" where markets hold underwater positions.
+
+Insurance funds absorb bad debt losses, repaying liquidity providers from accumulated reserves. A portion of all interest payments (10-25%) flows to insurance funds continuously, building reserves that cover rare extreme scenarios.
+
+```typescript
+// Bad debt coverage flow
+if (liquidationValue < debtAmount) {
+    const shortfall = debtAmount - liquidationValue;
+    
+    // Request coverage from insurance fund
+    const covered = await insuranceFund.coverBadDebt(shortfall);
+    
+    if (covered < shortfall) {
+        // Insurance fund depleted
+        // Socialize remaining loss across liquidity providers
+        const lossPerProvider = (shortfall - covered) / totalShares;
+    }
+}
+```
+
+Insurance fund reserves display publicly, enabling liquidity providers to assess protection levels before depositing capital.
+
+## Post-Liquidation Status
+
+After liquidation, positions remain open if any debt persists. Borrowers can continue managing these positions—adding collateral, repaying remaining debt, or withdrawing excess collateral.
+
+Fully liquidated positions (zero debt, zero collateral) close automatically, freeing storage and ending position lifecycle. Borrowers can open new positions immediately without restrictions from previous liquidations.
+
+<CardGroup cols={2}>
+    <Card title="Loan Initialization" icon="file-circle-plus" href="/new/learn/lending/loan-initialization">
+        Opening positions and avoiding liquidation
+    </Card>
+    <Card title="Repayments" icon="money-bill-transfer" href="/new/learn/lending/repayments">
+        Paying down debt to restore health
+    </Card>
+    <Card title="Custom Hooks" icon="webhook" href="/new/learn/lending/hooks">
+        Liquidation bot implementation
+    </Card>
+    <Card title="Controllers" icon="sliders" href="/new/learn/lending/controllers">
+        Liquidation parameter configuration
+    </Card>
+</CardGroup>

@@ -1,0 +1,422 @@
+---
+title: "Calculations"
+description: "Mathematical formulas for interest rates, health factors, and liquidation mechanics"
+---
+
+Lending markets rely on precise calculations for interest accrual, collateral valuation, and risk assessment. Understanding these formulas enables accurate position modeling, liquidation prediction, and optimal borrowing strategies.
+
+## Health Factor Calculation
+
+Health factors determine position safety by comparing adjusted collateral value against total debt:
+
+```solidity
+healthFactor = (totalCollateralValue × collateralFactor) / totalDebt
+
+// Where:
+// totalCollateralValue = sum of all collateral × oracle prices
+// collateralFactor = configured LTV for each collateral type
+// totalDebt = borrowedPrincipal + accumulatedInterest
+```
+
+**Multi-Collateral Positions:**
+
+```typescript
+function calculateHealthFactor(position: Position): uint256 {
+    let adjustedCollateralValue = 0;
+    
+    // Sum weighted collateral values
+    for (const collateral of position.collateralTokens) {
+        const amount = position.collateralAmounts[collateral];
+        const price = oracle.getPrice(collateral);
+        const factor = collateralConfigs[collateral].collateralFactor;
+        
+        adjustedCollateralValue += (amount × price × factor) / 1e18;
+    }
+    
+    const totalDebt = position.borrowedAmount + position.accumulatedInterest;
+    
+    if (totalDebt == 0) return type(uint256).max;
+    
+    return (adjustedCollateralValue × 1e18) / totalDebt;
+}
+```
+
+**Health Factor Interpretation:**
+
+| Health Factor | Status | Action Required |
+|--------------|--------|-----------------|
+| > 2.0 | Very Safe | No action needed |
+| 1.5 - 2.0 | Healthy | Monitor periodically |
+| 1.2 - 1.5 | Caution | Consider adding collateral |
+| 1.0 - 1.2 | Warning | Urgent action required |
+| < 1.0 | Liquidatable | Position at risk |
+
+## Interest Rate Models
+
+Markets use jump rate models with three distinct zones based on utilization:
+
+```typescript
+function calculateBorrowRate(utilization: uint256): uint256 {
+    const PRECISION = 1e18;
+    
+    if (utilization <= kink) {
+        // Zone 1: Base rate + gradual increase
+        return baseRate + (utilization × multiplier) / PRECISION;
+    } else {
+        // Zone 2: Normal rate + jump increase
+        const normalRate = baseRate + (kink × multiplier) / PRECISION;
+        const excessUtilization = utilization - kink;
+        const jumpRate = (excessUtilization × jumpMultiplier) / PRECISION;
+        
+        return normalRate + jumpRate;
+    }
+}
+```
+
+**Example Parameters:**
+
+```typescript
+// Conservative model (gold tokens)
+baseRate = 2e16;          // 2% APR
+multiplier = 8e16;        // 8% APR at kink
+jumpMultiplier = 50e16;   // 50% APR above kink
+kink = 75e16;             // 75% utilization
+
+// Calculate rates at various utilization levels:
+utilization = 50% → rate = 2% + (50% × 8%) = 6% APR
+utilization = 75% → rate = 2% + (75% × 8%) = 8% APR
+utilization = 90% → rate = 8% + (15% × 50%) = 15.5% APR
+utilization = 95% → rate = 8% + (20% × 50%) = 18% APR
+```
+
+**Supply Rate Calculation:**
+
+```typescript
+function calculateSupplyRate(
+    utilization: uint256,
+    borrowRate: uint256,
+    protocolFeeRate: uint256
+): uint256 {
+    // Revenue to liquidity providers
+    const borrowerPayments = (borrowRate × utilization) / 1e18;
+    
+    // After protocol fees
+    const providerRevenue = (borrowerPayments × (1e18 - protocolFeeRate)) / 1e18;
+    
+    return providerRevenue;
+}
+
+// Example with 20% protocol fee:
+borrowRate = 10% APR
+utilization = 80%
+protocolFeeRate = 20%
+
+grossRevenue = 10% × 80% = 8%
+protocolFee = 8% × 20% = 1.6%
+supplyRate = 8% - 1.6% = 6.4% APR
+```
+
+## Interest Accrual
+
+Interest compounds continuously using per-second calculations:
+
+```solidity
+function accrueInterest(position: Position): uint256 {
+    const timeElapsed = block.timestamp - position.lastInterestUpdate;
+    if (timeElapsed == 0) return 0;
+    
+    // Get current market rates
+    const utilization = getUtilizationRate();
+    const borrowRate = interestModel.calculateBorrowRate(utilization);
+    
+    // Calculate interest
+    const interest = (
+        position.borrowedAmount × 
+        borrowRate × 
+        timeElapsed
+    ) / (365 days × 1e18);
+    
+    position.accumulatedInterest += interest;
+    position.lastInterestUpdate = block.timestamp;
+    
+    return interest;
+}
+```
+
+**Compound Interest Over Time:**
+
+```typescript
+// After 1 month (30 days):
+principal = $10,000
+rate = 8% APR = 0.08
+days = 30
+
+interest = ($10,000 × 0.08 × 30) / 365
+interest = $65.75
+
+// After 1 year:
+interest = ($10,000 × 0.08 × 365) / 365
+interest = $800
+
+// With daily compounding:
+dailyRate = 0.08 / 365 = 0.000219178
+compoundedAmount = $10,000 × (1 + dailyRate)^365
+compoundedAmount = $10,832.87
+totalInterest = $832.87
+```
+
+## Liquidation Mechanics
+
+Liquidation calculations determine collateral seizure amounts and remaining position state:
+
+```typescript
+function calculateLiquidation(
+    positionId: uint256,
+    debtToCover: uint256
+): LiquidationResult {
+    const position = positions[positionId];
+    
+    // Limit to 50% of total debt
+    const maxLiquidation = position.totalDebt × 0.5;
+    const actualDebtCovered = min(debtToCover, maxLiquidation);
+    
+    let remainingDebt = actualDebtCovered;
+    let totalSeized = 0;
+    
+    // Iterate through collateral types
+    for (const token of position.collateralTokens) {
+        if (remainingDebt == 0) break;
+        
+        const collateralAmount = position.collateralAmounts[token];
+        const price = oracle.getPrice(token);
+        const penalty = collateralConfigs[token].liquidationPenalty;
+        
+        // Calculate collateral value
+        const collateralValue = (collateralAmount × price) / 1e18;
+        
+        // Seizure value includes penalty
+        const seizureValue = (remainingDebt × (1e18 + penalty)) / 1e18;
+        
+        let toSeize: uint256;
+        if (collateralValue >= seizureValue) {
+            // Sufficient collateral in this token
+            toSeize = (seizureValue × 1e18) / price;
+            remainingDebt = 0;
+        } else {
+            // Insufficient - seize all and continue
+            toSeize = collateralAmount;
+            const covered = (collateralValue × 1e18) / (1e18 + penalty);
+            remainingDebt -= covered;
+        }
+        
+        position.collateralAmounts[token] -= toSeize;
+        totalSeized += toSeize;
+    }
+    
+    return {
+        debtRepaid: actualDebtCovered - remainingDebt,
+        collateralSeized: totalSeized,
+        remainingDebt: position.totalDebt - (actualDebtCovered - remainingDebt)
+    };
+}
+```
+
+**Liquidation Profitability:**
+
+```typescript
+function calculateLiquidatorProfit(
+    debtRepaid: uint256,
+    collateralSeized: uint256,
+    collateralPrice: uint256,
+    gasPrice: uint256
+): int256 {
+    // Value of seized collateral
+    const collateralValue = (collateralSeized × collateralPrice) / 1e18;
+    
+    // Cost of repaying debt
+    const debtCost = debtRepaid;
+    
+    // Estimated gas costs (250k gas typical)
+    const gasCost = gasPrice × 250000;
+    
+    // Net profit/loss
+    const profit = collateralValue - debtCost - gasCost;
+    
+    return profit;
+}
+
+// Example:
+debtRepaid = $8,000
+collateralSeized = 42 tokens
+collateralPrice = $200/token
+gasPrice = 50 gwei × $3,000/ETH = $0.00015/gas
+
+collateralValue = 42 × $200 = $8,400
+gasCost = 250,000 × $0.00015 = $37.50
+profit = $8,400 - $8,000 - $37.50 = $362.50
+```
+
+## Utilization Rate
+
+Market utilization determines interest rates and available borrowing capacity:
+
+```solidity
+function getUtilizationRate() public view returns (uint256) {
+    if (totalLiquidity == 0) return 0;
+    
+    const totalAssets = totalLiquidity + totalInterestEarned;
+    const utilization = (totalBorrowed × 1e18) / totalAssets;
+    
+    return utilization;
+}
+```
+
+**Utilization Impact:**
+
+```typescript
+// Market state:
+totalLiquidity = $1,000,000
+totalBorrowed = $600,000
+totalInterestEarned = $50,000
+
+totalAssets = $1,000,000 + $50,000 = $1,050,000
+utilization = ($600,000 × 1e18) / $1,050,000
+utilization = 571,428,571,428,571,428 (≈ 57.14%)
+
+// Available to borrow:
+availableLiquidity = totalLiquidity - totalBorrowed
+availableLiquidity = $1,000,000 - $600,000 = $400,000
+```
+
+## Share-Based Accounting
+
+Liquidity providers receive shares representing their portion of total pool value:
+
+```typescript
+function calculateShares(
+    depositAmount: uint256,
+    totalShares: uint256,
+    totalAssets: uint256
+): uint256 {
+    if (totalShares == 0) {
+        // First depositor gets shares equal to deposit
+        return depositAmount × SHARE_MULTIPLIER;
+    }
+    
+    // Subsequent depositors get proportional shares
+    const shares = (depositAmount × totalShares) / totalAssets;
+    return shares;
+}
+
+function calculateWithdrawalAmount(
+    sharesToBurn: uint256,
+    totalShares: uint256,
+    totalAssets: uint256
+): uint256 {
+    const amount = (sharesToBurn × totalAssets) / totalShares;
+    return amount;
+}
+```
+
+**Example with Interest Growth:**
+
+```typescript
+// Initial state:
+provider1Deposit = $100,000
+totalShares = $100,000 × 1e18 = 1e23
+totalAssets = $100,000
+
+// After 1 year of interest:
+interestEarned = $6,000
+totalAssets = $106,000
+provider1Shares = 1e23 (unchanged)
+
+// Provider 1 withdrawal value:
+withdrawal = (1e23 × $106,000) / 1e23 = $106,000
+profit = $6,000
+
+// New depositor adds $100,000:
+provider2Shares = ($100,000 × 1e23) / $106,000
+provider2Shares ≈ 9.434e22
+
+totalShares = 1e23 + 9.434e22 = 1.9434e23
+totalAssets = $206,000
+```
+
+## Maximum Borrowable Amount
+
+Calculate maximum borrowing capacity across multiple collateral types:
+
+```typescript
+function getMaxBorrowAmount(positionId: uint256): uint256 {
+    const position = positions[positionId];
+    
+    let totalBorrowCapacity = 0;
+    
+    for (const token of position.collateralTokens) {
+        const amount = position.collateralAmounts[token];
+        const price = oracle.getPrice(token);
+        const factor = collateralConfigs[token].collateralFactor;
+        
+        const value = (amount × price) / 1e18;
+        const capacity = (value × factor) / 1e18;
+        
+        totalBorrowCapacity += capacity;
+    }
+    
+    const currentDebt = position.borrowedAmount + position.accumulatedInterest;
+    const remainingCapacity = totalBorrowCapacity - currentDebt;
+    
+    return max(remainingCapacity, 0);
+}
+```
+
+## Price Impact Calculations
+
+Estimate how liquidations affect collateral prices in trading pools:
+
+```typescript
+function estimatePriceImpact(
+    collateralAmount: uint256,
+    poolReserveCollateral: uint256,
+    poolReserveStable: uint256,
+    poolWeight: uint256
+): uint256 {
+    // Weighted constant product: (R_c / W_c) × (R_s / W_s) = k
+    
+    const newReserveCollateral = poolReserveCollateral + collateralAmount;
+    
+    // Calculate new stable reserve maintaining constant k
+    const k = (poolReserveCollateral / poolWeight) × 
+              (poolReserveStable / (1e18 - poolWeight));
+    
+    const newReserveStable = k × (1e18 - poolWeight) × poolWeight / 
+                            newReserveCollateral;
+    
+    // Price impact
+    const oldPrice = (poolReserveStable × poolWeight) / 
+                     (poolReserveCollateral × (1e18 - poolWeight));
+    
+    const newPrice = (newReserveStable × poolWeight) / 
+                     (newReserveCollateral × (1e18 - poolWeight));
+    
+    const impact = ((oldPrice - newPrice) × 1e18) / oldPrice;
+    
+    return impact; // Basis points of price decrease
+}
+```
+
+<CardGroup cols={2}>
+    <Card title="Liquidation Bot" icon="robot" href="/new/learn/lending/advanced/liquidation-bot">
+        Automated liquidation implementation
+    </Card>
+    <Card title="Adaptive Interface" icon="code" href="/new/learn/lending/advanced/adaptive-interface">
+        Framework-agnostic API integration
+    </Card>
+    <Card title="Controllers" icon="sliders" href="/new/learn/lending/controllers">
+        Parameter configuration and tuning
+    </Card>
+    <Card title="Interest Models" icon="percent" href="/new/learn/lending/frameworks">
+        Rate curve implementation details
+    </Card>
+</CardGroup>

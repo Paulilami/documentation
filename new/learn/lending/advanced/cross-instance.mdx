@@ -1,0 +1,483 @@
+---
+title: "Cross-Instance Liquidity"
+description: "Sharing liquidity pools and positions across multiple financial institutions"
+---
+
+Cross-instance liquidity enables multiple financial institutions to pool capital and share lending markets without compromising regulatory independence. Each institution maintains separate governance and compliance controls while accessing unified liquidity pools.
+
+## Architecture Overview
+
+Traditional isolated markets force each institution to bootstrap liquidity independently—Bank A's lending market cannot borrow from Bank B's liquidity providers. Cross-instance architecture solves this through shared liquidity pools with instance-specific access controls.
+
+<CardGroup cols={2}>
+    <Card title="Shared Liquidity" icon="water">
+        Multiple institutions contribute to unified USDC pools increasing capital efficiency
+    </Card>
+    <Card title="Independent Governance" icon="building-columns">
+        Each institution configures collateral acceptance and risk parameters separately
+    </Card>
+    <Card title="Isolated Compliance" icon="scale-balanced">
+        Borrowers only access markets where they meet institution-specific KYC requirements
+    </Card>
+    <Card title="Revenue Sharing" icon="hand-holding-dollar">
+        Interest revenue distributes proportionally to each institution's liquidity contribution
+    </Card>
+</CardGroup>
+
+## Liquidity Pool Structure
+
+Shared pools aggregate capital from multiple institutions while tracking contributions separately:
+
+```solidity
+contract CrossInstanceLiquidityPool {
+    struct InstitutionLiquidity {
+        uint256 deposited;
+        uint256 shares;
+        uint256 interestEarned;
+        bool active;
+    }
+    
+    mapping(address => InstitutionLiquidity) public institutionLiquidity;
+    address[] public participatingInstitutions;
+    
+    uint256 public totalLiquidity;
+    uint256 public totalShares;
+    uint256 public totalBorrowed;
+    
+    function depositLiquidity(
+        address institution,
+        uint256 amount
+    ) external {
+        require(isAuthorizedInstitution(institution), "NOT_AUTHORIZED");
+        
+        // Calculate shares
+        uint256 shares = totalShares == 0 
+            ? amount * SHARE_MULTIPLIER
+            : (amount * totalShares) / (totalLiquidity + totalInterestEarned);
+        
+        institutionLiquidity[institution].deposited += amount;
+        institutionLiquidity[institution].shares += shares;
+        
+        totalLiquidity += amount;
+        totalShares += shares;
+        
+        // Transfer USDC from institution
+        usdc.transferFrom(msg.sender, address(this), amount);
+    }
+    
+    function withdrawLiquidity(
+        address institution,
+        uint256 amount
+    ) external {
+        InstitutionLiquidity storage liquidity = institutionLiquidity[institution];
+        
+        // Calculate shares to burn
+        uint256 totalAssets = totalLiquidity + totalInterestEarned;
+        uint256 sharesToBurn = (amount * totalShares) / totalAssets;
+        
+        require(liquidity.shares >= sharesToBurn, "INSUFFICIENT_SHARES");
+        
+        // Check available liquidity
+        uint256 available = totalLiquidity - totalBorrowed;
+        require(available >= amount, "INSUFFICIENT_LIQUIDITY");
+        
+        // Update state
+        liquidity.deposited -= amount;
+        liquidity.shares -= sharesToBurn;
+        totalLiquidity -= amount;
+        totalShares -= sharesToBurn;
+        
+        // Transfer USDC to institution
+        usdc.transfer(institution, amount);
+    }
+}
+```
+
+## Instance-Specific Borrowing
+
+Borrowers only access markets from institutions where they meet compliance requirements:
+
+```typescript
+interface BorrowingAccess {
+    institution: string;
+    hasAccess: boolean;
+    reason?: string;
+    availableLiquidity: bigint;
+    collateralAccepted: string[];
+}
+
+async function checkBorrowingAccess(
+    userAddress: string,
+    institutions: string[]
+): Promise<BorrowingAccess[]> {
+    const accessChecks: BorrowingAccess[] = [];
+    
+    for (const institution of institutions) {
+        // Check KYC status with institution
+        const kycStatus = await checkKYC(institution, userAddress);
+        
+        if (!kycStatus.verified) {
+            accessChecks.push({
+                institution,
+                hasAccess: false,
+                reason: 'KYC_NOT_VERIFIED',
+                availableLiquidity: 0n,
+                collateralAccepted: []
+            });
+            continue;
+        }
+        
+        // Check compliance restrictions
+        const compliance = await checkCompliance(institution, userAddress);
+        
+        if (!compliance.allowed) {
+            accessChecks.push({
+                institution,
+                hasAccess: false,
+                reason: compliance.restriction,
+                availableLiquidity: 0n,
+                collateralAccepted: []
+            });
+            continue;
+        }
+        
+        // User has access - get available liquidity
+        const market = await getInstitutionMarket(institution);
+        const liquidity = await market.getAvailableLiquidity();
+        const collateral = await market.getAcceptedCollateral();
+        
+        accessChecks.push({
+            institution,
+            hasAccess: true,
+            availableLiquidity: liquidity,
+            collateralAccepted: collateral
+        });
+    }
+    
+    return accessChecks;
+}
+```
+
+## Revenue Distribution
+
+Interest payments distribute proportionally based on each institution's share of total liquidity:
+
+```solidity
+function distributeInterest(uint256 interestAmount) internal {
+    uint256 totalAssets = totalLiquidity + totalInterestEarned;
+    
+    for (uint256 i = 0; i < participatingInstitutions.length; i++) {
+        address institution = participatingInstitutions[i];
+        InstitutionLiquidity storage liquidity = institutionLiquidity[institution];
+        
+        if (liquidity.shares == 0) continue;
+        
+        // Calculate institution's share of interest
+        uint256 institutionShare = 
+            (interestAmount * liquidity.shares) / totalShares;
+        
+        liquidity.interestEarned += institutionShare;
+    }
+    
+    totalInterestEarned += interestAmount;
+}
+```
+
+**Interest Calculation Example:**
+
+```typescript
+// Pool state:
+totalLiquidity = $10,000,000
+totalInterestEarned = $50,000
+totalShares = 10,000,000 * 1e18
+
+// Institution A:
+shares = 6,000,000 * 1e18 (60% of pool)
+deposited = $6,000,000
+
+// Institution B:
+shares = 4,000,000 * 1e18 (40% of pool)
+deposited = $4,000,000
+
+// New interest payment: $1,000
+institutionA_share = $1,000 * (6M * 1e18) / (10M * 1e18) = $600
+institutionB_share = $1,000 * (4M * 1e18) / (10M * 1e18) = $400
+
+// Updated earnings:
+institutionA_earned = $600
+institutionB_earned = $400
+```
+
+## Collateral Acceptance
+
+Each institution configures which collateral types they accept independently—borrowers can only use collateral accepted by their chosen institution:
+
+<Tabs>
+    <Tab title="Institution A Config">
+        ```typescript
+        // Bank A accepts gold and silver
+        await marketA.configureCollateral(goldTokenAddress, {
+            accepted: true,
+            collateralFactor: 7500, // 75%
+            liquidationThreshold: 8000 // 80%
+        });
+        
+        await marketA.configureCollateral(silverTokenAddress, {
+            accepted: true,
+            collateralFactor: 7000, // 70%
+            liquidationThreshold: 7500 // 75%
+        });
+        ```
+    </Tab>
+    
+    <Tab title="Institution B Config">
+        ```typescript
+        // Bank B accepts only gold (more conservative)
+        await marketB.configureCollateral(goldTokenAddress, {
+            accepted: true,
+            collateralFactor: 7000, // 70% (lower than Bank A)
+            liquidationThreshold: 7500 // 75%
+        });
+        
+        await marketB.configureCollateral(silverTokenAddress, {
+            accepted: false // Bank B doesn't accept silver
+        });
+        ```
+    </Tab>
+    
+    <Tab title="User Borrowing">
+        ```typescript
+        // User verified with both institutions
+        const accessA = await checkAccess(userAddress, 'InstitutionA');
+        const accessB = await checkAccess(userAddress, 'InstitutionB');
+        
+        // User can deposit silver with Institution A
+        if (accessA.collateralAccepted.includes(silverTokenAddress)) {
+            await borrowFromInstitution('InstitutionA', {
+                collateral: silverTokenAddress,
+                amount: ethers.parseEther('1000')
+            });
+        }
+        
+        // User CANNOT deposit silver with Institution B
+        if (!accessB.collateralAccepted.includes(silverTokenAddress)) {
+            console.log('Silver not accepted by Institution B');
+        }
+        ```
+    </Tab>
+</Tabs>
+
+## Liquidity Utilization
+
+Track how each institution's liquidity gets utilized across borrowers:
+
+```typescript
+interface UtilizationMetrics {
+    institution: string;
+    totalDeposited: bigint;
+    currentlyBorrowed: bigint;
+    utilizationRate: number;
+    interestEarned: bigint;
+    apr: number;
+}
+
+async function getInstitutionMetrics(
+    institution: string
+): Promise<UtilizationMetrics> {
+    const liquidity = await pool.institutionLiquidity(institution);
+    
+    // Calculate current value
+    const totalAssets = await pool.totalLiquidity() + 
+                       await pool.totalInterestEarned();
+    const currentValue = 
+        (liquidity.shares * totalAssets) / await pool.totalShares();
+    
+    // Calculate utilization
+    const borrowed = (liquidity.shares * await pool.totalBorrowed()) / 
+                    await pool.totalShares();
+    const utilizationRate = (borrowed * 100) / currentValue;
+    
+    // Calculate APR
+    const timeElapsed = Date.now() - liquidity.lastUpdate;
+    const annualizedReturn = 
+        (liquidity.interestEarned * 365 * 86400) / 
+        (liquidity.deposited * timeElapsed);
+    
+    return {
+        institution,
+        totalDeposited: liquidity.deposited,
+        currentlyBorrowed: borrowed,
+        utilizationRate,
+        interestEarned: liquidity.interestEarned,
+        apr: annualizedReturn
+    };
+}
+```
+
+## Risk Isolation
+
+Despite shared liquidity, each institution maintains independent risk exposure through position-level tracking:
+
+<Accordion title="Position Attribution">
+```solidity
+struct Position {
+    uint256 id;
+    address borrower;
+    address lendingInstitution; // Which institution approved this position
+    mapping(address => uint256) collateralAmounts;
+    uint256 borrowedAmount;
+    uint256 accumulatedInterest;
+    bool active;
+}
+
+// When position liquidates, only the lending institution's metrics affected
+function liquidatePosition(uint256 positionId) external {
+    Position storage position = positions[positionId];
+    
+    // Liquidation affects only position's institution
+    InstitutionLiquidity storage institutionLiquidity = 
+        institutionLiquidity[position.lendingInstitution];
+    
+    // Bad debt (if any) only impacts this institution's reserves
+    if (collateralValue < debtValue) {
+        uint256 badDebt = debtValue - collateralValue;
+        institutionLiquidity.badDebtReserve -= badDebt;
+    }
+}
+```
+</Accordion>
+
+## Cross-Instance API Integration
+
+Single API endpoint routes borrowing requests to appropriate institutions based on user access:
+
+```typescript
+// POST https://api.trusset.org/v1/lending/cross-instance/borrow
+const response = await fetch('https://api.trusset.org/v1/lending/cross-instance/borrow', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${API_KEY}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    userAddress: "0xBorrower",
+    collateralToken: "0xGoldToken",
+    collateralAmount: "100000000000000000000",
+    borrowAmount: "15000000000",
+    // Optional: specify preferred institution
+    preferredInstitution: "InstitutionA"
+  })
+});
+
+// Backend:
+// 1. Checks user access to all institutions
+// 2. Filters institutions accepting gold collateral
+// 3. Selects best rate or preferred institution
+// 4. Opens position with selected institution
+// 5. Draws from shared liquidity pool
+```
+
+## Migration Between Institutions
+
+Users can refinance positions by moving between institutions while maintaining open loans:
+
+```typescript
+async function refinancePosition(
+    positionId: number,
+    fromInstitution: string,
+    toInstitution: string
+): Promise<number> {
+    // Verify user has access to target institution
+    const access = await checkAccess(userAddress, toInstitution);
+    if (!access.hasAccess) {
+        throw new Error('No access to target institution');
+    }
+    
+    // Get current position details
+    const position = await getPosition(fromInstitution, positionId);
+    
+    // Check if target accepts collateral
+    const targetMarket = await getMarket(toInstitution);
+    const accepts = await targetMarket.acceptsCollateral(
+        position.collateralToken
+    );
+    if (!accepts) {
+        throw new Error('Target institution does not accept collateral');
+    }
+    
+    // Open new position with target institution
+    const newPositionId = await targetMarket.openPosition();
+    
+    // Transfer collateral
+    await transferCollateral(
+        positionId,
+        newPositionId,
+        position.collateralToken,
+        position.collateralAmount
+    );
+    
+    // Transfer debt
+    await transferDebt(positionId, newPositionId, position.totalDebt);
+    
+    // Close old position
+    await closePosition(fromInstitution, positionId);
+    
+    return newPositionId;
+}
+```
+
+## Liquidity Rebalancing
+
+Institutions can adjust liquidity contributions dynamically responding to demand:
+
+```typescript
+async function rebalanceLiquidity(
+    institution: string,
+    targetUtilization: number
+): Promise<void> {
+    const metrics = await getInstitutionMetrics(institution);
+    
+    if (metrics.utilizationRate > targetUtilization) {
+        // Over-utilized - add liquidity
+        const deficit = 
+            (metrics.currentlyBorrowed / targetUtilization) - 
+            metrics.totalDeposited;
+        
+        await pool.depositLiquidity(institution, deficit);
+        
+    } else if (metrics.utilizationRate < targetUtilization * 0.5) {
+        // Under-utilized - withdraw excess
+        const excess = 
+            metrics.totalDeposited - 
+            (metrics.currentlyBorrowed / targetUtilization);
+        
+        await pool.withdrawLiquidity(institution, excess);
+    }
+}
+
+// Automated rebalancing
+setInterval(async () => {
+    for (const institution of institutions) {
+        await rebalanceLiquidity(institution, 0.75); // Target 75% utilization
+    }
+}, 3600000); // Hourly
+```
+
+<Warning>
+Cross-instance liquidity requires careful regulatory coordination. Each institution must ensure compliance with their jurisdiction's rules on pooled lending and shared risk exposure. Consult legal counsel before implementing cross-instance features.
+</Warning>
+
+<CardGroup cols={2}>
+    <Card title="Lending Frameworks" icon="layer-group" href="/new/learn/lending/frameworks">
+        Framework-specific implementations
+    </Card>
+    <Card title="Adaptive Interface" icon="code" href="/new/learn/lending/advanced/adaptive-interface">
+        Unified API across institutions
+    </Card>
+    <Card title="Controllers" icon="sliders" href="/new/learn/lending/controllers">
+        Institution-specific configuration
+    </Card>
+    <Card title="API Reference" icon="code" href="/api-reference/lending/cross-instance">
+        Cross-instance endpoint documentation
+    </Card>
+</CardGroup>

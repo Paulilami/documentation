@@ -1,0 +1,80 @@
+---
+title: "Automation Vaults"
+description: "Smart accounts that execute backend operations on-chain without manual wallet signatures"
+---
+
+Automation Vaults transform API calls into blockchain transactions automatically. No wallet extensions, no manual signing—just REST API calls that execute on-chain operations seamlessly.
+
+## How It Works
+
+Vaults are ERC-4337 smart accounts that hold funds and execute operations on your behalf. When your backend calls an API endpoint, the vault signs and submits the blockchain transaction automatically.
+
+<CardGroup cols={2}>
+    <Card title="No Wallet Required" icon="wallet">
+        Execute blockchain operations using only API keys—no browser wallets or manual approvals
+    </Card>
+    <Card title="Continuous Operation" icon="clock">
+        Vaults run 24/7 without human intervention once configured and funded
+    </Card>
+    <Card title="Fine-Grained Control" icon="sliders">
+        Enable specific operations with rate limits—restrict what each vault can do
+    </Card>
+    <Card title="Full Transparency" icon="eye">
+        Monitor all vault transactions and balances through the Issuer Platform
+    </Card>
+</CardGroup>
+
+## Funding & Operations
+
+Vaults require ETH (or native network tokens) to pay transaction fees. You fund vaults once, and they execute operations until funds deplete. The platform alerts you when balances run low.
+
+Configure which operations each vault can perform—minting tokens, updating prices, processing redemptions, or managing compliance. Vaults only execute enabled functions, preventing unauthorized actions.
+
+## Management
+
+Control vaults entirely through the Issuer Platform or API:
+
+- **Pause/Resume:** Stop vault operations immediately during emergencies or maintenance without losing configuration.
+
+- **Fund Management:** Deposit additional ETH when needed or withdraw excess funds to external wallets.
+
+- **Monitoring:** Set up alerts triggering when vault balances fall below thresholds or transaction failures occur.
+
+- **Operation Logs:** View complete history of all vault transactions with gas costs and execution status.
+
+**Deletion:** Remove vaults permanently after withdrawing remaining funds—irreversible action requiring confirmation.
+
+## Security Model
+
+Automation Vaults follow the ERC-4337 standard with additional security layers:
+
+- **Rate Limiting:** Configure maximum operations per day for each enabled function, preventing abuse if API keys compromise.
+
+- **Function Restrictions:** Vaults only execute pre-approved operations—cannot perform arbitrary transactions.
+
+- **Instance Isolation:** Each instance's vaults operate independently—compromise of one vault doesn't affect others.
+
+<Note>
+Automation Vaults are smart contracts deployed on-chain. Fund them adequately for uninterrupted service, but don't over-fund—withdraw excess balances to cold storage.
+</Note>
+
+## Contract Architecture
+
+Automation Vaults use Instance Vault Contracts (IVCs) that integrate seamlessly with all Trusset smart contracts. IVCs hold elevated permissions for administrative functions while enforcing rate limits and function restrictions.
+
+The IVC contract set undergoes governance through the [Trusset Upgrade DAO](/new/learn/governance/contract-updates), ensuring changes receive community review before deployment.
+
+<CardGroup cols={2}>
+    <Card title="ERC-4337 Standard" icon="file-lines" href="/new/learn/automation/erc4337-integration">
+        Technical details on account abstraction implementation
+    </Card>
+    <Card title="Automation Controllers" icon="sliders" href="/new/learn/automation/automation-controllers">
+        Configure vault operations and permissions
+    </Card>
+    <Card title="Synchronization Links" icon="link" href="/new/learn/automation/synchronization-links">
+        Connect backend systems to blockchain automatically
+    </Card>
+    <Card title="API Reference" icon="code" href="/api-reference/automation/vaults">
+        Vault management endpoints
+    </Card>
+</CardGroup>

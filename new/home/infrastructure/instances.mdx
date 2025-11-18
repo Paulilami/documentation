@@ -1,0 +1,198 @@
+---
+title: "Instances"
+description: "Isolated environments for accessing Trusset services independently"
+---
+
+Instances are isolated environments that control access to Trusset APIs on your chosen blockchain network. Each instance operates independently with dedicated API keys, data storage, and smart contract deployments.
+
+<Note>
+Instances are completely free to create—no setup fees or monthly charges.
+</Note>
+
+## Adaptive Services
+
+Instances automatically adapt to your institution's regulatory licenses, enabling only the services you're authorized to operate:
+
+<CardGroup cols={2}>
+    <Card title="Asset Tokenization" icon="coins">
+        Issue security tokens, commodities, real estate, and other tokenized assets
+    </Card>
+    <Card title="Identity Verification" icon="id-card">
+        KYC/AML compliance with privacy-preserving zero-knowledge proofs
+    </Card>
+    <Card title="Trading Services" icon="chart-line">
+        AMM pools and listing-based marketplaces for tokenized assets
+    </Card>
+    <Card title="Lending Services" icon="hand-holding-dollar">
+        Overcollateralized lending markets against tokenized collateral
+    </Card>
+</CardGroup>
+
+The Issuer Platform displays only enabled services based on your verified licenses—preventing access to unauthorized functionality.
+
+## Instance Types
+
+Separate development and production environments for safe testing before mainnet deployment:
+
+<Tabs>
+    <Tab title="Development Instances">
+        Automatically deploy to test networks for risk-free experimentation:
+
+        - Free testnet tokens for gas fees
+        - Identical functionality to production
+        - Isolated from mainnet operations
+        - Reset anytime without consequences
+        - Perfect for integration testing
+
+        Test thoroughly in development before moving to production—bugs in production cost real money.
+    </Tab>
+    
+    <Tab title="Production Instances">
+        Deploy to mainnets for live operations with real assets:
+
+        - Requires real tokens for gas fees
+        - Immutable smart contract deployments
+        - Irreversible transactions
+        - Subject to network fees
+        - Monitored for security incidents
+
+        Convert development instances to production seamlessly—pays only gas fees for contract migrations.
+    </Tab>
+</Tabs>
+
+## Target Network
+
+Choose your blockchain network during instance creation—this decision is permanent. The instance adapts all services to the chosen network automatically.
+
+<Accordion title="Network Selection Considerations">
+Select networks based on your requirements:
+
+**Ethereum:** Maximum security and liquidity, higher transaction costs, largest DeFi ecosystem.
+
+**Base:** Lower costs than Ethereum, Coinbase backing, growing adoption, emerging ecosystem.
+
+**Arbitrum:** Ethereum security with reduced costs, established DeFi presence, fast finality.
+
+**Solana:** Extremely fast and cheap transactions, different programming model, growing institutional adoption.
+
+**Avalanche:** Subnet customization, institutional focus, bridge to Ethereum ecosystem.
+
+We'll soon launch cross-instance bridges enabling asset migration between networks without redeployment.
+</Accordion>
+
+## Instance Limits
+
+| Property | Limit |
+|----------|-------|
+| Total Instances | 5 × verified_services* |
+| API Calls (Testnet) | Unlimited |
+| API Calls (Mainnet) | Usage-based pricing (coming soon) |
+| API Keys per Instance | 3 maximum |
+| Data Storage | 100GB per instance (expandable) |
+
+*verified_services = number of licensed service categories you hold (tokenization, trading, lending, etc.)
+
+## API Key Management
+
+Each instance supports up to three API keys with independent permissions and rate limits. Visit [API Key Management](/api-key-management) for detailed configuration instructions.
+
+## Service Isolation
+
+Data never leaks between instances—complete isolation at every level:
+
+- **Database Isolation:** Each instance stores data in separate encrypted databases inaccessible to other instances.
+
+- **Smart Contract Isolation:** Instance-specific contracts deploy independently—no shared state or cross-instance calls.
+
+- **API Isolation:** API keys only access their instance's resources—cannot query other instances even accidentally.
+
+- **Network Isolation:** Instances on different blockchains operate completely independently.
+
+## Monitoring & Webhooks
+
+Configure webhooks receiving real-time notifications about instance activity:
+
+<CodeGroup>
+```typescript Token Events
+// Webhook receives token mints, burns, transfers
+{
+  "event": "token.minted",
+  "instanceId": "inst_abc123",
+  "tokenAddress": "0x...",
+  "recipient": "0x...",
+  "amount": "1000000000000000000",
+  "timestamp": "2025-11-18T12:34:56Z"
+}
+```
+
+```typescript Trading Events
+// Webhook receives swap executions, liquidations
+{
+  "event": "swap.executed",
+  "instanceId": "inst_abc123",
+  "poolId": "0x...",
+  "trader": "0x...",
+  "amountIn": "1000000000",
+  "amountOut": "995000000",
+  "timestamp": "2025-11-18T12:34:56Z"
+}
+```
+
+```typescript Lending Events
+// Webhook receives borrows, repayments, liquidations
+{
+  "event": "position.liquidated",
+  "instanceId": "inst_abc123",
+  "positionId": 42,
+  "liquidator": "0x...",
+  "debtRepaid": "8000000000",
+  "collateralSeized": "42000000000000000000",
+  "timestamp": "2025-11-18T12:34:56Z"
+}
+```
+</CodeGroup>
+
+## Instance Migration
+
+Convert development instances to production after testing completes:
+
+<Steps>
+  <Step title="Verify Configuration">
+    Ensure all settings, smart contracts, and integrations work correctly in development environment.
+  </Step>
+
+  <Step title="Initiate Migration">
+    Request migration through Issuer Platform—specify target mainnet and confirm irreversibility.
+  </Step>
+
+  <Step title="Contract Deployment">
+    System deploys all smart contracts to mainnet with identical configuration—pay gas fees for deployments (one-time fee).
+  </Step>
+
+  <Step title="Update Integrations">
+    Modify backend API calls to use mainnet instance ID (ID stays the same when converting from dev. to prod. instance and optionally can be roted).
+  </Step>
+
+  <Step title="Begin Operations">
+    Instance now operates on mainnet—all actions use real assets and incur real costs.
+  </Step>
+</Steps>
+
+<Warning>
+Instance migration is irreversible. Test exhaustively in development before migrating to production—bugs in production lose real money.
+</Warning>
+
+<CardGroup cols={2}>
+    <Card title="Networks" icon="globe" href="/new/home/infrastructure/networks">
+        Supported blockchain networks
+    </Card>
+    <Card title="Automation Vaults" icon="satellite-dish" href="/new/learn/automation/automation-overview">
+        Instance-specific automation configuration
+    </Card>
+    <Card title="Data Storage" icon="database" href="/new/home/infrastructure/data-storage">
+        Instance-based encrypted storage
+    </Card>
+    <Card title="API Reference" icon="code" href="/api-reference/instances">
+        Instance management endpoints
+    </Card>
+</CardGroup>

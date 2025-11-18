@@ -1,0 +1,570 @@
+---
+title: "Liquidation Bot"
+description: "Automated position monitoring and profitable liquidation execution"
+---
+
+Liquidation bots monitor lending markets continuously, executing liquidations when positions become unhealthy. Successful bots balance execution speed, gas optimization, and profitability calculations to maintain market solvency while generating returns.
+
+## Bot Architecture
+
+<CardGroup cols={2}>
+    <Card title="Position Monitor" icon="radar">
+        Track all active positions and calculate real-time health factors
+    </Card>
+    <Card title="Oracle Integration" icon="chart-line">
+        Query price feeds for accurate collateral valuations
+    </Card>
+    <Card title="Profitability Engine" icon="calculator">
+        Estimate liquidation profits accounting for gas costs and penalties
+    </Card>
+    <Card title="Execution Layer" icon="bolt">
+        Submit liquidation transactions with optimal gas pricing
+    </Card>
+</CardGroup>
+
+## Position Monitoring
+
+Query lending markets for active positions and calculate health factors using current oracle prices:
+
+```typescript
+import { ethers } from 'ethers';
+
+class LiquidationBot {
+    private provider: ethers.Provider;
+    private market: ethers.Contract;
+    private oracle: ethers.Contract;
+    private wallet: ethers.Wallet;
+    
+    constructor(
+        providerUrl: string,
+        marketAddress: string,
+        oracleAddress: string,
+        privateKey: string
+    ) {
+        this.provider = new ethers.JsonRpcProvider(providerUrl);
+        this.wallet = new ethers.Wallet(privateKey, this.provider);
+        
+        this.market = new ethers.Contract(
+            marketAddress,
+            LENDING_MARKET_ABI,
+            this.wallet
+        );
+        
+        this.oracle = new ethers.Contract(
+            oracleAddress,
+            ORACLE_ABI,
+            this.provider
+        );
+    }
+    
+    async monitorPositions() {
+        console.log('Starting position monitoring...');
+        
+        while (true) {
+            try {
+                // Get all active positions
+                const positionIds = await this.getActivePositions();
+                
+                // Check each position
+                for (const positionId of positionIds) {
+                    await this.checkPosition(positionId);
+                }
+                
+                // Wait before next check (5 blocks ≈ 1 minute)
+                await this.sleep(60000);
+                
+            } catch (error) {
+                console.error('Monitoring error:', error);
+                await this.sleep(10000); // Retry after 10s on error
+            }
+        }
+    }
+    
+    private async getActivePositions(): Promise<number[]> {
+        // Query market for active position IDs
+        const positionCount = await this.market.positionCounter();
+        const activePositions: number[] = [];
+        
+        for (let i = 1; i <= positionCount; i++) {
+            const position = await this.market.positions(i);
+            if (position.active) {
+                activePositions.push(i);
+            }
+        }
+        
+        return activePositions;
+    }
+}
+```
+
+## Health Factor Calculation
+
+Calculate position health factors incorporating multi-collateral support and current oracle pricing:
+
+```typescript
+interface CollateralData {
+    token: string;
+    amount: bigint;
+    price: bigint;
+    collateralFactor: bigint;
+}
+
+async function calculateHealthFactor(
+    positionId: number
+): Promise<bigint> {
+    const position = await this.market.getPosition(positionId);
+    
+    // Get all collateral data
+    const collateralData = await this.getPositionCollateral(positionId);
+    
+    let adjustedCollateralValue = 0n;
+    
+    for (const collateral of collateralData) {
+        // Get current price from oracle
+        const [price] = await this.oracle.getPrice(collateral.token);
+        
+        // Get collateral configuration
+        const config = await this.market.collateralConfigs(collateral.token);
+        
+        // Calculate adjusted value
+        const value = (collateral.amount * price) / 10n**18n;
+        const adjustedValue = (value * config.collateralFactor) / 10n**18n;
+        
+        adjustedCollateralValue += adjustedValue;
+    }
+    
+    // Get total debt
+    const totalDebt = position.borrowedAmount + position.accumulatedInterest;
+    
+    if (totalDebt === 0n) {
+        return ethers.MaxUint256; // Maximum health factor
+    }
+    
+    // Health factor = (adjusted collateral / debt) in 18 decimals
+    const healthFactor = (adjustedCollateralValue * 10n**18n) / totalDebt;
+    
+    return healthFactor;
+}
+```
+
+## Profitability Analysis
+
+Calculate expected profit before executing liquidations, accounting for gas costs and market conditions:
+
+```typescript
+interface LiquidationAnalysis {
+    profitable: boolean;
+    netProfit: bigint;
+    debtToCover: bigint;
+    collateralSeized: bigint;
+    gasCost: bigint;
+}
+
+async function analyzeLiquidation(
+    positionId: number
+): Promise<LiquidationAnalysis> {
+    const position = await this.market.getPosition(positionId);
+    const collateralData = await this.getPositionCollateral(positionId);
+    
+    // Calculate maximum debt to cover (50% limit)
+    const totalDebt = position.borrowedAmount + position.accumulatedInterest;
+    const maxDebtToCover = totalDebt / 2n;
+    
+    // Estimate gas costs
+    const gasPrice = await this.provider.getFeeData();
+    const estimatedGas = 300000n; // Conservative estimate
+    const gasCost = gasPrice.gasPrice! * estimatedGas;
+    
+    // Calculate collateral seizure
+    let remainingDebt = maxDebtToCover;
+    let totalSeizedValue = 0n;
+    
+    for (const collateral of collateralData) {
+        if (remainingDebt === 0n) break;
+        
+        const [price] = await this.oracle.getPrice(collateral.token);
+        const config = await this.market.collateralConfigs(collateral.token);
+        
+        const collateralValue = (collateral.amount * price) / 10n**18n;
+        
+        // Seizure includes liquidation penalty
+        const seizureValue = 
+            (remainingDebt * (10n**18n + config.liquidationPenalty)) / 10n**18n;
+        
+        if (collateralValue >= seizureValue) {
+            totalSeizedValue += seizureValue;
+            remainingDebt = 0n;
+        } else {
+            totalSeizedValue += collateralValue;
+            const covered = 
+                (collateralValue * 10n**18n) / 
+                (10n**18n + config.liquidationPenalty);
+            remainingDebt -= covered;
+        }
+    }
+    
+    // Calculate profit
+    const debtCost = maxDebtToCover - remainingDebt;
+    const netProfit = totalSeizedValue - debtCost - gasCost;
+    
+    return {
+        profitable: netProfit > 0n,
+        netProfit,
+        debtToCover: maxDebtToCover,
+        collateralSeized: totalSeizedValue,
+        gasCost
+    };
+}
+```
+
+## Execution Strategy
+
+Execute liquidations with optimal gas pricing and transaction management:
+
+```typescript
+async function executeLiquidation(
+    positionId: number,
+    analysis: LiquidationAnalysis
+): Promise<boolean> {
+    try {
+        console.log(`Liquidating position ${positionId}`);
+        console.log(`Expected profit: ${ethers.formatUnits(analysis.netProfit, 6)} USDC`);
+        
+        // Check USDC balance
+        const usdcBalance = await this.usdc.balanceOf(this.wallet.address);
+        if (usdcBalance < analysis.debtToCover) {
+            console.log('Insufficient USDC balance');
+            return false;
+        }
+        
+        // Approve USDC spending
+        const currentAllowance = await this.usdc.allowance(
+            this.wallet.address,
+            this.market.target
+        );
+        
+        if (currentAllowance < analysis.debtToCover) {
+            console.log('Approving USDC...');
+            const approveTx = await this.usdc.approve(
+                this.market.target,
+                ethers.MaxUint256
+            );
+            await approveTx.wait();
+        }
+        
+        // Execute liquidation with dynamic gas pricing
+        const gasPrice = await this.getOptimalGasPrice();
+        
+        const liquidateTx = await this.market.liquidate(
+            positionId,
+            analysis.debtToCover,
+            {
+                gasLimit: 350000n, // Buffer above estimate
+                gasPrice: gasPrice
+            }
+        );
+        
+        console.log(`Transaction submitted: ${liquidateTx.hash}`);
+        
+        const receipt = await liquidateTx.wait();
+        
+        if (receipt.status === 1) {
+            console.log(`✓ Liquidation successful`);
+            console.log(`Gas used: ${receipt.gasUsed.toString()}`);
+            return true;
+        } else {
+            console.log('✗ Liquidation failed');
+            return false;
+        }
+        
+    } catch (error) {
+        console.error('Liquidation execution error:', error);
+        return false;
+    }
+}
+
+private async getOptimalGasPrice(): Promise<bigint> {
+    const feeData = await this.provider.getFeeData();
+    
+    // Use 120% of current gas price for faster inclusion
+    const optimalPrice = (feeData.gasPrice! * 120n) / 100n;
+    
+    // Cap at maximum acceptable gas price
+    const MAX_GAS_PRICE = ethers.parseUnits('100', 'gwei');
+    
+    return optimalPrice < MAX_GAS_PRICE ? optimalPrice : MAX_GAS_PRICE;
+}
+```
+
+## Multi-Market Monitoring
+
+Monitor multiple lending markets simultaneously for maximum liquidation opportunities:
+
+```typescript
+class MultiMarketBot {
+    private markets: Map<string, LiquidationBot>;
+    
+    constructor(marketConfigs: MarketConfig[]) {
+        this.markets = new Map();
+        
+        for (const config of marketConfigs) {
+            const bot = new LiquidationBot(
+                config.providerUrl,
+                config.marketAddress,
+                config.oracleAddress,
+                config.privateKey
+            );
+            this.markets.set(config.marketAddress, bot);
+        }
+    }
+    
+    async monitorAll() {
+        // Start monitoring all markets in parallel
+        const monitoringPromises = Array.from(this.markets.values())
+            .map(bot => bot.monitorPositions());
+        
+        await Promise.all(monitoringPromises);
+    }
+}
+
+// Deploy multi-market bot
+const marketConfigs = [
+    {
+        providerUrl: process.env.RPC_URL,
+        marketAddress: '0xGoldMarket...',
+        oracleAddress: '0xGoldOracle...',
+        privateKey: process.env.PRIVATE_KEY
+    },
+    {
+        providerUrl: process.env.RPC_URL,
+        marketAddress: '0xSilverMarket...',
+        oracleAddress: '0xSilverOracle...',
+        privateKey: process.env.PRIVATE_KEY
+    }
+];
+
+const bot = new MultiMarketBot(marketConfigs);
+bot.monitorAll();
+```
+
+## Advanced Features
+
+<Accordion title="Flashloan Integration">
+Execute liquidations without holding USDC by borrowing repayment funds in the same transaction:
+
+```typescript
+async function flashloanLiquidation(
+    positionId: number,
+    debtToCover: bigint
+) {
+    // Encode liquidation call
+    const liquidationCall = this.market.interface.encodeFunctionData(
+        'liquidate',
+        [positionId, debtToCover]
+    );
+    
+    // Execute via flashloan
+    await this.flashloanProvider.flashLoan(
+        this.usdc.target,
+        debtToCover,
+        liquidationCall,
+        {
+            // Flashloan will:
+            // 1. Borrow USDC
+            // 2. Execute liquidation
+            // 3. Sell seized collateral
+            // 4. Repay USDC + fee
+            // 5. Keep profit
+        }
+    );
+}
+```
+
+This eliminates capital requirements but adds flashloan fees (~0.05%) to profitability calculations.
+</Accordion>
+
+<Accordion title="MEV Protection">
+Protect liquidation transactions from frontrunning and sandwich attacks:
+
+```typescript
+async function executeMEVProtectedLiquidation(
+    positionId: number,
+    analysis: LiquidationAnalysis
+) {
+    // Use Flashbots or similar MEV protection service
+    const flashbotsProvider = await ethers.providers.FlashbotsBundleProvider.create(
+        this.provider,
+        this.wallet,
+        FLASHBOTS_RELAY_URL
+    );
+    
+    // Create liquidation transaction
+    const tx = await this.market.liquidate.populateTransaction(
+        positionId,
+        analysis.debtToCover
+    );
+    
+    // Submit as Flashbots bundle
+    const bundle = [
+        {
+            signer: this.wallet,
+            transaction: tx
+        }
+    ];
+    
+    const targetBlock = await this.provider.getBlockNumber() + 1;
+    
+    const flashbotsTransaction = await flashbotsProvider.sendBundle(
+        bundle,
+        targetBlock
+    );
+    
+    // Transaction included without public mempool exposure
+}
+```
+</Accordion>
+
+## Performance Optimization
+
+<Tabs>
+    <Tab title="Batch Queries">
+        Reduce RPC calls by batching position queries:
+
+        ```typescript
+        async function batchCheckPositions(positionIds: number[]) {
+            // Create multicall contract
+            const multicall = new ethers.Contract(
+                MULTICALL_ADDRESS,
+                MULTICALL_ABI,
+                this.provider
+            );
+            
+            // Prepare calls
+            const calls = positionIds.map(id => ({
+                target: this.market.target,
+                callData: this.market.interface.encodeFunctionData(
+                    'getPosition',
+                    [id]
+                )
+            }));
+            
+            // Execute all at once
+            const results = await multicall.aggregate(calls);
+            
+            // Process results
+            return results.map((result, i) => ({
+                positionId: positionIds[i],
+                data: this.market.interface.decodeFunctionResult(
+                    'getPosition',
+                    result
+                )
+            }));
+        }
+        ```
+    </Tab>
+    
+    <Tab title="Event Filtering">
+        Monitor position changes through events instead of constant polling:
+
+        ```typescript
+        async function subscribeToPositionEvents() {
+            // Listen for new borrows
+            this.market.on('Borrowed', async (positionId, amount) => {
+                console.log(`Position ${positionId} borrowed ${amount}`);
+                await this.checkPosition(positionId);
+            });
+            
+            // Listen for collateral deposits
+            this.market.on('CollateralDeposited', async (positionId) => {
+                await this.checkPosition(positionId);
+            });
+            
+            // Listen for price updates
+            this.oracle.on('PriceUpdated', async (assetId, price) => {
+                // Check all positions with this collateral
+                await this.checkPositionsWithCollateral(assetId);
+            });
+        }
+        ```
+    </Tab>
+    
+    <Tab title="Local Simulation">
+        Test liquidation profitability locally before submitting transactions:
+
+        ```typescript
+        async function simulateLiquidation(
+            positionId: number,
+            debtToCover: bigint
+        ): Promise<boolean> {
+            try {
+                // Use static call to simulate without executing
+                await this.market.liquidate.staticCall(
+                    positionId,
+                    debtToCover
+                );
+                
+                return true; // Simulation succeeded
+            } catch (error) {
+                console.log(`Simulation failed: ${error.message}`);
+                return false; // Would fail on-chain
+            }
+        }
+        ```
+    </Tab>
+</Tabs>
+
+## Monitoring & Alerts
+
+Track bot performance and receive notifications for critical events:
+
+```typescript
+class BotMonitor {
+    private metrics = {
+        positionsChecked: 0,
+        liquidationsExecuted: 0,
+        totalProfit: 0n,
+        failedAttempts: 0
+    };
+    
+    async sendAlert(message: string, severity: 'info' | 'warning' | 'error') {
+        // Send to monitoring service
+        await fetch(process.env.WEBHOOK_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                text: `[${severity.toUpperCase()}] ${message}`,
+                timestamp: new Date().toISOString(),
+                metrics: this.metrics
+            })
+        });
+    }
+    
+    recordLiquidation(positionId: number, profit: bigint) {
+        this.metrics.liquidationsExecuted++;
+        this.metrics.totalProfit += profit;
+        
+        this.sendAlert(
+            `Liquidated position ${positionId}, profit: ${ethers.formatUnits(profit, 6)} USDC`,
+            'info'
+        );
+    }
+}
+```
+
+<Warning>
+Liquidation bots require significant capital (USDC for debt repayment) and technical infrastructure. Test thoroughly on testnets before deploying to production. Monitor gas prices carefully—high network congestion can eliminate profitability.
+</Warning>
+
+<CardGroup cols={2}>
+    <Card title="Calculations" icon="calculator" href="/new/learn/lending/advanced/calculations">
+        Mathematical formulas and profitability models
+    </Card>
+    <Card title="Adaptive Interface" icon="code" href="/new/learn/lending/advanced/adaptive-interface">
+        Framework-agnostic API integration
+    </Card>
+    <Card title="Custom Hooks" icon="webhook" href="/new/learn/lending/hooks">
+        Liquidation hook integration
+    </Card>
+    <Card title="Liquidation Process" icon="triangle-exclamation" href="/new/learn/lending/liquidation">
+        How liquidations work on-chain
+    </Card>
+</CardGroup>

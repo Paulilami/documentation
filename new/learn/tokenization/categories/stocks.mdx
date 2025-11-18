@@ -1,0 +1,118 @@
+---
+title: "Stocks"
+description: "Turn traditional equity into 24/7 tradable, lendable collateral"
+---
+
+Stock Tokens eliminate third-party dependencies and settlement delays by bringing equity trading on-chain. Lock existing stocks, issue tokens backed by verifiable reserves, and enable instant settlement with round-the-clock markets.
+
+## Why Institutions Tokenize Stocks
+
+<CardGroup cols={2}>
+    <Card title="Cost Elimination" icon="dollar-sign">
+        Remove custody fees and transfer agent costs by managing everything on-chain
+    </Card>
+    <Card title="24/7 Markets" icon="clock">
+        Generate revenue through round-the-clock trading that keeps users engaged
+    </Card>
+    <Card title="Instant Settlement" icon="bolt">
+        Settle trades in seconds instead of T+2 clearing cycles
+    </Card>
+    <Card title="Collateral Unlock" icon="lock-open">
+        Transform equity into instant lending collateral without selling shares
+    </Card>
+</CardGroup>
+
+## How It Works
+
+Users lock their existing stock certificates with the issuer and receive an equivalent amount of Stock Tokens. The issuer maintains a Lock Reference URI pointing to third-party attestations, audit reports, or reserve documentation—whatever proof matches their compliance requirements.
+
+Stock Tokens follow standard ERC-20 mechanics while representing unique ownership certificates that satisfy regulatory frameworks. Each token carries the same transfer rules as traditional equity but settles instantly on-chain.
+
+<Accordion title="Automated Corporate Actions">
+The platform handles corporate actions without manual intervention:
+
+- **Dividends**: Smart contracts calculate per-token amounts and credit holders proportionally
+- **Stock Splits**: Token supplies and balances adjust atomically on-chain
+- **Trading Halts**: Transfers freeze when compliance requires it
+- **Rights Issues**: New token allocations distribute to existing holders automatically
+
+All operations execute through on-chain logic with complete audit trails.
+</Accordion>
+
+## Sub-Issuer Architecture
+
+Multiple institutions can issue tokens against the same underlying stock without fragmenting liquidity. When a new financial institution wants to offer the same equity token, they operate as a sub-issuer under the original deployment.
+
+| Traditional Approach | Sub-Issuer Model |
+|---------------------|------------------|
+| Each institution deploys separate contract | All institutions share one token contract |
+| Liquidity fragments across deployments | Unified liquidity pool across all issuers |
+| New prospectus required per institution | Reference existing prospectus |
+| Limited order book depth | Deep liquidity from combined user base |
+
+All sub-issuers mint tokens from the same contract, creating a unified liquidity pool. Users trading through Institution A can instantly match with users from Institution B because they're exchanging the same token. Each sub-issuer manages their own lock references and redemption processes independently, but the tokens themselves remain fungible across the entire network.
+
+## Issuance Example
+
+<CodeGroup>
+```typescript Dashboard Deployment
+// Navigate to Trusset Dashboard > Issue Token > Stock Token
+// Configure parameters:
+
+const stockConfig = {
+  underlyingStock: "AAPL",
+  lockReferenceURI: "ipfs://Qm.../audit-2025-Q1.pdf",
+  identityRegistry: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+  corporateActions: {
+    dividends: true,
+    stockSplits: true,
+    tradingHalts: true
+  }
+};
+
+// Dashboard generates deployment transaction
+// Token contract deploys automatically
+```
+
+```typescript API Deployment
+// POST https://api.trusset.org/v1/tokenization/stocks/deploy
+
+const response = await fetch('https://api.trusset.org/v1/tokenization/stocks/deploy', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${API_KEY}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    symbol: "tAAPL",
+    name: "Tokenized Apple Inc.",
+    underlyingStock: "AAPL",
+    lockReferenceURI: "ipfs://Qm.../audit-2025-Q1.pdf",
+    identityRegistry: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+    enableCorporateActions: true
+  })
+});
+
+const stockToken = await response.json();
+console.log(`Deployed at: ${stockToken.address}`);
+```
+</CodeGroup>
+
+## Compliance Integration
+
+Stock Tokens connect to identity registries that validate KYC status and investor accreditation before allowing transfers. The contracts check verification status on-chain during every transfer, blocking transactions to non-compliant addresses automatically.
+
+<Warning>
+Issuers must maintain valid Lock Reference URIs and ensure reserve attestations stay current. Failure to update documentation can impact regulatory compliance and user trust.
+</Warning>
+
+The smart contracts maintain complete audit trails. Every mint, burn, transfer, and corporate action generates events that compliance systems can monitor in real-time. These logs prove the chain of custody and timing of all operations without relying on self-reported data.
+
+<CardGroup cols={2}>
+    <Card title="API Reference" icon="code" href="/api-intro">
+        Integration endpoints for Stock Token deployment
+    </Card>
+    <Card title="Identity Registry" icon="shield-check" href="/new/learn/customers/identity-registry">
+        KYC and investor verification system
+    </Card>
+</CardGroup>

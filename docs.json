@@ -25,7 +25,7 @@
   },
   "api": {
   "mdx": {
-    "server": "https://trusser-issuer-backend.vercel.app",
+    "server": "https://api.trusset.org",
     "auth": {
       "method": "key",
       "name": "x-api-key"
@@ -70,60 +70,194 @@
           {
             "group": "Getting Started",
             "pages": [
-              "overview",
-              "legal-framework",
-              "use-cases",
-              "testing-suite"
+              "new/home/intro",
+              {
+                "group": "Core Infrastructure",
+                "pages": [
+                  "new/home/infrastructure/core-infrastructure",
+                  "new/home/infrastructure/instances",
+                  "new/home/infrastructure/data-storage",
+                  "new/home/infrastructure/automation-vaults",
+                  "new/home/infrastructure/custody",
+                  "new/home/infrastructure/networks"
+                ]
+              },
+              {
+                "group": "Integration",
+                "pages": [
+                  "new/home/integration/integration-overview",
+                  "new/home/integration/api-integration",
+                  "new/home/integration/whitelabel-integration",
+                  {
+                    "group": "Modules",
+                    "pages": [
+                      "new/home/integration/modules/management-module",
+                      "new/home/integration/modules/trading-module",
+                      "new/home/integration/modules/financing-module",
+                      "new/home/integration/modules/borrow-module",
+                      "new/home/integration/modules/investor-dashboard-module"
+                    ]
+                  }
+                ]
+                
+              },
+              "new/home/testing/testing-suite"
             ]
           }
         ]
       },
       {
-        "tab": "Products",
+        "tab": "Learn",
         "groups": [
           {
-            "group": "Core",
+            "group": "Governance",
             "pages": [
-              "api-key-management",
-              "instances",
-              "identity-certificates",
-              "backend-synchronization",
-              "learn-oracles"
+              "new/learn/governance/trusset-governance",         
+              "new/learn/governance/contract-updates"
             ]
           },
           {
-            "group": "Stock-Engine",
+            "group": "Automation",
             "pages": [
-              "stock-exchanges",
-              "stock-token",
-              "stock-trading",
-              "stock-lending"
+              "new/learn/automation/automation-overview",
+              {
+                "group": "Automation Vaults",
+                "pages": [
+                  "new/learn/automation/architecture",
+                  "new/learn/automation/controllers"
+                ]
+              },
+              {
+                "group": "Advanced",
+                "pages": [
+                  "new/learn/automation/erc-4337-integration",
+                  "new/learn/automation/sychronization-links",
+                  "new/learn/automation/cross-instance-architecture"
+                ]
+              }            
+            ]
+          },
+          {
+            "group": "Customers",
+            "pages": [
+              "new/learn/customers/customer-management",
+              {
+                "group": "Advanced",
+                "pages": [
+                  "new/learn/customers/identity-register",
+                  "new/learn/customers/identity-proofs"
+                ]
+              }            
             ]
           },
           {
             "group": "Tokenization",
             "pages": [
-              "tokenization-learn/overview",
-              "tokenization-learn/light-tokens",
-              "tokenization-learn/fat-tokens",
-              "tokenization-learn/tokenization-studio",
-              "tokenization-learn/integration"
+              "new/learn/tokenization/tokenization-overview",
+              {
+                "group": "Architecture",
+                "pages": [
+                  "new/learn/tokenization/light-token",
+                  "new/learn/tokenization/fat-token",
+                  "new/learn/tokenization/roles"
+                ]
+              },
+              {
+                "group": "Asset Categories",
+                "pages": [
+                  "new/learn/tokenization/categories/stocks",
+                  "new/learn/tokenization/categories/commodities",
+                  "new/learn/tokenization/categories/real-estate",
+                  "new/learn/tokenization/categories/private-equity",
+                  "new/learn/tokenization/categories/claim-rights",
+                  "new/learn/tokenization/categories/utility-token",
+                  "new/learn/tokenization/categories/value-index",
+                  "new/learn/tokenization/categories/debt",
+                  "new/learn/tokenization/categories/stablecoins"
+                ]
+              },
+              "new/learn/tokenization/legal-frameworks"
             ]
           },
           {
-            "group": "Capital Raising",
+            "group": "Trading",
             "pages": [
-              "investment-framework-intro",
-              "widget-intro"
+              "new/learn/trading/trading-overview",
+              {
+                "group": "AMM-Based",
+                "pages": [
+                  "new/learn/trading/amm/balancer-pools",
+                  "new/learn/trading/amm/hooks",
+                  "new/learn/trading/amm/pricing",
+                  "new/learn/trading/amm/controllers"
+                ]
+              },
+              {
+                "group": "Listing-Based",
+                "pages": [
+                  "new/learn/trading/listing/asset-listing",
+                  "new/learn/trading/listing/asset-auctions",
+                  "new/learn/trading/listing/asset-financing"
+                ]
+              }
             ]
           },
           {
-            "group": "White-Label",
+            "group": "Lending",
             "pages": [
-              "white-label",
-              "trading-platform",
-              "asset-financing",
-              "collateralized-loans"
+              "new/learn/lending/lending-overview",
+              {
+                "group": "Architecture",
+                "pages": [
+                  "new/learn/lending/frameworks",
+                  "new/learn/lending/hooks",
+                  "new/learn/lending/controllers"
+                ]
+              },
+              {
+                "group": "Process",
+                "pages": [
+                  "new/learn/lending/initialization",
+                  "new/learn/lending/repayments",
+                  "new/learn/lending/liquidation"
+                ]
+              },
+              {
+                "group": "Advanced",
+                "pages": [
+                  "new/learn/lending/advanced/calculations",
+                  "new/learn/lending/advanced/liquidation-bot",
+                  "new/learn/lending/advanced/adaptive-interface",
+                  "new/learn/lending/advanced/cross-instance"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "References",
+            "pages": [
+              "new/learn/references/contracts",
+              "new/learn/references/audits"        
+            ]
+          },
+          {
+            "group": "Research Projects",
+            "pages": [
+              "new/learn/independent/token-studio",
+              "new/learn/independent/mica-whitepapers",
+              "new/learn/independent/pari-passu"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "API Management",
+            "pages": [
+              "api-key-management",
+              "soon-more"
             ]
           }
         ]
@@ -416,14 +550,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Homepage",
+          "anchor": "Home",
           "href": "https://trusset.org",
           "icon": "globe"
         },
         {
-          "anchor": "Token-Studio",
-          "href": "https://studio.trusset.org",
-          "icon": "play"
+          "anchor": "Demo Call",
+          "href": "https://cal.com/paul-ilami-trusset",
+          "icon": "phone"
         }
       ]
     }
@@ -448,7 +582,7 @@
   "footer": {
     "socials": {
       "website": "https://trusset.org",
-      "linkedin": "https://www.linkedin.com/in/paul-ilami-trusset/"
+      "linkedin": "https://www.linkedin.com/company/trusset"
     }
   }
  }

@@ -1,0 +1,150 @@
+---
+title: "Data Storage"
+description: "Instance-based encrypted storage with zero Trusset access"
+---
+
+Trusset provides infrastructure for encrypting your instance data while you maintain complete control over encryption keys. We have zero access to your encrypted data—if you lose your key, data becomes permanently unrecoverable.
+
+## Encryption Architecture
+
+<CardGroup cols={2}>
+    <Card title="AES-256 Encryption" icon="lock">
+        Military-grade encryption standard protecting all instance data at rest
+    </Card>
+    <Card title="Client-Side Keys" icon="key">
+        Encryption keys never leave your control—Trusset cannot decrypt your data
+    </Card>
+    <Card title="Instance Isolation" icon="shield">
+        Each instance encrypts data separately—no cross-instance data access possible
+    </Card>
+    <Card title="Public Data Control" icon="eye">
+        Mark specific datasets as public for controlled third-party access
+    </Card>
+</CardGroup>
+
+## Data Categories
+
+Trusset manages three distinct data categories with different storage approaches:
+
+- **Private Instance Data:** Customer records, internal documents, compliance files—encrypted with your instance key, stored in Trusset infrastructure, inaccessible to Trusset.
+
+- **Public Data:** Token metadata, pricing information, public documents—encrypted but marked for controlled sharing via REST endpoints when needed.
+
+- **On-Chain Data:** Smart contract state, transaction history, public blockchain records—stored on blockchain, publicly readable by design.
+
+## Encryption Implementation
+
+Your instance generates a unique encryption key during creation. This key encrypts all data before storage:
+
+```typescript
+// Conceptual flow - actual implementation handled by platform
+const instanceKey = generateSecureKey(); // Your responsibility to backup
+const encryptedData = AES256.encrypt(sensitiveData, instanceKey);
+const stored = database.save(encryptedData); // Trusset cannot decrypt
+
+// Retrieval requires your key
+const retrieved = database.fetch(dataId);
+const decrypted = AES256.decrypt(retrieved, instanceKey); // Only you can decrypt
+```
+
+Trusset stores encrypted data but cannot decrypt without your key. This ensures data privacy even if our infrastructure compromises.
+
+## Key Management
+
+<Warning>
+**CRITICAL:** Losing your encryption key means permanent data loss. Trusset cannot recover lost keys or decrypt data without them. Back up keys securely immediately after instance creation.
+</Warning>
+
+**Current Approach:** You manage encryption keys independently using your preferred secrets management system.
+
+**Coming Soon:** Integrated key management options including hardware security modules (HSM), multi-signature key recovery, and encrypted key backup services.
+
+## On-Chain Data Strategy
+
+Personal information never stores on-chain to maintain privacy and comply with regulations like GDPR:
+
+- **Zero-Knowledge Proofs:** Users prove identity attributes (age, accreditation, citizenship) without revealing underlying data. See [Identity Proofs](/new/learn/customers/identity-proofs) for details.
+
+- **IPFS Storage:** Documents, metadata, and public files store on IPFS with content addressing. Only document hashes record on-chain, linking to off-chain content.
+
+- **Minimal On-Chain State:** Smart contracts only store essential information—token balances, ownership records, configuration parameters. Everything else lives off-chain.
+
+## Public Data Endpoints
+
+Mark datasets as "public" to enable controlled sharing with partners, auditors, or service providers:
+
+<Accordion title="Public Data Configuration">
+Configure which data categories to make accessible:
+
+```typescript
+// POST https://api.trusset.org/v1/instance/data/configure
+
+await fetch('https://api.trusset.org/v1/instance/data/configure', {
+  method: 'POST',
+  body: JSON.stringify({
+    publicCategories: [
+      'token_metadata',      // Allow external reads of token info
+      'pricing_data',        // Share price feeds with partners
+      'compliance_reports'   // Enable auditor access
+    ],
+    accessControls: {
+      token_metadata: ['public'],           // No authentication required
+      pricing_data: ['api_key'],           // Require API key
+      compliance_reports: ['approved_auditors'] // Whitelist specific addresses
+    }
+  })
+});
+```
+
+Public data remains encrypted but becomes readable through authenticated REST endpoints you control.
+</Accordion>
+
+## Data Residency
+
+Encrypted data stores in secure cloud infrastructure with configurable geographic regions:
+
+| Region | Data Centers | Compliance |
+|--------|-------------|------------|
+| Europe | Frankfurt, Amsterdam | GDPR compliant |
+| United States | Virginia, Oregon | SOC 2 compliant |
+| Asia Pacific | Singapore, Tokyo | Coming soon |
+
+Select your preferred region during instance creation based on regulatory requirements. Data never leaves the chosen region without explicit migration approval.
+
+## Backup & Recovery
+
+<Tabs>
+    <Tab title="Automated Backups">
+        Encrypted data backs up automatically every 24 hours:
+
+        - Encrypted backups stored in separate geographic region
+        - 30-day retention period with point-in-time recovery
+        - Backups remain encrypted with your key—we cannot access them
+        - Restore process requires your encryption key for decryption
+    </Tab>
+    
+    <Tab title="Manual Exports">
+        Export encrypted data anytime through the Issuer Platform:
+
+        1. Navigate to Data Management > Export
+        2. Select data categories to include
+        3. Choose export format (JSON, CSV, SQL dump)
+        4. Download encrypted archive
+        5. Decrypt locally using your encryption key
+
+        Exports include all data without size limits, enabling full data portability.
+    </Tab>
+    
+    <Tab title="Disaster Recovery">
+        In catastrophic scenarios, restore from backups:
+
+        1. Create new instance (generates new encryption key)
+        2. Request backup restoration from Trusset support
+        3. Receive encrypted backup archive
+        4. Decrypt using your original encryption key
+        5. Re-encrypt with new instance key
+        6. Upload to new instance
+
+        This process requires your original encryption key—without it, recovery is impossible.
+    </Tab>
+</Tabs>

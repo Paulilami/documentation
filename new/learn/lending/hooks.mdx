@@ -1,0 +1,232 @@
+---
+title: "Hooks"
+description: "Automated execution logic for liquidations, buybacks, and position management"
+---
+
+Hooks inject custom logic into lending market operations without modifying core contracts. Liquidation bots, automated buyback systems, and portfolio rebalancing tools connect through standardized hook interfaces that trigger on specific events.
+
+## Hook Types
+
+<CardGroup cols={2}>
+    <Card title="Liquidation Hooks" icon="bolt">
+        Trigger automated liquidation execution when positions breach health thresholds
+    </Card>
+    <Card title="Buyback Hooks" icon="cart-shopping">
+        Enable passive investors to purchase liquidated assets at discounted prices
+    </Card>
+    <Card title="Notification Hooks" icon="bell">
+        Alert borrowers when positions approach liquidation thresholds
+    </Card>
+    <Card title="Rebalancing Hooks" icon="scale-balanced">
+        Automatically adjust collateral ratios to maintain target LTVs
+    </Card>
+</CardGroup>
+
+## Liquidation Bot Integration
+
+Liquidation bots monitor lending markets continuously, executing liquidations the moment positions become unhealthy. These bots earn liquidation penalties (typically 5%) as compensation for maintaining market solvency.
+
+The hook interface provides position health factors, collateral values, and debt amounts in real-time. Bots query these endpoints every few blocks, calculating profitability before executing liquidations.
+
+<CodeGroup>
+```typescript Monitor Positions
+// Liquidation bot monitoring loop
+async function monitorMarket(marketAddress: string) {
+    const market = new LendingMarket(marketAddress);
+    
+    while (true) {
+        // Get all active positions
+        const positions = await market.getActivePositions();
+        
+        for (const position of positions) {
+            const health = await market.getHealthFactor(position.id);
+            
+            // Health factor below 1.0 means liquidatable
+            if (health < 1e18) {
+                const profitability = await calculateLiquidationProfit(
+                    position.id,
+                    position.collateral,
+                    position.debt
+                );
+                
+                // Execute if profitable after gas costs
+                if (profitability > GAS_COST_THRESHOLD) {
+                    await executeLiquidation(position.id);
+                }
+            }
+        }
+        
+        await sleep(BLOCK_TIME * 5); // Check every 5 blocks
+    }
+}
+```
+
+```typescript Execute Liquidation
+// Execute liquidation through hook
+async function executeLiquidation(positionId: number) {
+    const maxDebtToCover = await calculateMaxLiquidation(positionId);
+    
+    // Approve USDC for debt repayment
+    await usdc.approve(marketAddress, maxDebtToCover);
+    
+    // Execute liquidation
+    const tx = await market.liquidate(
+        positionId,
+        maxDebtToCover
+    );
+    
+    // Receive collateral tokens at discount
+    const receipt = await tx.wait();
+    
+    console.log(`Liquidated position ${positionId}`);
+    console.log(`Seized collateral: ${receipt.events.seized}`);
+}
+```
+</CodeGroup>
+
+Bots compete to execute liquidations first, creating efficient markets where unhealthy positions resolve quickly. Multiple bots monitoring the same market increases reliability—if one bot fails, others execute pending liquidations.
+
+## Liquidation Buyback System
+
+Passive investors access liquidated assets through buyback hooks that offer first-right-of-refusal before public liquidation auctions. Register as a buyback participant with risk preferences, and the system routes matching liquidations automatically.
+
+<Tabs>
+    <Tab title="Risk Levels">
+        Configure acceptable risk levels determining which liquidations you receive:
+
+        **Conservative (80-85% LTV):**
+        - Positions just breaching liquidation threshold
+        - Minimal price movement risk
+        - Lower discount (2-3%)
+        - Higher volume of opportunities
+
+        **Moderate (85-90% LTV):**
+        - Positions deeper underwater
+        - Moderate price uncertainty
+        - Standard discount (5%)
+        - Balanced risk/reward
+
+        **Aggressive (90%+ LTV):**
+        - Severely unhealthy positions
+        - Significant price risk
+        - Maximum discount (7-10%)
+        - Rare but highly profitable
+
+        Set maximum position sizes and total exposure limits to manage concentration risk.
+    </Tab>
+    
+    <Tab title="Asset Preferences">
+        Select which collateral types you want to purchase:
+
+        ```typescript
+        // Configure buyback preferences
+        await buybackHook.setPreferences({
+            acceptedCollateral: [
+                "0xGoldToken",
+                "0xSilverToken"
+            ],
+            maxPositionSize: "100000000000", // 100k USDC max per position
+            maxTotalExposure: "1000000000000", // 1M USDC total
+            riskLevel: "moderate",
+            minDiscount: 400 // 4% minimum discount to participate
+        });
+        ```
+
+        The system matches liquidations to your preferences automatically, executing buybacks without manual intervention.
+    </Tab>
+    
+    <Tab title="Execution Flow">
+        When liquidation matches your preferences:
+
+        1. **Notification:** Receive alert about pending liquidation matching criteria
+        2. **Pre-Authorization:** System checks USDC balance and approvals
+        3. **Execution:** Buyback executes if you have sufficient capital
+        4. **Settlement:** Receive collateral tokens at discounted prices
+        5. **Portfolio Update:** New assets reflect in your holdings immediately
+
+        Failed executions (insufficient capital, changed preferences) fall back to public liquidation bots automatically.
+    </Tab>
+</Tabs>
+
+## Notification System
+
+Configure webhooks receiving alerts when positions approach liquidation thresholds. Borrowers get advance warning to add collateral or repay debt before liquidation triggers.
+
+<Accordion title="Notification Configuration">
+Set up position health monitoring:
+
+```typescript
+// POST https://api.trusset.org/v1/lending/notifications/configure
+
+await fetch('https://api.trusset.org/v1/lending/notifications/configure', {
+  method: 'POST',
+  body: JSON.stringify({
+    webhookUrl: "https://your-domain.com/webhook",
+    triggers: [
+      {
+        type: "health_factor",
+        threshold: "1.2e18", // Alert at 120% health factor
+        message: "Position approaching liquidation - add collateral"
+      },
+      {
+        type: "health_factor",
+        threshold: "1.05e18", // Urgent alert at 105%
+        message: "URGENT: Position near liquidation threshold"
+      }
+    ],
+    channels: ["webhook", "email", "sms"] // Optional additional channels
+  })
+});
+```
+
+Notifications include current health factor, required collateral/repayment amounts to restore safety, and estimated time until liquidation at current price trends.
+</Accordion>
+
+## Custom Hook Development
+
+Deploy your own hooks implementing standardized interfaces for specialized functionality. Common use cases include:
+
+**Tax Loss Harvesting:** Automatically liquidate positions at year-end if assets trade below cost basis, realizing losses for tax benefits while maintaining exposure through immediate repurchase.
+
+**Portfolio Rebalancing:** Monitor collateral composition and automatically swap between accepted collateral types to maintain target allocations or risk profiles.
+
+**Automated Refinancing:** When interest rates drop significantly, close existing positions and open new ones at better rates, optimizing borrowing costs automatically.
+
+**Insurance Triggers:** Purchase put options or other downside protection when collateral values approach liquidation thresholds, providing additional safety margin.
+
+<Warning>
+Custom hooks execute automatically without manual approval. Test thoroughly in staging environments before deploying to production markets. Bugs in hook logic can result in unexpected liquidations or failed operations.
+</Warning>
+
+## Hook Authorization
+
+Market administrators control which hooks can interact with their markets. Unauthorized hooks cannot trigger liquidations or access sensitive position data.
+
+<ParamField path="authorizeHook" type="function">
+  Grant specific hook contract permission to execute market operations
+</ParamField>
+
+<ParamField path="revokeHookAuthorization" type="function">
+  Remove hook permissions, preventing further automated actions
+</ParamField>
+
+<ParamField path="updateHookParameters" type="function">
+  Modify hook configuration without revoking authorization
+</ParamField>
+
+Authorization prevents malicious hooks from draining markets or manipulating positions. Only hooks passing security audits and administrator approval gain execution rights.
+
+<CardGroup cols={2}>
+    <Card title="Controllers" icon="sliders" href="/new/learn/lending/controllers">
+        Market configuration and hook authorization
+    </Card>
+    <Card title="Liquidation Process" icon="triangle-exclamation" href="/new/learn/lending/liquidation">
+        How automated liquidations execute
+    </Card>
+    <Card title="Lending Frameworks" icon="layer-group" href="/new/learn/lending/frameworks">
+        Asset-specific implementations
+    </Card>
+    <Card title="Hook Contracts" icon="file-contract" href="/contracts/lending/hooks">
+        Interface specifications and examples
+    </Card>
+</CardGroup>
