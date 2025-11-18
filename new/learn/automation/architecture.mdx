@@ -7,7 +7,7 @@ Instance Vault Contracts (IVCs) are ERC-4337 smart accounts that eliminate admin
 
 Built on the Account Abstraction standard, IVCs enable gasless transactions, batch operations, and programmable execution policies. Your backend signs operations off-chain and the IVC validates permissions on-chain before executing—no direct wallet interactions required for routine operations.
 
-## Overview
+## Introduction
 
 IVCs deploy as upgradeable UUPS proxies through the InstanceVaultFactory. Each vault maintains isolated state with deterministic CREATE2 addresses computed from owner address and instance ID. The factory tracks all deployments globally and per-owner for discovery and verification.
 
