@@ -28,9 +28,9 @@ Custom token integration requires pool initialization with proper liquidity rati
 
 Create trading pools through the issuer dashboard or directly via API. Both paths require initial liquidity funding with paired tokens—typically your security token against USDC or another stablecoin. Choose your integration approach based on technical architecture:
 
-**White Label Platform:** Pre-built trading interface that automatically detects and displays all pools approved for your instance. Users trade directly within the white label environment without additional development work.
+- **White Label Platform:** Pre-built trading interface that automatically detects and displays all pools approved for your instance. Users trade directly within the white label environment without additional development work.
 
-**API Integration:** Direct smart contract interaction through REST endpoints. Build custom trading experiences in your existing applications while leveraging Trusset's settlement infrastructure and compliance validation.
+- **API Integration:** Direct smart contract interaction through REST endpoints. Build custom trading experiences in your existing applications while leveraging Trusset's settlement infrastructure and compliance validation.
 
 All pools enforce identity verification and transfer restrictions before execution. Trades settle atomically—either complete fully or revert entirely, preventing partial fills or orphaned state.
 
