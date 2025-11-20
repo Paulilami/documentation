@@ -274,7 +274,6 @@
           {
             "group": "Identity & KYC",
             "pages": [
-              "identity-kyc-intro",
               {
                 "group": "Verification",
                 "pages": [
@@ -352,7 +351,6 @@
           {
             "group": "Asset Tokenization",
             "pages": [
-              "tokenization-intro",
               {
                 "group": "Token Management",
                 "pages": [
@@ -387,7 +385,6 @@
           {
             "group": "Stablecoins",
             "pages": [
-              "stablecoin-intro",
               {
                 "group": "Deployment",
                 "pages": [
@@ -441,7 +438,6 @@
           {
             "group": "Stock Tokenization",
             "pages": [
-              "stock-exchanges-intro",
               {
                 "group": "Position Management",
                 "pages": [
@@ -488,7 +484,6 @@
           {
             "group": "24/7 Stock Trading",
             "pages": [
-              "balancer-exchange-intro",
               {
                 "group": "Pool Management",
                 "pages": [
@@ -528,7 +523,6 @@
           {
             "group": "Collateralized Loans",
             "pages": [
-              "stock-loans",
               "endpoints/lending/create-pool",
               "endpoints/lending/batch-create-pools",
               "endpoints/lending/get-pool-info",
@@ -562,6 +556,13 @@
       ]
     }
   },
+  "errors": {
+  "404": {
+    "redirect": true,
+    "title": "I can't be found",
+    "description": "What ever **happened** to this _page_?"
+  }
+},
   "logo": {
     "light": "/logo/patchOrange.png",
     "dark": "/logo/patchOrange.png"
