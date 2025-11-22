@@ -1,11 +1,13 @@
 ---
 title: "Smart Wallets"
-description: "Managed smart contract wallets for customers without private key custody."
+description: "Managed smart contract wallets for customers without existing wallet addresses."
 ---
 
 ## Overview
 
-Smart wallets enable banks to create and manage ERC-4337 compatible wallets for customers without storing private keys on your backend. Each wallet deploys as a separate smart contract with dual-key architecture: customers control the owner key while your institution holds the guardian key for compliance operations.
+Smart wallets enable banks to create ERC-4337 compatible wallets for customers who have no existing wallet address. Each wallet deploys as a separate smart contract with dual-key architecture: customers control the owner key while your institution holds the guardian key for compliance operations.
+
+Banks provide only a customer identifier (email, customer ID, or name) - the system generates everything else including the wallet address and private keys. Your backend never stores customer private keys.
 
 ## Architecture
 
@@ -17,17 +19,19 @@ The guardian key enables freeze operations, force transfers for court orders or 
 
 ### Address Generation
 
-Generate wallet components client-side without backend interaction. The system creates a random owner key pair, computes a deterministic salt, and predicts the final wallet address using CREATE2. Customer receives the private key and recovery phrase immediately—your backend never sees these credentials.
+Generate wallet components without requiring any existing wallet address. The system creates a random owner key pair, computes a deterministic salt, and predicts the final wallet address using CREATE2. Customer receives the private key and recovery phrase immediately—your backend never sees these credentials.
 
 <Tabs>
   <Tab title="API Request">
 ```json
 POST /api/v1/wallets/generate-wallet-data
 {
-  "customerAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb6",
+  "customerAddress": "customer@example.com",
   "instanceId": "clx123..."
 }
 ```
+
+Note: `customerAddress` is a customer identifier (email, ID, or name), not a wallet address.
   </Tab>
   
   <Tab title="Response">
@@ -41,17 +45,18 @@ POST /api/v1/wallets/generate-wallet-data
   "salt": "0x9abc..."
 }
 ```
+
+The response includes the newly generated smart wallet address and owner credentials.
   </Tab>
 </Tabs>
 
 ### On-Chain Deployment
 
 Deploy the wallet contract using guardian credentials and fund it with initial ETH for gas. The factory contract creates a minimal proxy, initializes owner and guardian addresses, and returns the deployed wallet address matching the predicted address from generation.
-
 ```json
 POST /api/v1/wallets/create
 {
-  "customerAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb6",
+  "customerAddress": "customer@example.com",
   "instanceId": "clx123...",
   "ownerAddress": "0x1234...",
   "salt": "0x9abc...",
@@ -61,12 +66,21 @@ POST /api/v1/wallets/create
 
 Deployment completes in a single transaction. Gas costs approximately 150,000 gas units per wallet.
 
+## Customer Workflow
+
+1. **Bank initiates wallet creation** - Provide customer identifier (email, ID, or name)
+2. **System generates credentials** - New wallet address and private keys created
+3. **Customer receives backup** - Private key and recovery phrase downloaded securely
+4. **Bank deploys wallet** - Smart contract deployed and optionally funded
+5. **Customer uses wallet** - Full control with owner key, bank retains guardian oversight
+
+The customer identifier associates the smart wallet with your internal customer records. The generated smart wallet address becomes the customer's on-chain identity.
+
 ## Guardian Operations
 
 ### Freeze and Unfreeze
 
 Freeze wallets for regulatory compliance, suspicious activity investigation, or court order compliance. Frozen wallets reject all outgoing transactions from the owner key but accept incoming transfers. Guardian operations continue during freeze status.
-
 ```json
 POST /api/v1/wallets/{walletAddress}/freeze
 {
@@ -79,7 +93,6 @@ Unfreeze restores normal operation immediately with no time delay or additional 
 ### Force Transfer
 
 Execute transfers without owner signature for asset recovery, court-ordered seizures, or compliance violations. Supports both native ETH and ERC-20 token transfers with automatic balance verification.
-
 ```json
 POST /api/v1/wallets/{walletAddress}/force-transfer
 {
@@ -102,9 +115,11 @@ Guardian operations execute immediately without owner consent. Implement interna
 
 ## Security Model
 
-Your backend never stores customer private keys. The generation process creates keys client-side and provides them directly to customers through encrypted download. You store only the encrypted backup blob—decryption requires the customer's wallet address and instance credentials.
+Your backend never stores customer private keys. The generation process creates keys and provides them directly to customers through encrypted download. You store only the encrypted backup blob—decryption requires the customer identifier and instance credentials.
 
 The guardian private key remains on your secure backend infrastructure. Use hardware security modules or key management services for guardian key storage in production deployments. A compromised guardian key allows complete control over all wallets in that instance.
+
+Customer identifiers (email, ID, name) link smart wallets to your internal systems without exposing on-chain. The smart wallet address serves as the customer's public blockchain identity.
 
 ## Integration
 
@@ -112,7 +127,7 @@ Access wallet management through the customer detail panel in your issuer dashbo
 
 For programmatic access, use the Wallet Management API:
 
-- `POST /api/v1/wallets/generate-wallet-data` - Generate wallet credentials
+- `POST /api/v1/wallets/generate-wallet-data` - Generate wallet credentials (requires customer identifier)
 - `POST /api/v1/wallets/create` - Deploy wallet contract
 - `POST /api/v1/wallets/{address}/fund` - Fund wallet with ETH
 - `POST /api/v1/wallets/{address}/freeze` - Freeze wallet operations
@@ -120,7 +135,18 @@ For programmatic access, use the Wallet Management API:
 - `POST /api/v1/wallets/{address}/force-transfer` - Execute forced transfer
 - `GET /api/v1/wallets/{address}` - Retrieve wallet details and transactions
 
-All endpoints require instance authentication through your API key. Wallet addresses use checksummed Ethereum address format.
+All endpoints require instance authentication through your API key. The `customerAddress` parameter accepts any customer identifier - not a blockchain address.
+
+## Use Cases
+
+### Onboarding New Customers
+Create wallets for customers with no crypto experience. Provide only their email or customer ID - the system handles all blockchain complexity.
+
+### Retail Banking Integration
+Link smart wallets to existing customer accounts using internal customer IDs. Customers access blockchain assets through familiar banking interfaces.
+
+### Compliance Requirements
+Guardian controls ensure regulatory compliance while customers maintain asset ownership through their private keys.
 
 ## Gas Optimization
 
