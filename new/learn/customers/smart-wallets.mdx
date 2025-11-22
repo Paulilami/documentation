@@ -1,0 +1,143 @@
+---
+title: "Smart Wallets"
+description: "Managed smart contract wallets for customers without private key custody."
+---
+
+## Overview
+
+Smart wallets enable banks to create and manage ERC-4337 compatible wallets for customers without storing private keys on your backend. Each wallet deploys as a separate smart contract with dual-key architecture: customers control the owner key while your institution holds the guardian key for compliance operations.
+
+## Architecture
+
+Wallets deploy via CREATE2 for deterministic addresses, allowing you to compute wallet addresses before deployment. Each wallet uses a minimal proxy pattern pointing to a shared implementation contract, reducing deployment costs by 90% versus full contract deployment.
+
+The guardian key enables freeze operations, force transfers for court orders or compliance violations, and owner key recovery if customers lose access. The owner key signs normal transactions and retains full custody of assets under standard operation.
+
+## Deployment Process
+
+### Address Generation
+
+Generate wallet components client-side without backend interaction. The system creates a random owner key pair, computes a deterministic salt, and predicts the final wallet address using CREATE2. Customer receives the private key and recovery phrase immediately—your backend never sees these credentials.
+
+<Tabs>
+  <Tab title="API Request">
+```json
+POST /api/v1/wallets/generate-wallet-data
+{
+  "customerAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb6",
+  "instanceId": "clx123..."
+}
+```
+  </Tab>
+  
+  <Tab title="Response">
+```json
+{
+  "walletAddress": "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
+  "ownerAddress": "0x1234...",
+  "ownerPrivateKey": "0xabcd...",
+  "ownerMnemonic": "word1 word2 word3...",
+  "guardianAddress": "0x5678...",
+  "salt": "0x9abc..."
+}
+```
+  </Tab>
+</Tabs>
+
+### On-Chain Deployment
+
+Deploy the wallet contract using guardian credentials and fund it with initial ETH for gas. The factory contract creates a minimal proxy, initializes owner and guardian addresses, and returns the deployed wallet address matching the predicted address from generation.
+
+```json
+POST /api/v1/wallets/create
+{
+  "customerAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb6",
+  "instanceId": "clx123...",
+  "ownerAddress": "0x1234...",
+  "salt": "0x9abc...",
+  "encryptedBackup": "base64_encoded_backup_data"
+}
+```
+
+Deployment completes in a single transaction. Gas costs approximately 150,000 gas units per wallet.
+
+## Guardian Operations
+
+### Freeze and Unfreeze
+
+Freeze wallets for regulatory compliance, suspicious activity investigation, or court order compliance. Frozen wallets reject all outgoing transactions from the owner key but accept incoming transfers. Guardian operations continue during freeze status.
+
+```json
+POST /api/v1/wallets/{walletAddress}/freeze
+{
+  "instanceId": "clx123..."
+}
+```
+
+Unfreeze restores normal operation immediately with no time delay or additional approvals required.
+
+### Force Transfer
+
+Execute transfers without owner signature for asset recovery, court-ordered seizures, or compliance violations. Supports both native ETH and ERC-20 token transfers with automatic balance verification.
+
+```json
+POST /api/v1/wallets/{walletAddress}/force-transfer
+{
+  "instanceId": "clx123...",
+  "token": "0x...",
+  "to": "0x...",
+  "amount": "1000000000000000000"
+}
+```
+
+Use `token: null` or omit the field for ETH transfers. Token amounts require raw values without decimal adjustment.
+
+### Owner Recovery
+
+Change the owner address if customers lose their private keys. This operation transfers full control to a new owner key pair generated through the same process as initial deployment. The old owner key becomes permanently invalid after recovery completes.
+
+<Warning>
+Guardian operations execute immediately without owner consent. Implement internal approval workflows before enabling guardian features. All guardian actions create permanent audit logs with transaction hashes, executor addresses, and timestamps.
+</Warning>
+
+## Security Model
+
+Your backend never stores customer private keys. The generation process creates keys client-side and provides them directly to customers through encrypted download. You store only the encrypted backup blob—decryption requires the customer's wallet address and instance credentials.
+
+The guardian private key remains on your secure backend infrastructure. Use hardware security modules or key management services for guardian key storage in production deployments. A compromised guardian key allows complete control over all wallets in that instance.
+
+## Integration
+
+Access wallet management through the customer detail panel in your issuer dashboard. The interface provides wallet status, balance display, freeze controls, force transfer forms, and transaction history with automated refresh.
+
+For programmatic access, use the Wallet Management API:
+
+- `POST /api/v1/wallets/generate-wallet-data` - Generate wallet credentials
+- `POST /api/v1/wallets/create` - Deploy wallet contract
+- `POST /api/v1/wallets/{address}/fund` - Fund wallet with ETH
+- `POST /api/v1/wallets/{address}/freeze` - Freeze wallet operations
+- `POST /api/v1/wallets/{address}/unfreeze` - Restore wallet operations
+- `POST /api/v1/wallets/{address}/force-transfer` - Execute forced transfer
+- `GET /api/v1/wallets/{address}` - Retrieve wallet details and transactions
+
+All endpoints require instance authentication through your API key. Wallet addresses use checksummed Ethereum address format.
+
+## Gas Optimization
+
+Smart wallets support ERC-4337 account abstraction for gasless transactions. Configure a paymaster to sponsor customer transactions, eliminating the need for customers to hold ETH. Transaction batching reduces costs by executing multiple operations in a single transaction with shared overhead.
+
+Average gas costs:
+- Wallet deployment: 150,000 gas
+- Freeze operation: 45,000 gas
+- Force transfer (ETH): 55,000 gas
+- Force transfer (ERC-20): 75,000 gas
+
+<CardGroup cols={2}>
+  <Card title="Customer Management" icon="users" href="/new/learn/customers/overview">
+    Return to customer management overview
+  </Card>
+  
+  <Card title="API Reference" icon="code" href="/api-intro">
+    View complete API documentation
+  </Card>
+</CardGroup>

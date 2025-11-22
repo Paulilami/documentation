@@ -145,7 +145,8 @@
                 "group": "Advanced",
                 "pages": [
                   "new/learn/customers/identity-register",
-                  "new/learn/customers/identity-proofs"
+                  "new/learn/customers/identity-proofs",
+                  "new/learn/customers/smart-wallets"
                 ]
               }            
             ]
