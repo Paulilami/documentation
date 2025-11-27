@@ -32,23 +32,6 @@ Trusset manages three distinct data categories with different storage approaches
 
 - **On-Chain Data:** Smart contract state, transaction history, public blockchain records—stored on blockchain, publicly readable by design.
 
-## Encryption Implementation
-
-Your instance generates a unique encryption key during creation. This key encrypts all data before storage:
-
-```typescript
-// Conceptual flow - actual implementation handled by platform
-const instanceKey = generateSecureKey(); // Your responsibility to backup
-const encryptedData = AES256.encrypt(sensitiveData, instanceKey);
-const stored = database.save(encryptedData); // Trusset cannot decrypt
-
-// Retrieval requires your key
-const retrieved = database.fetch(dataId);
-const decrypted = AES256.decrypt(retrieved, instanceKey); // Only you can decrypt
-```
-
-Trusset stores encrypted data but cannot decrypt without your key. This ensures data privacy even if our infrastructure compromises.
-
 ## Key Management
 
 <Warning>
@@ -69,7 +52,7 @@ Personal information never stores on-chain to maintain privacy and comply with r
 
 - **Minimal On-Chain State:** Smart contracts only store essential information—token balances, ownership records, configuration parameters. Everything else lives off-chain.
 
-## Public Data Endpoints
+## Public Data Endpoints <Badge icon="circle-check" color="green">Coming soon</Badge>
 
 Mark datasets as "public" to enable controlled sharing with partners, auditors, or service providers:
 
