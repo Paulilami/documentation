@@ -52,7 +52,7 @@ Personal information never stores on-chain to maintain privacy and comply with r
 
 - **Minimal On-Chain State:** Smart contracts only store essential information—token balances, ownership records, configuration parameters. Everything else lives off-chain.
 
-## Public Data Endpoints <Badge icon="circle-check" color="green">Coming soon</Badge>
+## Public Data Endpoints <Badge size="sm" color="green">Coming soon</Badge>
 
 Mark datasets as "public" to enable controlled sharing with partners, auditors, or service providers:
 
@@ -81,53 +81,3 @@ await fetch('https://api.trusset.org/v1/instance/data/configure', {
 
 Public data remains encrypted but becomes readable through authenticated REST endpoints you control.
 </Accordion>
-
-## Data Residency
-
-Encrypted data stores in secure cloud infrastructure with configurable geographic regions:
-
-| Region | Data Centers | Compliance |
-|--------|-------------|------------|
-| Europe | Frankfurt, Amsterdam | GDPR compliant |
-| United States | Virginia, Oregon | SOC 2 compliant |
-| Asia Pacific | Singapore, Tokyo | Coming soon |
-
-Select your preferred region during instance creation based on regulatory requirements. Data never leaves the chosen region without explicit migration approval.
-
-## Backup & Recovery
-
-<Tabs>
-    <Tab title="Automated Backups">
-        Encrypted data backs up automatically every 24 hours:
-
-        - Encrypted backups stored in separate geographic region
-        - 30-day retention period with point-in-time recovery
-        - Backups remain encrypted with your key—we cannot access them
-        - Restore process requires your encryption key for decryption
-    </Tab>
-    
-    <Tab title="Manual Exports">
-        Export encrypted data anytime through the Issuer Platform:
-
-        1. Navigate to Data Management > Export
-        2. Select data categories to include
-        3. Choose export format (JSON, CSV, SQL dump)
-        4. Download encrypted archive
-        5. Decrypt locally using your encryption key
-
-        Exports include all data without size limits, enabling full data portability.
-    </Tab>
-    
-    <Tab title="Disaster Recovery">
-        In catastrophic scenarios, restore from backups:
-
-        1. Create new instance (generates new encryption key)
-        2. Request backup restoration from Trusset support
-        3. Receive encrypted backup archive
-        4. Decrypt using your original encryption key
-        5. Re-encrypt with new instance key
-        6. Upload to new instance
-
-        This process requires your original encryption key—without it, recovery is impossible.
-    </Tab>
-</Tabs>

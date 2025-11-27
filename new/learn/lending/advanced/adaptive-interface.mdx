@@ -103,7 +103,7 @@ await fetch('https://api.trusset.org/v1/lending/borrow', {
   method: 'POST',
   body: JSON.stringify({
     positionId: 42,
-    amount: "15000000000" // Same API across all frameworks
+    amount: "15000000000" 
   })
 });
 
@@ -478,14 +478,14 @@ class FrameworkCache {
 ```
 
 <Warning>
-The adaptive interface adds minimal latency (typically <50ms) while simplifying integration significantly. For ultra-low-latency applications, consider direct framework integration bypassing the routing layer.
+The adaptive interface adds minimal latency (typically less than 50ms) while simplifying integration significantly. For ultra-low-latency applications, consider direct framework integration bypassing the routing layer.
 </Warning>
 
 <CardGroup cols={2}>
     <Card title="Lending Frameworks" icon="layer-group" href="/new/learn/lending/frameworks">
         Asset-specific implementation details
     </Card>
-    <Card title="API Reference" icon="code" href="/api-reference/lending">
+    <Card title="API Reference" icon="code" href="/api-intro">
         Complete endpoint documentation
     </Card>
     <Card title="Calculations" icon="calculator" href="/new/learn/lending/advanced/calculations">
