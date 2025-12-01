@@ -90,6 +90,15 @@ const customModule = {
 
 When a user attempts to execute a claim, the contract iterates through all attached modules in sequence. If any module returns `false`, the entire transaction reverts. This enables complex conditional logic like "claim requires both KYC verification AND minimum balance AND execution during business hours."
 
+### Modules
+
+| Module | Address | Network |
+|-----------|----------|--------------|
+| `TimeModule` | `0x62A1D34069E8ed7451B7B4BD36454d237561D8f4` | Sepolia |
+| `UsageModule` | `0xD1806A8FBB2B8d7Eb947928df9231787387075Fe` | Sepolia |
+| `ConditionalAcccessModule` | `0x92797faA1C89740AC8309590F846F7007C301b91` | Sepolia |
+| `TransferabilityModule` | `0xDd1d1Dc1dFA6C8F216cA6377b8949f8EbE43ce37` | Sepolia |
+
 ## Execution Flow
 
 Claims follow a two-step execution pattern that separates entitlement assignment from fulfillment:
