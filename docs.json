@@ -160,7 +160,8 @@
                 "pages": [
                   "new/learn/tokenization/light-token",
                   "new/learn/tokenization/fat-token",
-                  "new/learn/tokenization/roles"
+                  "new/learn/tokenization/roles",
+                  "new/learn/tokenization/proof-of-reserves"
                 ]
               },
               {
