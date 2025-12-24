@@ -1,0 +1,85 @@
+---
+title: "Order Book"
+description: "Professional-grade order book infrastructure for institutional security token trading."
+tag: "Experimental"
+---
+
+The Order Book Module provides exchange-grade trading infrastructure for security tokens. Unlike AMM-based pools, the order book enables precise limit orders, transparent price discovery, and institutional-grade execution—ideal for regulated securities requiring audit trails and best execution compliance.
+
+## How It Works
+
+The order book operates through a custody-based model. Traders deposit tokens into the TrussetCustody contract automatically when placing an order, place orders through the off-chain matching engine, and settlements execute atomically on-chain. This architecture provides instant order placement with guaranteed settlement finality.
+
+Funds remain in the non-custodial smart contract at all times—your instance never takes custody. The settlement operator can only execute matched trades, never withdraw user funds. All balances are verifiable on-chain with complete transparency.
+
+## Order Types
+
+**Limit Orders** specify exact prices. Buy limits execute at the specified price or better. Sell limits wait until a buyer meets your price. Orders remain active until filled, cancelled, or expired based on your time-in-force setting.
+
+**Market Orders** execute immediately at the best available price. Buy market orders take from the lowest asks. Sell market orders fill against the highest bids. Use market orders when execution speed matters more than price precision.
+
+Time-in-force options include GTC (Good Till Cancelled), IOC (Immediate or Cancel), and FOK (Fill or Kill) for complete control over order lifecycle.
+
+## Custody Contract
+
+The TrussetCustody contract manages all trading balances with three distinct states:
+
+- **Total Balance**: All tokens deposited by the user
+- **Available Balance**: Tokens free for new orders or withdrawal
+- **Locked Balance**: Tokens committed to open orders
+
+When placing an order, the required tokens move from available to locked. Cancelled orders release locks immediately. Filled orders transfer tokens atomically between counterparties within the custody contract.
+```solidity
+// Deposit tokens to start trading
+custody.deposit(tokenAddress, amount);
+
+// Check available balance before ordering
+custody.getAvailableBalance(userAddress, tokenAddress);
+
+// Withdraw anytime from available balance
+custody.withdraw(tokenAddress, amount);
+```
+
+## Settlement
+
+Trade settlement executes through the custody contract's batch settlement function. The settlement operator submits matched trades with cryptographic proof of the order book state. Invalid settlements revert automatically—the contract enforces that locked balances exist and counterparties match.
+
+Batch settlement processes multiple trades in a single transaction, reducing gas costs and ensuring atomic execution. Either all trades in a batch settle or none do, preventing partial fills from creating inconsistent states.
+
+## Fee Structure
+
+Configure maker and taker fees independently per order book. Makers add liquidity by placing limit orders that don't immediately execute. Takers remove liquidity by filling existing orders.
+
+Typical configurations incentivize market making with lower maker fees. Fee parameters are set at order book creation and apply uniformly to all participants. Fees deduct from settlement amounts automatically.
+
+## Creating Order Books
+
+Order books deploy through the API or Issuers Dashboard. Each order book pairs a base token (security token) with a quote token (stablecoin). Configure minimum order sizes, tick sizes, and fee parameters at creation.
+
+Order books activate immediately after creation. Tokens must be ERC20-compatible—the module works with LightTokens, stablecoins, and standard ERC20s.
+
+## API Integration
+
+Submit and manage orders programmatically through the REST API. All endpoints require instance API key authentication.
+
+WebSocket connections provide real-time order book updates, trade notifications, and balance changes for responsive trading interfaces.
+
+## White Label Integration
+
+Enable the Order Book module in your white label deployment for instant trading UI. The interface includes real-time order book visualization, TradingView charts, order entry forms, and position management—no frontend development required.
+
+Users connect wallets, deposit to custody, and trade directly through your branded platform. All compliance checks from your token configuration enforce automatically on every order.
+
+## Compliance Integration
+
+Order books inherit transfer restrictions from your LightToken configuration. The IVC (Identity Verification Contract) validates counterparties before settlement. Trades between non-verified addresses reject at the contract level.
+
+KYC verification, geographic restrictions, and holding limits all enforce through the existing token infrastructure. The order book doesn't bypass compliance—it channels all transfers through your token's restriction logic.
+
+## Security Architecture
+
+- **Non-custodial**: Users control deposits and withdrawals
+- **Atomic settlement**: Trades complete fully or revert entirely  
+- **Upgradeable contracts**: UUPS proxy pattern for security patches
+- **Operator limits**: Settlement operator cannot access user funds
+- **On-chain verification**: All balances verifiable via contract reads

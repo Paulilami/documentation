@@ -93,6 +93,7 @@
                     "pages": [
                       "new/home/integration/modules/management-module",
                       "new/home/integration/modules/trading-module",
+                      "new/home/integration/modules/orderbook-module",
                       "new/home/integration/modules/financing-module",
                       "new/home/integration/modules/borrow-module",
                       "new/home/integration/modules/investor-dashboard-module",
