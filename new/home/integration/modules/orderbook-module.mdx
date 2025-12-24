@@ -31,14 +31,6 @@ You deploy the smart contracts. You own the infrastructure. You control the rule
 
 The order book uses a hybrid architecture: matching happens off-chain for speed, settlement happens on-chain for security.
 
-```
-┌─────────────┐      ┌─────────────┐      ┌─────────────┐
-│   Trader    │ ──── │  Matching   │ ──── │  On-Chain   │
-│   Places    │      │   Engine    │      │  Settlement │
-│   Order     │      │  (instant)  │      │  (atomic)   │
-└─────────────┘      └─────────────┘      └─────────────┘
-```
-
 1. Traders deposit tokens into the custody contract
 2. Orders route through the matching engine instantly
 3. Matched trades settle atomically on-chain
