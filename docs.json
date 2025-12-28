@@ -24,14 +24,14 @@
     ]
   },
   "api": {
-  "mdx": {
-    "server": "https://api.trusset.org",
-    "auth": {
-      "method": "key",
-      "name": "x-api-key"
+    "mdx": {
+      "server": "https://api.trusset.org",
+      "auth": {
+        "method": "key",
+        "name": "x-api-key"
+      }
     }
-  }
-},
+  },
   "seo": {
     "indexing": "all",
     "metatags": {
@@ -101,7 +101,6 @@
                     ]
                   }
                 ]
-                
               },
               "new/home/testing/testing-suite"
             ]
@@ -114,7 +113,7 @@
           {
             "group": "Governance",
             "pages": [
-              "new/learn/governance/trusset-governance",         
+              "new/learn/governance/trusset-governance",
               "new/learn/governance/contract-updates"
             ]
           },
@@ -136,7 +135,7 @@
                   "new/learn/automation/synchronization-links",
                   "new/learn/automation/cross-instance-architecture"
                 ]
-              }            
+              }
             ]
           },
           {
@@ -150,7 +149,7 @@
                   "new/learn/customers/identity-proofs",
                   "new/learn/customers/smart-wallets"
                 ]
-              }            
+              }
             ]
           },
           {
@@ -240,7 +239,7 @@
             "group": "References",
             "pages": [
               "new/learn/references/contracts",
-              "new/learn/references/audits"        
+              "new/learn/references/audits"
             ]
           },
           {
@@ -275,7 +274,43 @@
             ]
           },
           {
-            "group": "Identity & KYC",
+            "group": "Instance Gateway (v2)",
+            "pages": [
+              "endpoints/v2/instance-gateway-overview",
+              {
+                "group": "Health",
+                "pages": [
+                  "endpoints/v2/health"
+                ]
+              },
+              {
+                "group": "Instance",
+                "pages": [
+                  "endpoints/v2/instance/get-info",
+                  "endpoints/v2/instance/get-metrics"
+                ]
+              },
+              {
+                "group": "API Keys",
+                "pages": [
+                  "endpoints/v2/instance/list-api-keys",
+                  "endpoints/v2/instance/create-api-key",
+                  "endpoints/v2/instance/rotate-api-key",
+                  "endpoints/v2/instance/revoke-api-key",
+                  "endpoints/v2/instance/delete-api-key"
+                ]
+              },
+              {
+                "group": "Services",
+                "pages": [
+                  "endpoints/v2/services/list-services",
+                  "endpoints/v2/services/get-service"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Identity & KYC (v1)",
             "pages": [
               {
                 "group": "Verification",
@@ -302,7 +337,7 @@
             ]
           },
           {
-            "group": "Capital Raising",
+            "group": "Capital Raising (v1)",
             "pages": [
               "endpoints/investment/overview",
               {
@@ -352,7 +387,7 @@
             ]
           },
           {
-            "group": "Asset Tokenization",
+            "group": "Asset Tokenization (v1)",
             "pages": [
               {
                 "group": "Token Management",
@@ -386,7 +421,7 @@
             ]
           },
           {
-            "group": "Stablecoins",
+            "group": "Stablecoins (v1)",
             "pages": [
               {
                 "group": "Deployment",
@@ -439,7 +474,7 @@
             ]
           },
           {
-            "group": "Stock Tokenization",
+            "group": "Stock Tokenization (v1)",
             "pages": [
               {
                 "group": "Position Management",
@@ -485,7 +520,7 @@
             ]
           },
           {
-            "group": "24/7 Stock Trading",
+            "group": "24/7 Stock Trading (v1)",
             "pages": [
               {
                 "group": "Pool Management",
@@ -524,7 +559,7 @@
             ]
           },
           {
-            "group": "Collateralized Loans",
+            "group": "Collateralized Loans (v1)",
             "pages": [
               "endpoints/lending/create-pool",
               "endpoints/lending/batch-create-pools",
@@ -560,12 +595,12 @@
     }
   },
   "errors": {
-  "404": {
-    "redirect": true,
-    "title": "I can't be found",
-    "description": "What ever **happened** to this _page_?"
-  }
-},
+    "404": {
+      "redirect": true,
+      "title": "I can't be found",
+      "description": "What ever **happened** to this _page_?"
+    }
+  },
   "logo": {
     "light": "/logo/patchOrange.png",
     "dark": "/logo/patchOrange.png"
@@ -589,4 +624,4 @@
       "linkedin": "https://www.linkedin.com/company/trusset"
     }
   }
- }
+}

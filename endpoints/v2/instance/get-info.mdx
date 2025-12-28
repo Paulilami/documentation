@@ -1,0 +1,183 @@
+---
+title: 'Get Instance Info'
+api: 'GET /api/v2/instance'
+---
+
+Retrieve complete information about the current instance, including configuration, enabled services, network details, and usage limits.
+
+## Response Fields
+
+<ResponseField name="instance" type="object">
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">Instance unique identifier</ResponseField>
+    <ResponseField name="name" type="string">Instance display name</ResponseField>
+    <ResponseField name="type" type="string">Either `PRODUCTION` or `DEVELOPMENT`</ResponseField>
+    <ResponseField name="service" type="string">Primary service type (`ORACLE`, `ISSUANCE`, `STABLECOIN`)</ResponseField>
+    <ResponseField name="network" type="string">Blockchain network (`ETHEREUM` or `SOLANA`)</ResponseField>
+    <ResponseField name="archived" type="boolean">Whether instance is archived</ResponseField>
+    <ResponseField name="createdAt" type="string">ISO 8601 creation timestamp</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="issuer" type="object">
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">Issuer unique identifier</ResponseField>
+    <ResponseField name="companyName" type="string">Company name</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="network" type="object">
+  <Expandable title="properties">
+    <ResponseField name="type" type="string">Network type (`ETHEREUM` or `SOLANA`)</ResponseField>
+    <ResponseField name="isTestnet" type="boolean">Whether using testnet</ResponseField>
+    <ResponseField name="chainId" type="number|string">Chain ID (numeric for EVM, string for Solana)</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="services" type="array">
+  List of enabled services with their IDs and names
+</ResponseField>
+
+<ResponseField name="limits" type="object">
+  <Expandable title="properties">
+    <ResponseField name="maxTokens" type="number">Maximum tokens allowed</ResponseField>
+    <ResponseField name="maxCustomers" type="number">Maximum customers allowed</ResponseField>
+    <ResponseField name="maxApiKeys" type="number">Maximum API keys allowed</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="stats" type="object">
+  <Expandable title="properties">
+    <ResponseField name="tokens" type="number">Current token count</ResponseField>
+    <ResponseField name="webhooks" type="number">Active webhooks</ResponseField>
+    <ResponseField name="notifications" type="number">Total notifications</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.trusset.org/api/v2/instance" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..."
+```
+```javascript JavaScript
+const response = await fetch('https://api.trusset.org/api/v2/instance', {
+  method: 'GET',
+  headers: {
+    'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+  }
+});
+
+const data = await response.json();
+console.log(data.data.instance.name);
+```
+```python Python
+import requests
+
+response = requests.get(
+    'https://api.trusset.org/api/v2/instance',
+    headers={
+        'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+    }
+)
+
+data = response.json()
+print(data['data']['instance']['name'])
+```
+```typescript TypeScript
+interface InstanceResponse {
+  success: boolean;
+  data: {
+    instance: {
+      id: string;
+      name: string;
+      type: 'PRODUCTION' | 'DEVELOPMENT';
+      service: 'ORACLE' | 'ISSUANCE' | 'STABLECOIN';
+      network: 'ETHEREUM' | 'SOLANA';
+      archived: boolean;
+      createdAt: string;
+    };
+    issuer: {
+      id: string;
+      companyName: string;
+    };
+    network: {
+      type: string;
+      isTestnet: boolean;
+      chainId: number | string;
+    };
+    services: Array<{
+      id: string;
+      name: string;
+      enabled: boolean;
+    }>;
+    limits: {
+      maxTokens: number;
+      maxCustomers: number;
+      maxApiKeys: number;
+    };
+    stats: {
+      tokens: number;
+      webhooks: number;
+      notifications: number;
+    };
+  };
+  metadata: {
+    requestId: string;
+    timestamp: string;
+  };
+}
+
+const response = await fetch('https://api.trusset.org/api/v2/instance', {
+  headers: { 'x-api-key': 'trusset_v2_abc123xy_...' }
+});
+const data: InstanceResponse = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "instance": {
+      "id": "clx1234567890abcdef",
+      "name": "Production Instance",
+      "type": "PRODUCTION",
+      "service": "ISSUANCE",
+      "network": "ETHEREUM",
+      "archived": false,
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "apiKeyRef": "abc123xy"
+    },
+    "issuer": {
+      "id": "iss_abcdef123456",
+      "companyName": "Acme Financial"
+    },
+    "network": {
+      "type": "ETHEREUM",
+      "isTestnet": false,
+      "chainId": 1
+    },
+    "services": [
+      { "id": "tokenization", "name": "Tokenization", "enabled": true },
+      { "id": "kyc", "name": "KYC Management", "enabled": true },
+      { "id": "customers", "name": "Customer Management", "enabled": true }
+    ],
+    "limits": {
+      "maxTokens": 100,
+      "maxCustomers": 10000,
+      "maxApiKeys": 10
+    },
+    "stats": {
+      "tokens": 5,
+      "webhooks": 2,
+      "notifications": 150
+    }
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+</ResponseExample>

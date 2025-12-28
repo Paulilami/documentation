@@ -1,0 +1,98 @@
+---
+title: 'Instance Gateway Overview'
+description: 'v2 API with self-contained authentication and unified instance management'
+---
+
+The v2 Instance Gateway provides a modern, streamlined API experience with self-contained API keys that eliminate the need for separate instance ID headers.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Self-Contained API Keys" icon="key">
+    API keys embed the instance reference directly. No `x-instance-id` header required.
+  </Card>
+  <Card title="Automatic Context" icon="wand-magic-sparkles">
+    Instance context is automatically loaded and cached for sub-millisecond resolution.
+  </Card>
+  <Card title="Service Discovery" icon="magnifying-glass">
+    Query enabled services and their capabilities programmatically.
+  </Card>
+  <Card title="Unified Response Format" icon="code">
+    Consistent response structure across all endpoints.
+  </Card>
+</CardGroup>
+
+## API Key Format
+
+v2 API keys follow this format:
+```
+trusset_v2_{instance_ref}_{secret}
+```
+
+| Segment | Description |
+|---------|-------------|
+| `trusset_v2_` | Version prefix |
+| `{instance_ref}` | 8-character instance reference |
+| `{secret}` | 64-character hex secret |
+
+**Example:**
+```
+trusset_v2_abc123xy_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6
+```
+
+## Authentication
+
+Simply include your v2 API key in the `x-api-key` header:
+```bash
+curl -X GET "https://api.trusset.org/api/v2/instance" \
+  -H "x-api-key: trusset_v2_abc123xy_..."
+```
+
+No additional headers required. The instance is automatically resolved from the API key.
+
+## Base URL
+```
+https://api.trusset.org/api/v2
+```
+
+## Available Endpoints
+
+### Instance Management
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/instance` | Get instance info and configuration |
+| `GET` | `/instance/metrics` | Get usage metrics and activity |
+| `GET` | `/instance/api-keys` | List all API keys |
+| `POST` | `/instance/api-keys` | Create new API key |
+| `POST` | `/instance/api-keys/:keyId/rotate` | Rotate an API key |
+| `POST` | `/instance/api-keys/:keyId/revoke` | Revoke an API key |
+| `DELETE` | `/instance/api-keys/:keyId` | Delete an API key |
+
+### Services
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/services` | List enabled services |
+| `GET` | `/services/:serviceId` | Get service details |
+
+## Error Codes
+
+| Code | Description |
+|------|-------------|
+| `AUTH_REQUIRED` | No API key provided |
+| `AUTH_FAILED` | Invalid or expired API key |
+| `INVALID_KEY_FORMAT` | API key format is incorrect |
+| `INSTANCE_NOT_FOUND` | Instance does not exist |
+| `INSTANCE_ARCHIVED` | Instance has been archived |
+| `KEY_NOT_FOUND` | API key not found or inactive |
+| `KEY_EXPIRED` | API key has expired |
+| `SERVICE_NOT_ENABLED` | Requested service not enabled for instance |
+
+## Rate Limits
+
+| Tier | Requests/Minute | Requests/Day |
+|------|-----------------|--------------|
+| Free | 60 | 1,000 |
+| Pro | 300 | 50,000 |
+| Enterprise | Unlimited | Unlimited |

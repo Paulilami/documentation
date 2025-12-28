@@ -3,59 +3,153 @@ title: 'Get Started'
 description: 'How to start with the Trusset APIs'
 ---
 
-<Warning>API documentation is currently being updated and includes old reference links.</Warning>
-
-The first thing you need is to [register](https://issuers.trusset.org/). 
+The first thing you need is to [register](https://issuers.trusset.org/).
 
 If you don't operate in the financial industry and want to collaborate with us, [write us a message](https://www.trusset.org/contact).
 
-## Usage 
-All endpoints require API key authentication:
+## API Versions
 
+<CardGroup cols={2}>
+  <Card title="v2 API (Recommended)" icon="rocket" href="/endpoints/v2/instance-gateway-overview">
+    New Instance Gateway with self-contained API keys. No instance ID header required.
+  </Card>
+  <Card title="v1 API (Legacy)" icon="clock-rotate-left">
+    Legacy endpoints requiring both API key and instance ID headers. Still fully supported.
+  </Card>
+</CardGroup>
+
+## Authentication
+
+### v2 API (Recommended)
+
+v2 API keys are self-contained and include the instance reference. Only the API key is required:
 ```bash
-curl -H "x-api-key: trusset_ksjsnejwnsbkaqlwsmnsh.."
+curl -H "x-api-key: trusset_v2_abc123xy_64charshexsecret..."
 ```
-and have a unified output format for effective usage: 
 
+### v1 API (Legacy)
+
+v1 endpoints require both API key and instance ID:
 ```bash
+curl -H "x-api-key: trusset_..." \
+     -H "x-instance-id: YOUR_INSTANCE_ID"
+```
+
+## Response Format
+
+All endpoints return a unified response format:
+```json
 {
   "success": true,
   "data": {
-    "data": "data",
-    "txHash": "0x3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d",
-    "gasUsed": "3250000"
+    "...": "response data"
   },
-  "error": null,
   "metadata": {
-    "timestamp": "2024-01-15T10:30:00.000Z",
     "requestId": "550e8400-e29b-41d4-a716-446655440000",
-    "instanceId": "inst_2hG5kL9mN3oP"
+    "timestamp": "2024-01-15T10:30:00.000Z"
   }
 }
 ```
 
-## APIs (v1)
+### Error Response
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human readable error message"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+
+## v2 Instance Gateway (New)
 
 <CardGroup cols={2}>
-  <Card title="KYC Data" icon="user" href="/identity-kyc-intro">
+  <Card title="Instance Info" icon="circle-info" href="/endpoints/v2/instance/get-info">
+    Get instance details, configuration, and enabled services
   </Card>
-    <Card title="Batch Verification" icon="users" href="/endpoints/kyc/batch-verify">
+  <Card title="Instance Metrics" icon="chart-line" href="/endpoints/v2/instance/get-metrics">
+    View usage statistics and recent activity
   </Card>
-    <Card title="Asset Tokenization" icon="coin" href="/tokenization-intro">
+  <Card title="API Keys" icon="key" href="/endpoints/v2/instance/list-api-keys">
+    Create, rotate, revoke, and manage API keys
   </Card>
-    <Card title="Asset Management" icon="gear" href="/endpoints/tokenization/update-user-status">
+  <Card title="Services" icon="cubes" href="/endpoints/v2/services/list-services">
+    List enabled services and their capabilities
   </Card>
-  <Card title="Stablecoins" icon="coins" href="/stablecoin-intro">
-  </Card>
-  <Card title="Stock Tokenization" icon="building-columns" href="/stock-exchanges-intro">
-  </Card>
-  <Card title="Stock Trading" icon="chart-candlestick" href="/balancer-exchange-intro">
-  </Card>
-  <Card title="Stock Loans" icon="credit-card" href="/stock-loans">
-  </Card>
-  <Card title="Corporate Actions (Stocks)" icon="command" href="/endpoints/stock-exchange/schedule-stock-split">
-  </Card> 
-  <Card title="Capital Raising" icon="hands" href="/investment-framework-intro">
-  </Card>
-
 </CardGroup>
+
+## v1 APIs (Legacy)
+
+<CardGroup cols={2}>
+  <Card title="KYC Data" icon="user" href="/endpoints/kyc/verify-single">
+    Identity verification and KYC management
+  </Card>
+  <Card title="Batch Verification" icon="users" href="/endpoints/kyc/batch-verify">
+    Verify multiple identities at once
+  </Card>
+  <Card title="Asset Tokenization" icon="coin" href="/endpoints/tokenization/create-token">
+    Create and manage tokenized assets
+  </Card>
+  <Card title="Asset Management" icon="gear" href="/endpoints/tokenization/update-user-status">
+    Compliance and token controls
+  </Card>
+  <Card title="Stablecoins" icon="coins" href="/endpoints/stablecoin/deploy-stablecoin">
+    Deploy and manage stablecoins
+  </Card>
+  <Card title="Stock Tokenization" icon="building-columns" href="/endpoints/stock-exchange/lock-position">
+    Tokenize equity positions
+  </Card>
+  <Card title="Stock Trading" icon="chart-candlestick" href="/endpoints/balancer-exchange/create-pool">
+    24/7 AMM-based trading pools
+  </Card>
+  <Card title="Collateralized Loans" icon="credit-card" href="/endpoints/lending/create-pool">
+    Create lending pools and manage loans
+  </Card>
+  <Card title="Corporate Actions" icon="command" href="/endpoints/stock-exchange/schedule-stock-split">
+    Dividends, splits, and corporate events
+  </Card>
+  <Card title="Capital Raising" icon="hands" href="/endpoints/investment/overview">
+    Token sales and investment frameworks
+  </Card>
+</CardGroup>
+
+## Migration Guide: v1 → v2
+
+If you're using v1 API keys, here's how to migrate:
+
+### 1. Create a v2 API Key
+
+Use the [Create API Key](/endpoints/v2/instance/create-api-key) endpoint or the dashboard to generate a new v2 key.
+
+### 2. Update Your Headers
+
+**Before (v1):**
+```bash
+curl -H "x-api-key: trusset_oldkey..." \
+     -H "x-instance-id: inst_abc123..."
+```
+
+**After (v2):**
+```bash
+curl -H "x-api-key: trusset_v2_abc123xy_newsecret..."
+```
+
+### 3. Update Base URL for New Endpoints
+
+v2 endpoints use `/api/v2/` prefix:
+- Instance info: `GET /api/v2/instance`
+- Services: `GET /api/v2/services`
+- API Keys: `GET /api/v2/instance/api-keys`
+
+### 4. Keep v1 Endpoints Working
+
+Your existing v1 API calls continue to work. v2 keys are backward compatible with v1 endpoints.
+
+<Note>
+  v1 endpoints remain fully supported. Migration to v2 is recommended but not required.
+</Note>
