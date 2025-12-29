@@ -1,0 +1,153 @@
+---
+title: 'Set Metadata URI'
+api: 'POST /api/v2/light-tokens/metadata'
+---
+
+Update the metadata URI for the token. The metadata should contain standardized token information such as description, images, and properties.
+
+## Request Body
+
+<ParamField body="tokenAddress" type="string" required>
+  Address of the Light Token contract
+</ParamField>
+
+<ParamField body="metadataURI" type="string" required>
+  New URI pointing to token metadata (IPFS, HTTPS, or on-chain)
+</ParamField>
+
+<ParamField body="useRelayer" type="boolean" default="false">
+  If `true`, the IVC executes the transaction. If `false`, returns unsigned transaction data
+</ParamField>
+
+## Response Fields
+
+<Tabs>
+  <Tab title="Relayer Execution">
+    <ResponseField name="executed" type="boolean">Always `true`</ResponseField>
+    <ResponseField name="transactionHash" type="string">Transaction hash</ResponseField>
+    <ResponseField name="blockNumber" type="number">Block number</ResponseField>
+    <ResponseField name="gasUsed" type="string">Gas consumed</ResponseField>
+    <ResponseField name="metadataURI" type="string">New metadata URI</ResponseField>
+  </Tab>
+  <Tab title="Frontend Signing">
+    <ResponseField name="executed" type="boolean">Always `false`</ResponseField>
+    <ResponseField name="to" type="string">Token contract address</ResponseField>
+    <ResponseField name="data" type="string">Encoded transaction data</ResponseField>
+    <ResponseField name="gasLimit" type="string">Recommended gas limit</ResponseField>
+    <ResponseField name="description" type="string">Human-readable description</ResponseField>
+  </Tab>
+</Tabs>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/api/v2/light-tokens/metadata" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..." \
+  -d '{
+    "tokenAddress": "0xAbC123dEf456789012345678901234567890AbCd",
+    "metadataURI": "ipfs://QmNewMetadataHash",
+    "useRelayer": true
+  }'
+```
+```javascript JavaScript
+const response = await fetch('https://api.trusset.org/api/v2/light-tokens/metadata', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    metadataURI: 'ipfs://QmNewMetadataHash',
+    useRelayer: true
+  })
+});
+
+const data = await response.json();
+console.log('Metadata updated:', data.data.metadataURI);
+```
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.trusset.org/api/v2/light-tokens/metadata',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+    },
+    json={
+        'tokenAddress': '0xAbC123dEf456789012345678901234567890AbCd',
+        'metadataURI': 'ipfs://QmNewMetadataHash',
+        'useRelayer': True
+    }
+)
+
+data = response.json()
+print(f"Metadata updated: {data['data']['metadataURI']}")
+```
+```typescript TypeScript
+interface SetMetadataResponse {
+  success: boolean;
+  data: {
+    executed: true;
+    transactionHash: string;
+    blockNumber: number;
+    gasUsed: string;
+    metadataURI: string;
+  };
+  metadata: {
+    requestId: string;
+    timestamp: string;
+  };
+}
+
+const response = await fetch('https://api.trusset.org/api/v2/light-tokens/metadata', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    metadataURI: 'ipfs://QmNewMetadataHash',
+    useRelayer: true
+  })
+});
+const data: SetMetadataResponse = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Relayer Response
+{
+  "success": true,
+  "data": {
+    "executed": true,
+    "transactionHash": "0xbcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abc",
+    "blockNumber": 18501100,
+    "gasUsed": "45000",
+    "metadataURI": "ipfs://QmNewMetadataHash"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Frontend Signing Response
+{
+  "success": true,
+  "data": {
+    "executed": false,
+    "to": "0xAbC123dEf456789012345678901234567890AbCd",
+    "data": "0x12345678...",
+    "gasLimit": "100000",
+    "description": "Set metadata URI: ipfs://QmNewMetadataHash"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+</ResponseExample>

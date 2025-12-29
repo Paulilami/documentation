@@ -1,0 +1,163 @@
+---
+title: 'Check Can Transfer'
+api: 'GET /api/v2/light-tokens/can-transfer'
+---
+
+Validate whether a transfer can be executed before attempting it. Returns the transfer validity status and any restriction codes.
+
+## Query Parameters
+
+<ParamField query="tokenAddress" type="string" required>
+  Address of the Light Token contract
+</ParamField>
+
+<ParamField query="from" type="string" required>
+  Sender address
+</ParamField>
+
+<ParamField query="to" type="string" required>
+  Recipient address
+</ParamField>
+
+<ParamField query="amount" type="string" required>
+  Amount to transfer
+</ParamField>
+
+<ParamField query="partition" type="string">
+  Partition to transfer from (optional)
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="canTransfer" type="boolean">Whether the transfer can be executed</ResponseField>
+<ResponseField name="statusCode" type="string">ERC-1400 status code (bytes1)</ResponseField>
+<ResponseField name="reasonCode" type="string">Reason code (bytes32)</ResponseField>
+<ResponseField name="reason" type="string">Human-readable reason if transfer is blocked</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.trusset.org/api/v2/light-tokens/can-transfer?tokenAddress=0xAbC123dEf456789012345678901234567890AbCd&from=0x1111111111111111111111111111111111111111&to=0x2222222222222222222222222222222222222222&amount=100" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..."
+```
+```javascript JavaScript
+const params = new URLSearchParams({
+  tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+  from: '0x1111111111111111111111111111111111111111',
+  to: '0x2222222222222222222222222222222222222222',
+  amount: '100'
+});
+
+const response = await fetch(
+  `https://api.trusset.org/api/v2/light-tokens/can-transfer?${params}`,
+  {
+    headers: {
+      'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+    }
+  }
+);
+
+const data = await response.json();
+if (data.data.canTransfer) {
+  console.log('Transfer is allowed');
+} else {
+  console.log('Transfer blocked:', data.data.reason);
+}
+```
+```python Python
+import requests
+
+response = requests.get(
+    'https://api.trusset.org/api/v2/light-tokens/can-transfer',
+    headers={
+        'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+    },
+    params={
+        'tokenAddress': '0xAbC123dEf456789012345678901234567890AbCd',
+        'from': '0x1111111111111111111111111111111111111111',
+        'to': '0x2222222222222222222222222222222222222222',
+        'amount': '100'
+    }
+)
+
+data = response.json()
+if data['data']['canTransfer']:
+    print('Transfer is allowed')
+else:
+    print(f"Transfer blocked: {data['data']['reason']}")
+```
+```typescript TypeScript
+interface CanTransferResponse {
+  success: boolean;
+  data: {
+    canTransfer: boolean;
+    statusCode: string;
+    reasonCode: string;
+    reason?: string;
+  };
+  metadata: {
+    requestId: string;
+    timestamp: string;
+  };
+}
+
+const params = new URLSearchParams({
+  tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+  from: '0x1111111111111111111111111111111111111111',
+  to: '0x2222222222222222222222222222222222222222',
+  amount: '100'
+});
+
+const response = await fetch(
+  `https://api.trusset.org/api/v2/light-tokens/can-transfer?${params}`,
+  { headers: { 'x-api-key': 'trusset_v2_abc123xy_...' } }
+);
+const data: CanTransferResponse = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Transfer Allowed
+{
+  "success": true,
+  "data": {
+    "canTransfer": true,
+    "statusCode": "0x51",
+    "reasonCode": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Transfer Blocked - Frozen Account
+{
+  "success": true,
+  "data": {
+    "canTransfer": false,
+    "statusCode": "0x50",
+    "reasonCode": "0x46524f5a454e0000000000000000000000000000000000000000000000000000",
+    "reason": "Sender account is frozen"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Transfer Blocked - Insufficient Balance
+{
+  "success": true,
+  "data": {
+    "canTransfer": false,
+    "statusCode": "0x52",
+    "reasonCode": "0x494e53554646494349454e545f42414c414e4345000000000000000000000000",
+    "reason": "Insufficient balance"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+</ResponseExample>

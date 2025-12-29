@@ -306,6 +306,56 @@
                   "endpoints/v2/services/list-services",
                   "endpoints/v2/services/get-service"
                 ]
+              },
+              {
+                "group": "Light Tokens (v2)",
+                "pages": [
+                  "endpoints/v2/light-tokens/overview",
+                  {
+                    "group": "Token Management",
+                    "pages": [
+                      "endpoints/v2/light-tokens/create-token",
+                      "endpoints/v2/light-tokens/issue-tokens",
+                      "endpoints/v2/light-tokens/batch-issue",
+                      "endpoints/v2/light-tokens/redeem-tokens",
+                      "endpoints/v2/light-tokens/transfer-tokens",
+                      "endpoints/v2/light-tokens/controller-transfer"
+                    ]
+                  },
+                  {
+                    "group": "Access Control",
+                    "pages": [
+                      "endpoints/v2/light-tokens/add-controller",
+                      "endpoints/v2/light-tokens/remove-controller",
+                      "endpoints/v2/light-tokens/freeze-account",
+                      "endpoints/v2/light-tokens/unfreeze-account",
+                      "endpoints/v2/light-tokens/set-transfers-restricted"
+                    ]
+                  },
+                  {
+                    "group": "Documents & Metadata",
+                    "pages": [
+                      "endpoints/v2/light-tokens/set-document",
+                      "endpoints/v2/light-tokens/set-metadata",
+                      "endpoints/v2/light-tokens/update-ivc"
+                    ]
+                  },
+                  {
+                    "group": "Query",
+                    "pages": [
+                      "endpoints/v2/light-tokens/get-token-info",
+                      "endpoints/v2/light-tokens/get-balance",
+                      "endpoints/v2/light-tokens/get-holders",
+                      "endpoints/v2/light-tokens/get-documents",
+                      "endpoints/v2/light-tokens/get-document",
+                      "endpoints/v2/light-tokens/can-transfer",
+                      "endpoints/v2/light-tokens/is-controller",
+                      "endpoints/v2/light-tokens/get-tokens-by-ivc",
+                      "endpoints/v2/light-tokens/get-all-tokens",
+                      "endpoints/v2/light-tokens/get-instance-tokens"
+                    ]
+                  }
+                ]
               }
             ]
           },

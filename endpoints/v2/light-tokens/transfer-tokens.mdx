@@ -1,0 +1,207 @@
+---
+title: 'Transfer Tokens'
+api: 'POST /api/v2/light-tokens/transfer'
+---
+
+Transfer tokens between addresses by partition. This is the standard transfer method for Light Tokens with partition support.
+
+<Info>
+  Transfers may be restricted based on the token's compliance settings, IVC verification, and account freeze status.
+</Info>
+
+## Request Body
+
+<ParamField body="tokenAddress" type="string" required>
+  Address of the Light Token contract
+</ParamField>
+
+<ParamField body="from" type="string" required>
+  Address to transfer tokens from
+</ParamField>
+
+<ParamField body="to" type="string" required>
+  Address to transfer tokens to
+</ParamField>
+
+<ParamField body="amount" type="string" required>
+  Amount of tokens to transfer
+</ParamField>
+
+<ParamField body="partition" type="string">
+  Partition to transfer from. Defaults to the default partition
+</ParamField>
+
+<ParamField body="data" type="string">
+  Optional data to include with the transfer (hex-encoded)
+</ParamField>
+
+<ParamField body="operatorData" type="string">
+  Optional operator data for operator-initiated transfers (hex-encoded)
+</ParamField>
+
+<ParamField body="useRelayer" type="boolean" default="false">
+  If `true`, the IVC executes the transaction. If `false`, returns unsigned transaction data
+</ParamField>
+
+## Response Fields
+
+<Tabs>
+  <Tab title="Relayer Execution">
+    <ResponseField name="executed" type="boolean">Always `true`</ResponseField>
+    <ResponseField name="transactionHash" type="string">Transaction hash</ResponseField>
+    <ResponseField name="blockNumber" type="number">Block number</ResponseField>
+    <ResponseField name="gasUsed" type="string">Gas consumed</ResponseField>
+    <ResponseField name="from" type="string">Sender address</ResponseField>
+    <ResponseField name="to" type="string">Recipient address</ResponseField>
+    <ResponseField name="amount" type="string">Amount transferred</ResponseField>
+    <ResponseField name="partition" type="string">Partition used</ResponseField>
+  </Tab>
+  <Tab title="Frontend Signing">
+    <ResponseField name="executed" type="boolean">Always `false`</ResponseField>
+    <ResponseField name="to" type="string">Token contract address</ResponseField>
+    <ResponseField name="data" type="string">Encoded transaction data</ResponseField>
+    <ResponseField name="gasLimit" type="string">Recommended gas limit</ResponseField>
+    <ResponseField name="description" type="string">Human-readable description</ResponseField>
+  </Tab>
+</Tabs>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/api/v2/light-tokens/transfer" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..." \
+  -d '{
+    "tokenAddress": "0xAbC123dEf456789012345678901234567890AbCd",
+    "from": "0x1111111111111111111111111111111111111111",
+    "to": "0x2222222222222222222222222222222222222222",
+    "amount": "250",
+    "useRelayer": true
+  }'
+```
+```javascript JavaScript
+const response = await fetch('https://api.trusset.org/api/v2/light-tokens/transfer', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    from: '0x1111111111111111111111111111111111111111',
+    to: '0x2222222222222222222222222222222222222222',
+    amount: '250',
+    useRelayer: true
+  })
+});
+
+const data = await response.json();
+console.log('Transfer complete:', data.data.transactionHash);
+```
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.trusset.org/api/v2/light-tokens/transfer',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+    },
+    json={
+        'tokenAddress': '0xAbC123dEf456789012345678901234567890AbCd',
+        'from': '0x1111111111111111111111111111111111111111',
+        'to': '0x2222222222222222222222222222222222222222',
+        'amount': '250',
+        'useRelayer': True
+    }
+)
+
+data = response.json()
+print(f"Transfer complete: {data['data']['transactionHash']}")
+```
+```typescript TypeScript
+interface TransferResponse {
+  success: boolean;
+  data: {
+    executed: true;
+    transactionHash: string;
+    blockNumber: number;
+    gasUsed: string;
+    from: string;
+    to: string;
+    amount: string;
+    partition: string;
+  };
+  metadata: {
+    requestId: string;
+    timestamp: string;
+  };
+}
+
+const response = await fetch('https://api.trusset.org/api/v2/light-tokens/transfer', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    from: '0x1111111111111111111111111111111111111111',
+    to: '0x2222222222222222222222222222222222222222',
+    amount: '250',
+    useRelayer: true
+  })
+});
+const data: TransferResponse = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Relayer Response
+{
+  "success": true,
+  "data": {
+    "executed": true,
+    "transactionHash": "0xfed0987654321fedcba0987654321fedcba0987654321fedcba0987654321fed",
+    "blockNumber": 18500300,
+    "gasUsed": "95000",
+    "from": "0x1111111111111111111111111111111111111111",
+    "to": "0x2222222222222222222222222222222222222222",
+    "amount": "250",
+    "partition": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Frontend Signing Response
+{
+  "success": true,
+  "data": {
+    "executed": false,
+    "to": "0xAbC123dEf456789012345678901234567890AbCd",
+    "data": "0x12345678...",
+    "gasLimit": "150000",
+    "description": "Transfer 250 tokens from 0x1111...1111 to 0x2222...2222"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Error - Transfer Restricted
+{
+  "success": false,
+  "error": {
+    "code": "TRANSFER_RESTRICTED",
+    "message": "Transfers are currently restricted on this token"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+</ResponseExample>

@@ -1,0 +1,157 @@
+---
+title: 'Add Controller'
+api: 'POST /api/v2/light-tokens/controllers/add'
+---
+
+Add a new controller address to the Light Token. Controllers have elevated privileges including the ability to force transfers, freeze accounts, and manage token compliance.
+
+<Info>
+  Only the IVC (Instance Verification Contract) owner or existing controllers can add new controllers.
+</Info>
+
+## Request Body
+
+<ParamField body="tokenAddress" type="string" required>
+  Address of the Light Token contract
+</ParamField>
+
+<ParamField body="controller" type="string" required>
+  Address to grant controller privileges to
+</ParamField>
+
+<ParamField body="useRelayer" type="boolean" default="false">
+  If `true`, the IVC executes the transaction. If `false`, returns unsigned transaction data
+</ParamField>
+
+## Response Fields
+
+<Tabs>
+  <Tab title="Relayer Execution">
+    <ResponseField name="executed" type="boolean">Always `true`</ResponseField>
+    <ResponseField name="transactionHash" type="string">Transaction hash</ResponseField>
+    <ResponseField name="blockNumber" type="number">Block number</ResponseField>
+    <ResponseField name="gasUsed" type="string">Gas consumed</ResponseField>
+    <ResponseField name="controller" type="string">Address granted controller role</ResponseField>
+  </Tab>
+  <Tab title="Frontend Signing">
+    <ResponseField name="executed" type="boolean">Always `false`</ResponseField>
+    <ResponseField name="to" type="string">Token contract address</ResponseField>
+    <ResponseField name="data" type="string">Encoded transaction data</ResponseField>
+    <ResponseField name="gasLimit" type="string">Recommended gas limit</ResponseField>
+    <ResponseField name="description" type="string">Human-readable description</ResponseField>
+  </Tab>
+</Tabs>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/api/v2/light-tokens/controllers/add" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..." \
+  -d '{
+    "tokenAddress": "0xAbC123dEf456789012345678901234567890AbCd",
+    "controller": "0x9999999999999999999999999999999999999999",
+    "useRelayer": true
+  }'
+```
+```javascript JavaScript
+const response = await fetch('https://api.trusset.org/api/v2/light-tokens/controllers/add', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    controller: '0x9999999999999999999999999999999999999999',
+    useRelayer: true
+  })
+});
+
+const data = await response.json();
+console.log('Controller added:', data.data.controller);
+```
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.trusset.org/api/v2/light-tokens/controllers/add',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+    },
+    json={
+        'tokenAddress': '0xAbC123dEf456789012345678901234567890AbCd',
+        'controller': '0x9999999999999999999999999999999999999999',
+        'useRelayer': True
+    }
+)
+
+data = response.json()
+print(f"Controller added: {data['data']['controller']}")
+```
+```typescript TypeScript
+interface AddControllerResponse {
+  success: boolean;
+  data: {
+    executed: true;
+    transactionHash: string;
+    blockNumber: number;
+    gasUsed: string;
+    controller: string;
+  };
+  metadata: {
+    requestId: string;
+    timestamp: string;
+  };
+}
+
+const response = await fetch('https://api.trusset.org/api/v2/light-tokens/controllers/add', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    controller: '0x9999999999999999999999999999999999999999',
+    useRelayer: true
+  })
+});
+const data: AddControllerResponse = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Relayer Response
+{
+  "success": true,
+  "data": {
+    "executed": true,
+    "transactionHash": "0xabc123def456789012345678901234567890abc123def456789012345678901234",
+    "blockNumber": 18500500,
+    "gasUsed": "45000",
+    "controller": "0x9999999999999999999999999999999999999999"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Frontend Signing Response
+{
+  "success": true,
+  "data": {
+    "executed": false,
+    "to": "0xAbC123dEf456789012345678901234567890AbCd",
+    "data": "0x12345678...",
+    "gasLimit": "100000",
+    "description": "Add controller 0x9999...9999"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+</ResponseExample>

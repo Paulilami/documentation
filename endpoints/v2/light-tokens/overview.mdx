@@ -1,0 +1,83 @@
+---
+title: 'Light Tokens Overview'
+description: 'ERC-1400 compliant security tokens with partition support and IVC governance'
+---
+
+Light Tokens are Trusset's implementation of ERC-1400 compliant security tokens, designed for regulated asset tokenization with built-in compliance features.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Partition Support" icon="layer-group">
+    Organize tokens into partitions for different share classes, tranches, or restrictions
+  </Card>
+  <Card title="IVC Governance" icon="building-columns">
+    Instance Verification Contract controls compliance and authorization
+  </Card>
+  <Card title="Controller Transfers" icon="arrows-rotate">
+    Authorized controllers can force transfers for regulatory compliance
+  </Card>
+  <Card title="Account Freezing" icon="snowflake">
+    Freeze individual accounts for sanctions or legal holds
+  </Card>
+</CardGroup>
+
+## Execution Modes
+
+All write operations support two execution modes via the `useRelayer` parameter:
+
+<Tabs>
+  <Tab title="Relayer Execution">
+    Set `useRelayer: true` to have the IVC executes the transaction on your behalf.
+    
+    ```json Response
+    {
+      "success": true,
+      "data": {
+        "executed": true,
+        "transactionHash": "0x...",
+        "blockNumber": 12345678,
+        "gasUsed": "150000"
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Frontend Signing">
+    Set `useRelayer: false` to receive transaction data for wallet signing.
+    
+    ```json Response
+    {
+      "success": true,
+      "data": {
+        "executed": false,
+        "to": "0x...",
+        "data": "0x...",
+        "gasLimit": "200000",
+        "description": "Create Light Token: MyToken (MTK)"
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Default Partition
+
+When no partition is specified, tokens use the default partition:
+```
+0x0000000000000000000000000000000000000000000000000000000000000000
+```
+
+## Contract Addresses
+
+| Contract | Address |
+|----------|---------|
+| LightTokenFactory | `0x5B27A46CE30277848e8c1f55d2BBC8961Ef2B521` |
+| LightTokenImplementation | `0x87cEA58948b148E967B355A77AE4e7296B7EE1D0` |
+
+## Authentication
+
+All endpoints require a v2 API key with the `tokenization` service enabled:
+
+```bash
+x-api-key: trusset_v2_{instance_ref}_{secret}
+```

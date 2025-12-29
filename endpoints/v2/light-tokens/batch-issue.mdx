@@ -1,0 +1,238 @@
+---
+title: 'Batch Issue Tokens'
+api: 'POST /api/v2/light-tokens/batch-issue'
+---
+
+Issue tokens to multiple recipients in a single API call. When using the relayer, each issuance is executed as a separate transaction.
+
+<Info>
+  For large batches, consider using frontend signing mode to bundle transactions or implement your own batching logic.
+</Info>
+
+## Request Body
+
+<ParamField body="tokenAddress" type="string" required>
+  Address of the Light Token contract
+</ParamField>
+
+<ParamField body="recipients" type="array" required>
+  Array of recipient objects
+  <Expandable title="recipient properties">
+    <ParamField body="address" type="string" required>
+      Recipient wallet address
+    </ParamField>
+    <ParamField body="amount" type="string" required>
+      Amount of tokens to issue
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="partition" type="string">
+  Partition to issue tokens to. Defaults to the default partition
+</ParamField>
+
+<ParamField body="data" type="string">
+  Optional data to include with each issuance (hex-encoded)
+</ParamField>
+
+<ParamField body="useRelayer" type="boolean" default="false">
+  If `true`, executes all issuances via relayer. If `false`, returns transaction data for each
+</ParamField>
+
+## Response Fields
+
+<Tabs>
+  <Tab title="Relayer Execution">
+    <ResponseField name="executed" type="boolean">Always `true`</ResponseField>
+    <ResponseField name="results" type="array">
+      Array of results for each issuance
+      <Expandable title="result properties">
+        <ResponseField name="recipient" type="string">Recipient address</ResponseField>
+        <ResponseField name="amount" type="string">Amount issued</ResponseField>
+        <ResponseField name="success" type="boolean">Whether issuance succeeded</ResponseField>
+        <ResponseField name="transactionHash" type="string">Transaction hash (if successful)</ResponseField>
+        <ResponseField name="error" type="string">Error message (if failed)</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="totalRecipients" type="number">Total number of recipients</ResponseField>
+    <ResponseField name="successCount" type="number">Number of successful issuances</ResponseField>
+  </Tab>
+  <Tab title="Frontend Signing">
+    <ResponseField name="executed" type="boolean">Always `false`</ResponseField>
+    <ResponseField name="transactions" type="array">
+      Array of transaction data for each issuance
+      <Expandable title="transaction properties">
+        <ResponseField name="to" type="string">Token contract address</ResponseField>
+        <ResponseField name="data" type="string">Encoded transaction data</ResponseField>
+        <ResponseField name="description" type="string">Human-readable description</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="totalRecipients" type="number">Total number of recipients</ResponseField>
+  </Tab>
+</Tabs>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/api/v2/light-tokens/batch-issue" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..." \
+  -d '{
+    "tokenAddress": "0xAbC123dEf456789012345678901234567890AbCd",
+    "recipients": [
+      { "address": "0x1111111111111111111111111111111111111111", "amount": "100" },
+      { "address": "0x2222222222222222222222222222222222222222", "amount": "200" },
+      { "address": "0x3333333333333333333333333333333333333333", "amount": "300" }
+    ],
+    "useRelayer": true
+  }'
+```
+```javascript JavaScript
+const response = await fetch('https://api.trusset.org/api/v2/light-tokens/batch-issue', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    recipients: [
+      { address: '0x1111111111111111111111111111111111111111', amount: '100' },
+      { address: '0x2222222222222222222222222222222222222222', amount: '200' },
+      { address: '0x3333333333333333333333333333333333333333', amount: '300' }
+    ],
+    useRelayer: true
+  })
+});
+
+const data = await response.json();
+console.log(`Issued to ${data.data.successCount}/${data.data.totalRecipients} recipients`);
+```
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.trusset.org/api/v2/light-tokens/batch-issue',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+    },
+    json={
+        'tokenAddress': '0xAbC123dEf456789012345678901234567890AbCd',
+        'recipients': [
+            {'address': '0x1111111111111111111111111111111111111111', 'amount': '100'},
+            {'address': '0x2222222222222222222222222222222222222222', 'amount': '200'},
+            {'address': '0x3333333333333333333333333333333333333333', 'amount': '300'}
+        ],
+        'useRelayer': True
+    }
+)
+
+data = response.json()
+print(f"Issued to {data['data']['successCount']}/{data['data']['totalRecipients']} recipients")
+```
+```typescript TypeScript
+interface BatchIssueResponse {
+  success: boolean;
+  data: {
+    executed: true;
+    results: Array<{
+      recipient: string;
+      amount: string;
+      success: boolean;
+      transactionHash?: string;
+      error?: string;
+    }>;
+    totalRecipients: number;
+    successCount: number;
+  };
+  metadata: {
+    requestId: string;
+    timestamp: string;
+  };
+}
+
+const response = await fetch('https://api.trusset.org/api/v2/light-tokens/batch-issue', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    recipients: [
+      { address: '0x1111111111111111111111111111111111111111', amount: '100' },
+      { address: '0x2222222222222222222222222222222222222222', amount: '200' }
+    ],
+    useRelayer: true
+  })
+});
+const data: BatchIssueResponse = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Relayer Response
+{
+  "success": true,
+  "data": {
+    "executed": true,
+    "results": [
+      {
+        "recipient": "0x1111111111111111111111111111111111111111",
+        "amount": "100",
+        "success": true,
+        "transactionHash": "0xaaa..."
+      },
+      {
+        "recipient": "0x2222222222222222222222222222222222222222",
+        "amount": "200",
+        "success": true,
+        "transactionHash": "0xbbb..."
+      },
+      {
+        "recipient": "0x3333333333333333333333333333333333333333",
+        "amount": "300",
+        "success": true,
+        "transactionHash": "0xccc..."
+      }
+    ],
+    "totalRecipients": 3,
+    "successCount": 3
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Frontend Signing Response
+{
+  "success": true,
+  "data": {
+    "executed": false,
+    "transactions": [
+      {
+        "to": "0xAbC123dEf456789012345678901234567890AbCd",
+        "data": "0x12345678...",
+        "description": "Issue 100 tokens to 0x1111...1111"
+      },
+      {
+        "to": "0xAbC123dEf456789012345678901234567890AbCd",
+        "data": "0x23456789...",
+        "description": "Issue 200 tokens to 0x2222...2222"
+      },
+      {
+        "to": "0xAbC123dEf456789012345678901234567890AbCd",
+        "data": "0x34567890...",
+        "description": "Issue 300 tokens to 0x3333...3333"
+      }
+    ],
+    "totalRecipients": 3
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+</ResponseExample>

@@ -1,0 +1,141 @@
+---
+title: 'Get Balance'
+api: 'GET /api/v2/light-tokens/balance/{tokenAddress}/{account}'
+---
+
+Retrieve the token balance for a specific account. Optionally query balance for a specific partition.
+
+## Path Parameters
+
+<ParamField path="tokenAddress" type="string" required>
+  Address of the Light Token contract
+</ParamField>
+
+<ParamField path="account" type="string" required>
+  Account address to check balance for
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="partition" type="string">
+  Specific partition to query. If not provided, returns total balance across all partitions
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="account" type="string">Account address</ResponseField>
+<ResponseField name="balance" type="string">Token balance</ResponseField>
+<ResponseField name="partition" type="string">Partition queried (if specified)</ResponseField>
+<ResponseField name="partitions" type="array">
+  List of partitions the account holds tokens in (when no specific partition is queried)
+  <Expandable title="partition item">
+    <ResponseField name="partition" type="string">Partition identifier (bytes32)</ResponseField>
+    <ResponseField name="balance" type="string">Balance in this partition</ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="frozen" type="boolean">Whether the account is frozen</ResponseField>
+
+<RequestExample>
+```bash cURL
+# Get total balance
+curl -X GET "https://api.trusset.org/api/v2/light-tokens/balance/0xAbC123dEf456789012345678901234567890AbCd/0x1111111111111111111111111111111111111111" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..."
+
+# Get balance for specific partition
+curl -X GET "https://api.trusset.org/api/v2/light-tokens/balance/0xAbC123dEf456789012345678901234567890AbCd/0x1111111111111111111111111111111111111111?partition=0x0000000000000000000000000000000000000000000000000000000000000000" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..."
+```
+```javascript JavaScript
+const response = await fetch(
+  'https://api.trusset.org/api/v2/light-tokens/balance/0xAbC123dEf456789012345678901234567890AbCd/0x1111111111111111111111111111111111111111',
+  {
+    headers: {
+      'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+    }
+  }
+);
+
+const data = await response.json();
+console.log('Balance:', data.data.balance);
+```
+```python Python
+import requests
+
+response = requests.get(
+    'https://api.trusset.org/api/v2/light-tokens/balance/0xAbC123dEf456789012345678901234567890AbCd/0x1111111111111111111111111111111111111111',
+    headers={
+        'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+    }
+)
+
+data = response.json()
+print(f"Balance: {data['data']['balance']}")
+```
+```typescript TypeScript
+interface BalanceResponse {
+  success: boolean;
+  data: {
+    account: string;
+    balance: string;
+    partition?: string;
+    partitions?: Array<{
+      partition: string;
+      balance: string;
+    }>;
+    frozen: boolean;
+  };
+  metadata: {
+    requestId: string;
+    timestamp: string;
+  };
+}
+
+const response = await fetch(
+  'https://api.trusset.org/api/v2/light-tokens/balance/0xAbC123dEf456789012345678901234567890AbCd/0x1111111111111111111111111111111111111111',
+  { headers: { 'x-api-key': 'trusset_v2_abc123xy_...' } }
+);
+const data: BalanceResponse = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Total Balance Response
+{
+  "success": true,
+  "data": {
+    "account": "0x1111111111111111111111111111111111111111",
+    "balance": "5000",
+    "partitions": [
+      {
+        "partition": "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "balance": "3000"
+      },
+      {
+        "partition": "0x0000000000000000000000000000000000000000000000000000000000000001",
+        "balance": "2000"
+      }
+    ],
+    "frozen": false
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Partition Balance Response
+{
+  "success": true,
+  "data": {
+    "account": "0x1111111111111111111111111111111111111111",
+    "balance": "3000",
+    "partition": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "frozen": false
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+</ResponseExample>

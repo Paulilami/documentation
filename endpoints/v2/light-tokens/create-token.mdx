@@ -1,0 +1,190 @@
+---
+title: 'Create Light Token'
+api: 'POST /api/v2/light-tokens/create'
+---
+
+Deploy a new ERC-1400 compliant Light Token via the factory contract. The token is automatically linked to an IVC (Instance Verification Contract) for governance.
+
+## Request Body
+
+<ParamField body="name" type="string" required>
+  Full name of the token (e.g., "Acme Corporation Shares")
+</ParamField>
+
+<ParamField body="symbol" type="string" required>
+  Token symbol, typically 3-5 characters (e.g., "ACME")
+</ParamField>
+
+<ParamField body="decimals" type="number" required>
+  Number of decimal places. Use `0` for indivisible tokens (shares), `18` for divisible assets
+</ParamField>
+
+<ParamField body="ivcAddress" type="string" required>
+  Address of the Instance Verification Contract that will govern this token
+</ParamField>
+
+<ParamField body="metadataURI" type="string">
+  URI pointing to token metadata (IPFS, HTTPS, or on-chain)
+</ParamField>
+
+<ParamField body="useRelayer" type="boolean" default="false">
+  If `true`, the IVC executes the transaction. If `false`, returns unsigned transaction data for frontend signing
+</ParamField>
+
+## Response Fields
+
+<Tabs>
+  <Tab title="Relayer Execution">
+    <ResponseField name="executed" type="boolean">Always `true`</ResponseField>
+    <ResponseField name="tokenAddress" type="string">Deployed token contract address</ResponseField>
+    <ResponseField name="transactionHash" type="string">Transaction hash</ResponseField>
+    <ResponseField name="blockNumber" type="number">Block number of deployment</ResponseField>
+    <ResponseField name="gasUsed" type="string">Gas consumed</ResponseField>
+  </Tab>
+  <Tab title="Frontend Signing">
+    <ResponseField name="executed" type="boolean">Always `false`</ResponseField>
+    <ResponseField name="to" type="string">Factory contract address</ResponseField>
+    <ResponseField name="data" type="string">Encoded transaction data</ResponseField>
+    <ResponseField name="gasLimit" type="string">Recommended gas limit</ResponseField>
+    <ResponseField name="description" type="string">Human-readable description</ResponseField>
+  </Tab>
+</Tabs>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/api/v2/light-tokens/create" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..." \
+  -d '{
+    "name": "Acme Corporation Shares",
+    "symbol": "ACME",
+    "decimals": 0,
+    "ivcAddress": "0x1234567890123456789012345678901234567890",
+    "metadataURI": "ipfs://QmYourMetadataHash",
+    "useRelayer": true
+  }'
+```
+```javascript JavaScript
+const response = await fetch('https://api.trusset.org/api/v2/light-tokens/create', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+  },
+  body: JSON.stringify({
+    name: 'Acme Corporation Shares',
+    symbol: 'ACME',
+    decimals: 0,
+    ivcAddress: '0x1234567890123456789012345678901234567890',
+    metadataURI: 'ipfs://QmYourMetadataHash',
+    useRelayer: true
+  })
+});
+
+const data = await response.json();
+console.log('Token deployed at:', data.data.tokenAddress);
+```
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.trusset.org/api/v2/light-tokens/create',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+    },
+    json={
+        'name': 'Acme Corporation Shares',
+        'symbol': 'ACME',
+        'decimals': 0,
+        'ivcAddress': '0x1234567890123456789012345678901234567890',
+        'metadataURI': 'ipfs://QmYourMetadataHash',
+        'useRelayer': True
+    }
+)
+
+data = response.json()
+print(f"Token deployed at: {data['data']['tokenAddress']}")
+```
+```typescript TypeScript
+interface CreateTokenResponse {
+  success: boolean;
+  data: {
+    executed: true;
+    tokenAddress: string;
+    transactionHash: string;
+    blockNumber: number;
+    gasUsed: string;
+  };
+  metadata: {
+    requestId: string;
+    timestamp: string;
+  };
+}
+
+const response = await fetch('https://api.trusset.org/api/v2/light-tokens/create', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_...'
+  },
+  body: JSON.stringify({
+    name: 'Acme Corporation Shares',
+    symbol: 'ACME',
+    decimals: 0,
+    ivcAddress: '0x1234567890123456789012345678901234567890',
+    metadataURI: 'ipfs://QmYourMetadataHash',
+    useRelayer: true
+  })
+});
+const data: CreateTokenResponse = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Relayer Response
+{
+  "success": true,
+  "data": {
+    "executed": true,
+    "tokenAddress": "0xAbC123dEf456789012345678901234567890AbCd",
+    "transactionHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    "blockNumber": 18500000,
+    "gasUsed": "2500000"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Frontend Signing Response
+{
+  "success": true,
+  "data": {
+    "executed": false,
+    "to": "0x5B27A46CE30277848e8c1f55d2BBC8961Ef2B521",
+    "data": "0x12345678...",
+    "gasLimit": "3000000",
+    "description": "Create Light Token: Acme Corporation Shares (ACME)"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Error - Invalid IVC
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Valid IVC address is required"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+</ResponseExample>
