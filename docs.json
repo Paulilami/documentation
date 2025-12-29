@@ -308,7 +308,7 @@
                 ]
               },
               {
-                "group": "Light Tokens (v2)",
+                "group": "Light Tokens",
                 "pages": [
                   "endpoints/v2/light-tokens/overview",
                   {
@@ -353,6 +353,36 @@
                       "endpoints/v2/light-tokens/get-tokens-by-ivc",
                       "endpoints/v2/light-tokens/get-all-tokens",
                       "endpoints/v2/light-tokens/get-instance-tokens"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Risk Register",
+                "pages": [
+                  "endpoints/v2/risk-register/overview",
+                  {
+                    "group": "Risk Data",
+                    "pages": [
+                      "endpoints/v2/risk-register/submit-risk",
+                      "endpoints/v2/risk-register/get-risk",
+                      "endpoints/v2/risk-register/list-risks",
+                      "endpoints/v2/risk-register/get-history",
+                      "endpoints/v2/risk-register/delete-risk"
+                    ]
+                  },
+                  {
+                    "group": "Hooks",
+                    "pages": [
+                      "endpoints/v2/risk-register/check-risk"
+                    ]
+                  },
+                  {
+                    "group": "Webhooks",
+                    "pages": [
+                      "endpoints/v2/risk-register/create-webhook",
+                      "endpoints/v2/risk-register/list-webhooks",
+                      "endpoints/v2/risk-register/delete-webhook"
                     ]
                   }
                 ]

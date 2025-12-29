@@ -1,0 +1,171 @@
+---
+title: 'Check Risk'
+api: 'GET /api/v2/risk/check/{assetAddress}'
+---
+
+Quick risk check endpoint designed for automated hooks (liquidation, trading gates). Returns whether the asset is within an acceptable risk threshold.
+
+<Info>
+  This endpoint is optimized for high-frequency calls in automated systems. Results are cached for 60 seconds.
+</Info>
+
+## Path Parameters
+
+<ParamField path="assetAddress" type="string" required>
+  The token contract address
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="threshold" type="number">
+  Maximum acceptable risk score. Returns `withinThreshold: true` if asset score ≤ threshold.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="assetAddress" type="string">Token contract address</ResponseField>
+<ResponseField name="hasRiskData" type="boolean">Whether risk data exists for this asset</ResponseField>
+<ResponseField name="riskScore" type="number">Current risk score (if exists)</ResponseField>
+<ResponseField name="riskGrade" type="string">Current letter grade (if exists)</ResponseField>
+<ResponseField name="category" type="string">Risk category (if exists)</ResponseField>
+<ResponseField name="withinThreshold" type="boolean">Whether score is ≤ threshold (null if no threshold provided)</ResponseField>
+<ResponseField name="updatedAt" type="string">Last update timestamp</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.trusset.org/api/v2/risk/check/0xAbC123dEf456789012345678901234567890AbCd?threshold=50" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..."
+```
+```javascript JavaScript
+// Liquidation hook example
+async function shouldAutoBuy(assetAddress) {
+  const response = await fetch(
+    `https://api.trusset.org/api/v2/risk/check/${assetAddress}?threshold=50`,
+    {
+      headers: {
+        'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+      }
+    }
+  );
+
+  const { data } = await response.json();
+  
+  if (!data.hasRiskData) {
+    console.log('No risk data - manual review required');
+    return false;
+  }
+  
+  if (data.withinThreshold) {
+    console.log(`Asset is grade ${data.riskGrade} - auto-buy approved`);
+    return true;
+  }
+  
+  console.log(`Risk too high (${data.riskScore}) - skipping`);
+  return false;
+}
+```
+```python Python
+import requests
+
+def should_auto_buy(asset_address: str, max_risk: int = 50) -> bool:
+    response = requests.get(
+        f'https://api.trusset.org/api/v2/risk/check/{asset_address}',
+        headers={
+            'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+        },
+        params={'threshold': max_risk}
+    )
+    
+    data = response.json()['data']
+    
+    if not data['hasRiskData']:
+        print('No risk data - manual review required')
+        return False
+    
+    if data['withinThreshold']:
+        print(f"Asset is grade {data['riskGrade']} - auto-buy approved")
+        return True
+    
+    print(f"Risk too high ({data['riskScore']}) - skipping")
+    return False
+```
+```typescript TypeScript
+interface RiskCheckResponse {
+  success: boolean;
+  data: {
+    assetAddress: string;
+    hasRiskData: boolean;
+    riskScore?: number;
+    riskGrade?: string;
+    category?: string;
+    withinThreshold: boolean | null;
+    message?: string;
+    updatedAt?: string;
+  };
+}
+
+async function shouldAutoBuy(assetAddress: string): Promise<boolean> {
+  const response = await fetch(
+    `https://api.trusset.org/api/v2/risk/check/${assetAddress}?threshold=50`,
+    { headers: { 'x-api-key': 'trusset_v2_abc123xy_...' } }
+  );
+  
+  const { data }: RiskCheckResponse = await response.json();
+  return data.hasRiskData && data.withinThreshold === true;
+}
+```
+</RequestExample>
+
+<ResponseExample>
+```json Within Threshold
+{
+  "success": true,
+  "data": {
+    "assetAddress": "0xabc123def456789012345678901234567890abcd",
+    "hasRiskData": true,
+    "riskScore": 35,
+    "riskGrade": "C",
+    "category": "credit",
+    "withinThreshold": true,
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Exceeds Threshold
+{
+  "success": true,
+  "data": {
+    "assetAddress": "0xabc123def456789012345678901234567890abcd",
+    "hasRiskData": true,
+    "riskScore": 72,
+    "riskGrade": "E",
+    "category": "market",
+    "withinThreshold": false,
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json No Risk Data
+{
+  "success": true,
+  "data": {
+    "assetAddress": "0xabc123def456789012345678901234567890abcd",
+    "hasRiskData": false,
+    "withinThreshold": null,
+    "message": "No risk data available"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+</ResponseExample>

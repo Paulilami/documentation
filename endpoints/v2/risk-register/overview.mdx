@@ -1,0 +1,76 @@
+---
+title: 'Risk Register Overview'
+description: 'Standardized risk data management for tokenized assets'
+---
+
+The Risk Register API provides a standardized way for financial institutions to publish, manage, and consume risk data for tokenized assets. This enables automated decision-making in liquidation, trading, and lending scenarios.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Standardized Schema" icon="table">
+    Normalized risk scores (1-100), letter grades (A-F), and categorized risk types
+  </Card>
+  <Card title="Full Audit Trail" icon="clock-rotate-left">
+    Complete history of all risk updates with timestamps and reasons
+  </Card>
+  <Card title="Webhook Notifications" icon="bell">
+    Real-time notifications when risk data changes
+  </Card>
+  <Card title="Hook Integration" icon="plug">
+    Built for automated liquidation and trading decisions
+  </Card>
+</CardGroup>
+
+## Risk Schema
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `riskScore` | 1-100 | Normalized risk score (higher = riskier) |
+| `riskGrade` | A-F | Letter grade derived from score |
+| `category` | enum | `credit`, `market`, `liquidity`, `operational`, `regulatory`, `counterparty` |
+| `metadata` | object | Issuer-specific details (LTV, collateral type, etc.) |
+
+## Grade Mapping
+
+| Score Range | Grade | Risk Level |
+|-------------|-------|------------|
+| 1-16 | A | Very Low |
+| 17-33 | B | Low |
+| 34-50 | C | Moderate |
+| 51-66 | D | Elevated |
+| 67-83 | E | High |
+| 84-100 | F | Very High |
+
+## Common Use Cases
+
+### Automated Liquidation Decisions
+```javascript
+// Check if asset is within acceptable risk before auto-buying
+const response = await fetch(
+  `https://api.trusset.org/api/v2/risk/check/${assetAddress}?threshold=50`,
+  { headers: { 'x-api-key': apiKey } }
+);
+
+const { data } = await response.json();
+if (data.withinThreshold) {
+  // Proceed with automated purchase at discount
+}
+```
+
+### Risk-Based Trading Gates
+```javascript
+// Subscribe to risk updates for real-time trading decisions
+await fetch('https://api.trusset.org/api/v2/risk/webhooks', {
+  method: 'POST',
+  headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    endpoint: 'https://mybank.com/risk-updates',
+    events: ['risk.updated']
+  })
+});
+```
+
+## Authentication
+
+All Risk Register endpoints require v2 API key authentication via the `x-api-key` header and the `tokenization` service enabled on your instance.

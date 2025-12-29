@@ -66,7 +66,9 @@ All endpoints return a unified response format:
 }
 ```
 
-## v2 Instance Gateway (New)
+## v2 Instance Gateway
+
+### Core Infrastructure
 
 <CardGroup cols={2}>
   <Card title="Instance Info" icon="circle-info" href="/endpoints/v2/instance/get-info">
@@ -80,6 +82,52 @@ All endpoints return a unified response format:
   </Card>
   <Card title="Services" icon="cubes" href="/endpoints/v2/services/list-services">
     List enabled services and their capabilities
+  </Card>
+</CardGroup>
+
+### Light Tokens (ERC-1400)
+
+<CardGroup cols={2}>
+  <Card title="Create Token" icon="plus" href="/endpoints/v2/light-tokens/create-token">
+    Deploy new Light Token contracts with partition support
+  </Card>
+  <Card title="Issue Tokens" icon="coins" href="/endpoints/v2/light-tokens/issue-tokens">
+    Mint tokens to recipients with partition support
+  </Card>
+  <Card title="Transfer Tokens" icon="arrow-right-arrow-left" href="/endpoints/v2/light-tokens/transfer-tokens">
+    Transfer tokens between addresses with compliance checks
+  </Card>
+  <Card title="Access Control" icon="shield-halved" href="/endpoints/v2/light-tokens/freeze-account">
+    Freeze accounts, add controllers, restrict transfers
+  </Card>
+  <Card title="Documents" icon="file-contract" href="/endpoints/v2/light-tokens/set-document">
+    Attach legal documents and metadata to tokens
+  </Card>
+  <Card title="Query Data" icon="magnifying-glass" href="/endpoints/v2/light-tokens/get-token-info">
+    Get token info, balances, holders, and transfer eligibility
+  </Card>
+</CardGroup>
+
+### Risk Register
+
+<CardGroup cols={2}>
+  <Card title="Overview" icon="shield-check" href="/endpoints/v2/risk-register/overview">
+    Standardized risk data management for tokenized assets
+  </Card>
+  <Card title="Submit Risk Data" icon="upload" href="/endpoints/v2/risk-register/submit-risk">
+    Create or update risk scores and grades for assets
+  </Card>
+  <Card title="Check Risk" icon="gauge-high" href="/endpoints/v2/risk-register/check-risk">
+    Quick risk threshold checks for automated hooks
+  </Card>
+  <Card title="Risk History" icon="clock-rotate-left" href="/endpoints/v2/risk-register/get-history">
+    Full audit trail of risk updates
+  </Card>
+  <Card title="Risk Webhooks" icon="bell" href="/endpoints/v2/risk-register/create-webhook">
+    Subscribe to real-time risk update notifications
+  </Card>
+  <Card title="List Records" icon="list" href="/endpoints/v2/risk-register/list-risks">
+    Query and filter risk records by category, score, or grade
   </Card>
 </CardGroup>
 
@@ -145,6 +193,8 @@ v2 endpoints use `/api/v2/` prefix:
 - Instance info: `GET /api/v2/instance`
 - Services: `GET /api/v2/services`
 - API Keys: `GET /api/v2/instance/api-keys`
+- Light Tokens: `GET /api/v2/light-tokens/...`
+- Risk Register: `GET /api/v2/risk/...`
 
 ### 4. Keep v1 Endpoints Working
 

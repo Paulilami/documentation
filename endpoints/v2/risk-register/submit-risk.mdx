@@ -1,0 +1,187 @@
+---
+title: 'Submit Risk Data'
+api: 'POST /api/v2/risk/assets/{assetAddress}'
+---
+
+Create or update risk data for a tokenized asset. If a record exists, it will be updated and the previous values stored in history.
+
+## Path Parameters
+
+<ParamField path="assetAddress" type="string" required>
+  The token contract address
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="riskScore" type="number" required>
+  Risk score from 1 (lowest risk) to 100 (highest risk)
+</ParamField>
+
+<ParamField body="riskGrade" type="string">
+  Optional letter grade (A-F). Auto-calculated from score if not provided.
+</ParamField>
+
+<ParamField body="category" type="string" default="market">
+  Risk category: `credit`, `market`, `liquidity`, `operational`, `regulatory`, `counterparty`
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Additional issuer-specific risk details
+</ParamField>
+
+<ParamField body="reason" type="string">
+  Reason for the update (stored in history)
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="id" type="string">Unique record identifier</ResponseField>
+<ResponseField name="assetAddress" type="string">Token contract address</ResponseField>
+<ResponseField name="riskScore" type="number">Current risk score</ResponseField>
+<ResponseField name="riskGrade" type="string">Current letter grade</ResponseField>
+<ResponseField name="category" type="string">Risk category</ResponseField>
+<ResponseField name="metadata" type="object">Additional details</ResponseField>
+<ResponseField name="updatedAt" type="string">Last update timestamp</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/api/v2/risk/assets/0xAbC123dEf456789012345678901234567890AbCd" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "riskScore": 35,
+    "category": "credit",
+    "metadata": {
+      "ltv": 0.65,
+      "collateralType": "gold",
+      "auditor": "Deloitte"
+    },
+    "reason": "Quarterly reassessment"
+  }'
+```
+```javascript JavaScript
+const response = await fetch(
+  'https://api.trusset.org/api/v2/risk/assets/0xAbC123dEf456789012345678901234567890AbCd',
+  {
+    method: 'POST',
+    headers: {
+      'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      riskScore: 35,
+      category: 'credit',
+      metadata: {
+        ltv: 0.65,
+        collateralType: 'gold',
+        auditor: 'Deloitte'
+      },
+      reason: 'Quarterly reassessment'
+    })
+  }
+);
+
+const data = await response.json();
+console.log('Risk record updated:', data.data.riskGrade);
+```
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.trusset.org/api/v2/risk/assets/0xAbC123dEf456789012345678901234567890AbCd',
+    headers={
+        'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...',
+        'Content-Type': 'application/json'
+    },
+    json={
+        'riskScore': 35,
+        'category': 'credit',
+        'metadata': {
+            'ltv': 0.65,
+            'collateralType': 'gold',
+            'auditor': 'Deloitte'
+        },
+        'reason': 'Quarterly reassessment'
+    }
+)
+
+data = response.json()
+print(f"Risk grade: {data['data']['riskGrade']}")
+```
+```typescript TypeScript
+interface RiskRecord {
+  id: string;
+  assetAddress: string;
+  riskScore: number;
+  riskGrade: string;
+  category: string;
+  metadata: Record<string, any>;
+  updatedAt: string;
+}
+
+interface RiskResponse {
+  success: boolean;
+  data: RiskRecord;
+  metadata: { requestId: string; timestamp: string };
+}
+
+const response = await fetch(
+  'https://api.trusset.org/api/v2/risk/assets/0xAbC123...',
+  {
+    method: 'POST',
+    headers: {
+      'x-api-key': 'trusset_v2_abc123xy_...',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      riskScore: 35,
+      category: 'credit',
+      metadata: { ltv: 0.65 },
+      reason: 'Quarterly reassessment'
+    })
+  }
+);
+const data: RiskResponse = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Created
+{
+  "success": true,
+  "data": {
+    "id": "clx1234567890abcdef",
+    "instanceId": "inst_abc123",
+    "assetAddress": "0xabc123def456789012345678901234567890abcd",
+    "riskScore": 35,
+    "riskGrade": "C",
+    "category": "credit",
+    "metadata": {
+      "ltv": 0.65,
+      "collateralType": "gold",
+      "auditor": "Deloitte"
+    },
+    "updatedBy": "issuer_xyz",
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Validation Error
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "riskScore must be a number between 1 and 100"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+</ResponseExample>
