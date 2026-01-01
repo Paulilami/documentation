@@ -329,7 +329,7 @@
                       "endpoints/v2/light-tokens/remove-controller",
                       "endpoints/v2/light-tokens/freeze-account",
                       "endpoints/v2/light-tokens/unfreeze-account",
-                      "endpoints/v2/light-tokens/set-transfers-restricted"
+                      "endpoints/v2/light-tokens/set-transfer-restricted"
                     ]
                   },
                   {
