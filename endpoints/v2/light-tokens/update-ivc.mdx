@@ -3,7 +3,7 @@ title: 'Update IVC'
 api: 'POST /api/v2/light-tokens/update-ivc'
 ---
 
-Change the Instance Verification Contract (IVC) that governs this token. The IVC controls compliance rules, transfer validations, and authorized operations.
+Change the Instance Vault Contract (IVC) that governs this token. The IVC controls compliance rules, transfer validations, and authorized operations.
 
 <Warning>
   Changing the IVC is a critical governance operation. Ensure the new IVC is properly configured before updating.
@@ -16,7 +16,7 @@ Change the Instance Verification Contract (IVC) that governs this token. The IVC
 </ParamField>
 
 <ParamField body="newIVC" type="string" required>
-  Address of the new Instance Verification Contract
+  Address of the new Instance Vault Contract
 </ParamField>
 
 <ParamField body="useRelayer" type="boolean" default="false">

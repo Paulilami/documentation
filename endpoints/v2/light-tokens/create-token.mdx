@@ -3,7 +3,7 @@ title: 'Create Light Token'
 api: 'POST /api/v2/light-tokens/create'
 ---
 
-Deploy a new ERC-1400 compliant Light Token via the factory contract. The token is automatically linked to an IVC (Instance Verification Contract) for governance.
+Deploy a new ERC-1400 compliant Light Token via the factory contract. The token is automatically linked to an IVC (Instance Vault Contract) for governance.
 
 ## Request Body
 
@@ -20,7 +20,7 @@ Deploy a new ERC-1400 compliant Light Token via the factory contract. The token 
 </ParamField>
 
 <ParamField body="ivcAddress" type="string" required>
-  Address of the Instance Verification Contract that will govern this token
+  Address of the Instance Vault Contract that will govern this token
 </ParamField>
 
 <ParamField body="metadataURI" type="string">
