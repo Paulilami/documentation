@@ -667,6 +667,11 @@
           "icon": "globe"
         },
         {
+          "anchor": "MiCA Register",
+          "href": "https://trusset.org/mica-register",
+          "icon": "institution"
+        },
+        {
           "anchor": "Demo Call",
           "href": "https://cal.com/paul-ilami-trusset",
           "icon": "phone"
