@@ -5,6 +5,10 @@ description: "Asset-specific lending implementations with unified interfaces"
 
 Lending markets adapt to different token types through specialized frameworks that account for asset-specific characteristics. Gold-backed tokens use different risk parameters than real estate tokens, but all frameworks expose identical interfaces for consistent integration.
 
+<Note>
+creating a new lending market requires to connect either an AMM / Orderbook, or an active liquidation hook to process liquidations. Connections happen with one click.
+</Note>
+
 ## Framework Architecture
 
 Each asset category gets a dedicated lending framework optimized for its unique properties. Commodity tokens emphasize short-term liquidity with conservative LTVs, while real estate tokens support longer holding periods with higher LTVs reflecting lower volatility.
