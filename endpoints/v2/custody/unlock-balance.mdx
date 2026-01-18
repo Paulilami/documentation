@@ -1,0 +1,132 @@
+---
+title: 'Unlock Balance'
+api: 'POST /api/v2/custody/api/balances/unlock'
+---
+
+Release previously locked tokens, making them available for transfer or debit operations again.
+
+## Request Body
+
+<ParamField body="tokenAddress" type="string" required>
+  Token contract address
+</ParamField>
+
+<ParamField body="customerRef" type="string" required>
+  Customer identifier
+</ParamField>
+
+<ParamField body="amount" type="string" required>
+  Amount to unlock
+</ParamField>
+
+<ParamField body="reference" type="string">
+  Unlock reason or reference ID
+</ParamField>
+
+<ParamField body="transactionMetadata" type="object">
+  Metadata to store with the transaction
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="customerRef" type="string">Customer identifier</ResponseField>
+<ResponseField name="tokenAddress" type="string">Token address</ResponseField>
+<ResponseField name="lockedBalance" type="string">New locked balance</ResponseField>
+<ResponseField name="transactionId" type="string">Created transaction ID</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/api/v2/custody/api/balances/unlock" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..." \
+  -d '{
+    "tokenAddress": "0xAbC123dEf456789012345678901234567890AbCd",
+    "customerRef": "CUST-12345",
+    "amount": "50.0",
+    "reference": "SETTLEMENT-COMPLETE-001"
+  }'
+```
+```javascript JavaScript
+const response = await fetch('https://api.trusset.org/api/v2/custody/api/balances/unlock', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    customerRef: 'CUST-12345',
+    amount: '50.0',
+    reference: 'SETTLEMENT-COMPLETE-001'
+  })
+});
+
+const data = await response.json();
+console.log(`Remaining locked: ${data.data.lockedBalance}`);
+```
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.trusset.org/api/v2/custody/api/balances/unlock',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+    },
+    json={
+        'tokenAddress': '0xAbC123dEf456789012345678901234567890AbCd',
+        'customerRef': 'CUST-12345',
+        'amount': '50.0'
+    }
+)
+
+data = response.json()
+print(f"Remaining locked: {data['data']['lockedBalance']}")
+```
+```typescript TypeScript
+const response = await fetch('https://api.trusset.org/api/v2/custody/api/balances/unlock', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    customerRef: 'CUST-12345',
+    amount: '50.0'
+  })
+});
+const data = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "customerRef": "CUST-12345",
+    "tokenAddress": "0xabc123def456789012345678901234567890abcd",
+    "lockedBalance": "0.0",
+    "transactionId": "clx_tx_unlock_001"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Error - Exceeds Locked
+{
+  "success": false,
+  "error": {
+    "code": "UNLOCK_EXCEEDS_LOCKED",
+    "message": "Cannot unlock more than locked balance"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+</ResponseExample>

@@ -357,6 +357,46 @@
                 ]
               },
               {
+                "group": "Custodial Balances",
+                "pages": [
+                  "endpoints/v2/custody/overview",
+                  {
+                    "group": "Token Registry",
+                    "pages": [
+                      "endpoints/v2/custody/register-token",
+                      "endpoints/v2/custody/list-tokens",
+                      "endpoints/v2/custody/get-token",
+                      "endpoints/v2/custody/deactivate-token",
+                      "endpoints/v2/custody/get-holders"
+                    ]
+                  },
+                  {
+                    "group": "Balance Operations",
+                    "pages": [
+                      "endpoints/v2/custody/credit-balance",
+                      "endpoints/v2/custody/debit-balance",
+                      "endpoints/v2/custody/transfer-balance",
+                      "endpoints/v2/custody/batch-credit",
+                      "endpoints/v2/custody/lock-balance",
+                      "endpoints/v2/custody/unlock-balance"
+                    ]
+                  },
+                  {
+                    "group": "Balance Queries",
+                    "pages": [
+                      "endpoints/v2/custody/get-customer-balances",
+                      "endpoints/v2/custody/get-balance"
+                    ]
+                  },
+                  {
+                    "group": "Transactions",
+                    "pages": [
+                      "endpoints/v2/custody/get-transactions"
+                    ]
+                  }
+                ]
+              },
+              {
                 "group": "Risk Register",
                 "pages": [
                   "endpoints/v2/risk-register/overview",

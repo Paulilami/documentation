@@ -1,0 +1,67 @@
+---
+title: 'Custodial Balances Overview'
+description: 'Backend-managed balance tracking for tokenized assets'
+---
+
+The Custodial Balances API enables financial institutions to track customer ownership of tokenized assets in a backend database rather than requiring customers to hold tokens in their own wallets. This architecture enables:
+
+- **Gasless transactions** - No blockchain fees for internal transfers
+- **Instant settlements** - Database operations complete immediately
+- **Flexible customer identification** - Use any reference system (customer ID, account number, hash)
+- **Full audit trail** - Complete transaction ledger for compliance
+
+## Customer Reference
+
+The `customerRef` field is a flexible identifier that you define. It can be:
+
+- Internal customer ID (`CUST-12345`)
+- Account number (`ACC-987654321`)
+- Hashed identifier (`sha256:a1b2c3d4...`)
+- External reference URI (`urn:customer:bank-x:12345`)
+
+<Warning>
+  The `customerRef` must be unique per token within your instance. Maximum length is 256 characters.
+</Warning>
+
+## Token Registration
+
+Before tracking balances, register each token with its metadata:
+```javascript
+await fetch('https://api.trusset.org/api/v2/custody/api/tokens', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0x...',
+    name: 'Gold Token',
+    symbol: 'GLD',
+    decimals: 18,
+    metadataURI: 'https://example.com/metadata.json',
+    assetType: 'commodity'
+  })
+});
+```
+
+## Balance Operations
+
+| Operation | Description |
+|-----------|-------------|
+| `credit` | Increase customer balance (e.g., after deposit/purchase) |
+| `debit` | Decrease customer balance (e.g., after withdrawal/redemption) |
+| `transfer` | Move balance between two customers |
+| `lock` | Reserve balance (e.g., pending settlement) |
+| `unlock` | Release locked balance |
+
+## Transaction Types
+
+All operations create immutable transaction records:
+
+| Type | Description |
+|------|-------------|
+| `credit` | Balance increase |
+| `debit` | Balance decrease |
+| `transfer` | Internal movement |
+| `lock` | Balance locked |
+| `unlock` | Balance unlocked |

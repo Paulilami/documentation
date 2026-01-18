@@ -1,0 +1,164 @@
+---
+title: 'Register Token'
+api: 'POST /api/v2/custody/api/tokens'
+---
+
+Register a token for custodial balance tracking. This creates a token entry in your instance that can be used to track customer balances.
+
+## Request Body
+
+<ParamField body="tokenAddress" type="string" required>
+  On-chain token contract address
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  Human-readable token name
+</ParamField>
+
+<ParamField body="symbol" type="string" required>
+  Token symbol (e.g., "GLD", "TSLA")
+</ParamField>
+
+<ParamField body="decimals" type="number" default="18">
+  Token decimal places
+</ParamField>
+
+<ParamField body="metadataURI" type="string">
+  URI pointing to token metadata JSON
+</ParamField>
+
+<ParamField body="assetType" type="string">
+  Asset category (e.g., "commodity", "stock", "bond")
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="id" type="string">Unique token registry ID</ResponseField>
+<ResponseField name="instanceId" type="string">Your instance ID</ResponseField>
+<ResponseField name="tokenAddress" type="string">Normalized token address</ResponseField>
+<ResponseField name="name" type="string">Token name</ResponseField>
+<ResponseField name="symbol" type="string">Token symbol</ResponseField>
+<ResponseField name="decimals" type="number">Decimal places</ResponseField>
+<ResponseField name="metadataURI" type="string">Metadata URI</ResponseField>
+<ResponseField name="assetType" type="string">Asset type</ResponseField>
+<ResponseField name="isActive" type="boolean">Whether token is active</ResponseField>
+<ResponseField name="createdAt" type="string">Creation timestamp</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/api/v2/custody/api/tokens" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..." \
+  -d '{
+    "tokenAddress": "0xAbC123dEf456789012345678901234567890AbCd",
+    "name": "Trusset Gold",
+    "symbol": "tGLD",
+    "decimals": 18,
+    "metadataURI": "https://api.trusset.org/metadata/tgld.json",
+    "assetType": "commodity"
+  }'
+```
+```javascript JavaScript
+const response = await fetch('https://api.trusset.org/api/v2/custody/api/tokens', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    name: 'Trusset Gold',
+    symbol: 'tGLD',
+    decimals: 18,
+    metadataURI: 'https://api.trusset.org/metadata/tgld.json',
+    assetType: 'commodity'
+  })
+});
+
+const data = await response.json();
+console.log('Token registered:', data.data.id);
+```
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.trusset.org/api/v2/custody/api/tokens',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+    },
+    json={
+        'tokenAddress': '0xAbC123dEf456789012345678901234567890AbCd',
+        'name': 'Trusset Gold',
+        'symbol': 'tGLD',
+        'decimals': 18,
+        'metadataURI': 'https://api.trusset.org/metadata/tgld.json',
+        'assetType': 'commodity'
+    }
+)
+
+data = response.json()
+print(f"Token registered: {data['data']['id']}")
+```
+```typescript TypeScript
+interface RegisterTokenResponse {
+  success: boolean;
+  data: {
+    id: string;
+    instanceId: string;
+    tokenAddress: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    metadataURI: string | null;
+    assetType: string | null;
+    isActive: boolean;
+    createdAt: string;
+  };
+  metadata: {
+    requestId: string;
+    timestamp: string;
+  };
+}
+
+const response = await fetch('https://api.trusset.org/api/v2/custody/api/tokens', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    name: 'Trusset Gold',
+    symbol: 'tGLD',
+    decimals: 18
+  })
+});
+const data: RegisterTokenResponse = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "id": "clx1234567890abcdef",
+    "instanceId": "inst_abc123",
+    "tokenAddress": "0xabc123def456789012345678901234567890abcd",
+    "name": "Trusset Gold",
+    "symbol": "tGLD",
+    "decimals": 18,
+    "metadataURI": "https://api.trusset.org/metadata/tgld.json",
+    "assetType": "commodity",
+    "isActive": true,
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+</ResponseExample>

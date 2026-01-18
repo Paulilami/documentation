@@ -1,0 +1,159 @@
+---
+title: 'Batch Credit'
+api: 'POST /api/v2/custody/api/balances/batch-credit'
+---
+
+Credit multiple customers in a single atomic transaction. Useful for distributing dividends, airdrops, or bulk imports.
+
+<Info>
+  Maximum 100 operations per batch. All operations succeed or fail together.
+</Info>
+
+## Request Body
+
+<ParamField body="tokenAddress" type="string" required>
+  Token contract address
+</ParamField>
+
+<ParamField body="operations" type="array" required>
+  Array of credit operations (max 100)
+  
+  <Expandable title="Operation object">
+    <ParamField body="customerRef" type="string" required>Customer identifier</ParamField>
+    <ParamField body="amount" type="string" required>Amount to credit</ParamField>
+    <ParamField body="reference" type="string">Operation-specific reference</ParamField>
+    <ParamField body="metadata" type="object">Customer metadata</ParamField>
+    <ParamField body="transactionMetadata" type="object">Transaction metadata</ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="reference" type="string">
+  Batch-level reference ID
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="tokenAddress" type="string">Token address</ResponseField>
+<ResponseField name="results" type="array">Array of operation results</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/api/v2/custody/api/balances/batch-credit" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: trusset_v2_abc123xy_a1b2c3d4e5f6..." \
+  -d '{
+    "tokenAddress": "0xAbC123dEf456789012345678901234567890AbCd",
+    "reference": "DIVIDEND-2024-Q1",
+    "operations": [
+      { "customerRef": "CUST-001", "amount": "10.5" },
+      { "customerRef": "CUST-002", "amount": "25.0" },
+      { "customerRef": "CUST-003", "amount": "15.75" }
+    ]
+  }'
+```
+```javascript JavaScript
+const response = await fetch('https://api.trusset.org/api/v2/custody/api/balances/batch-credit', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    reference: 'DIVIDEND-2024-Q1',
+    operations: [
+      { customerRef: 'CUST-001', amount: '10.5' },
+      { customerRef: 'CUST-002', amount: '25.0' },
+      { customerRef: 'CUST-003', amount: '15.75' }
+    ]
+  })
+});
+
+const data = await response.json();
+console.log(`Credited ${data.data.results.length} customers`);
+```
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.trusset.org/api/v2/custody/api/balances/batch-credit',
+    headers={
+        'Content-Type': 'application/json',
+        'x-api-key': 'trusset_v2_abc123xy_a1b2c3d4e5f6...'
+    },
+    json={
+        'tokenAddress': '0xAbC123dEf456789012345678901234567890AbCd',
+        'reference': 'DIVIDEND-2024-Q1',
+        'operations': [
+            {'customerRef': 'CUST-001', 'amount': '10.5'},
+            {'customerRef': 'CUST-002', 'amount': '25.0'},
+            {'customerRef': 'CUST-003', 'amount': '15.75'}
+        ]
+    }
+)
+
+data = response.json()
+print(f"Credited {len(data['data']['results'])} customers")
+```
+```typescript TypeScript
+interface BatchCreditResponse {
+  success: boolean;
+  data: {
+    tokenAddress: string;
+    results: Array<{
+      customerRef: string;
+      amount: string;
+      transactionId: string;
+    }>;
+  };
+}
+
+const response = await fetch('https://api.trusset.org/api/v2/custody/api/balances/batch-credit', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'trusset_v2_abc123xy_...'
+  },
+  body: JSON.stringify({
+    tokenAddress: '0xAbC123dEf456789012345678901234567890AbCd',
+    operations: [
+      { customerRef: 'CUST-001', amount: '10.5' },
+      { customerRef: 'CUST-002', amount: '25.0' }
+    ]
+  })
+});
+const data: BatchCreditResponse = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "tokenAddress": "0xabc123def456789012345678901234567890abcd",
+    "results": [
+      {
+        "customerRef": "CUST-001",
+        "amount": "10.5",
+        "transactionId": "clx_tx_batch_001"
+      },
+      {
+        "customerRef": "CUST-002",
+        "amount": "25.0",
+        "transactionId": "clx_tx_batch_002"
+      },
+      {
+        "customerRef": "CUST-003",
+        "amount": "15.75",
+        "transactionId": "clx_tx_batch_003"
+      }
+    ]
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+</ResponseExample>
