@@ -5,6 +5,10 @@ description: "Automated position closure when collateral value falls below safet
 
 Liquidation protects lending markets from insolvency by automatically closing unhealthy positions before debt exceeds collateral value. When positions breach liquidation thresholds, liquidators repay debt and seize collateral at discounted prices.
 
+<Note>
+NOTE: Liquidation documentation is outdated and now managed by our liquidation router. 
+</Note>
+
 ## Liquidation Triggers
 
 Positions liquidate when health factors drop below 1.0, indicating debt value exceeds safe borrowing limits based on collateral. Health factors calculate continuously as collateral prices fluctuate and interest accrues.
