@@ -24,24 +24,6 @@ Stock Tokens bring traditional equity on-chain with full regulatory compliance. 
 
 ## Architecture
 
-Stock Tokens implement the ERC-3643 standard for regulated securities, connecting three core components:
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Stock Token                          │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐ │
-│  │   ERC-20    │  │   Access    │  │   Corporate     │ │
-│  │   Base      │  │   Control   │  │   Actions       │ │
-│  └─────────────┘  └─────────────┘  └─────────────────┘ │
-└───────────────────────┬─────────────────────────────────┘
-                        │
-        ┌───────────────┼───────────────┐
-        ▼               ▼               ▼
-┌──────────────┐ ┌──────────────┐ ┌──────────────────┐
-│   Identity   │ │  Compliance  │ │   Authorized     │
-│   Registry   │ │   Module     │ │   Contracts      │
-└──────────────┘ └──────────────┘ └──────────────────┘
-```
-
 ### Identity Registry
 
 Every transfer validates both sender and receiver against the Identity Registry. The registry tracks:
