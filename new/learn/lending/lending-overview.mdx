@@ -3,119 +3,154 @@ title: "Overview"
 description: "Overcollateralized lending markets that transform tokenized assets into instant liquidity"
 ---
 
-Lending markets enable financial institutions to operate automated credit facilities where users borrow against tokenized assets. Deposit security tokens as collateral, receive instant USDC loans, and maintain asset ownership while accessing liquidity.
+Lending markets enable financial institutions to operate automated credit facilities where users borrow USDC against tokenized assets. Deposit security tokens as collateral, receive instant loans, and maintain asset ownership while accessing liquidity.
+
 <Note>
-Please note: The lending documentation is outdated and will soon be updated. 
+Our lending v2 APIs are coming soon. Financial institutions can currently manage lending markets through the Issuers App, with full API v2 access launching shortly.
 </Note>
-Banks earn interest on every loan without manual underwriting or payment collection. The infrastructure handles risk management, liquidations, and compliance automatically—creating new revenue streams from existing tokenized asset portfolios.
 
 ## Why Deploy Lending Markets
 
 <CardGroup cols={2}>
-    <Card title="New Revenue Stream" icon="chart-line">
-        Earn interest on loans backed by tokenized assets without traditional credit risk assessment
+    <Card title="Automated Revenue" icon="chart-line">
+        Earn interest on every loan without manual underwriting, credit assessment, or payment collection
     </Card>
     <Card title="Instant Liquidity" icon="droplet">
-        Users access capital against illiquid securities without selling positions or triggering tax events
+        Users access capital against tokenized securities without selling positions or triggering taxable events
     </Card>
-    <Card title="Automated Operations" icon="robot">
-        Smart contracts handle collateral management, interest accrual, and liquidations without manual intervention
+    <Card title="Zero Overhead" icon="robot">
+        Smart contracts handle collateral management, interest accrual, and liquidations automatically
     </Card>
-    <Card title="Risk Protection" icon="shield-check">
+    <Card title="Built-in Risk Protection" icon="shield-check">
         Overcollateralization plus automated liquidations protect against default losses
     </Card>
 </CardGroup>
 
 ## How It Works
 
-Users deposit tokenized assets into lending markets as collateral. The market values collateral using oracle prices from trading pools, calculating maximum borrowing capacity based on configured loan-to-value ratios.
+<Steps>
+    <Step title="Deposit Collateral">
+        Users deposit tokenized assets (stocks, commodities, real estate tokens) into your lending market as collateral
+    </Step>
+    <Step title="Receive Loan">
+        The market calculates borrowing capacity based on collateral value and configured loan-to-value ratios, then issues USDC instantly
+    </Step>
+    <Step title="Interest Accrues">
+        Interest accumulates continuously based on market utilization—higher demand automatically increases rates
+    </Step>
+    <Step title="Repay or Liquidate">
+        Users repay anytime to unlock collateral. If collateral value drops below safety thresholds, automated liquidation protects the pool
+    </Step>
+</Steps>
 
-Borrowers receive USDC loans instantly against their locked collateral. Interest accrues continuously based on utilization rates—higher borrowing demand increases rates automatically, incentivizing more liquidity provision.
+## Key Concepts
 
-If collateral value drops and loan-to-value ratios exceed liquidation thresholds, liquidators repay debt and seize collateral at discounted prices. This protects lenders while maintaining market solvency.
+### Health Factor
 
-<Accordion title="Lending Flow Example">
-User owns 100 tokenized gold tokens valued at $200 each:
+The health factor measures position safety. It compares collateral value against outstanding debt:
 
-**Step 1: Deposit Collateral**
-- Deposits 100 tokens worth $20,000
-- Market applies 75% collateral factor
-- Maximum borrowing capacity: $15,000
+$$
+\text{Health Factor} = \frac{\text{Collateral Value} \times \text{Liquidation Threshold}}{\text{Total Debt}}
+$$
 
-**Step 2: Borrow**
-- User borrows $10,000 USDC
-- Initial LTV: 50% ($10,000 / $20,000)
-- Interest begins accruing at current rate (e.g., 8% APR)
+- **Health Factor > 1**: Position is safe
+- **Health Factor < 1**: Position can be liquidated
 
-**Step 3: Interest Accrual**
-- After 30 days: $66 interest accumulated
-- Total debt: $10,066
-- Current LTV: ~50.3%
+### Collateral Factor vs Liquidation Threshold
 
-**Step 4: Repayment**
-- User repays $10,066 USDC
-- Collateral unlocks and returns to user
-- Position closes automatically
+| Parameter | Purpose | Example |
+|-----------|---------|---------|
+| Collateral Factor | Maximum borrowing power | 75% means $10,000 collateral = $7,500 max borrow |
+| Liquidation Threshold | Safety buffer before liquidation | 85% provides a 10% buffer above collateral factor |
 
-**Alternative: Price Drop**
-- Gold price drops to $150
-- Collateral value: $15,000
-- LTV rises to 67%
-- Approaching 80% liquidation threshold
-- User must either add collateral or repay debt
-</Accordion>
+This gap gives borrowers time to add collateral or repay debt before liquidation triggers.
 
-## Market Architecture
+### Interest Rate Model
 
-Each financial institution deploys independent lending markets for their tokenized assets. Markets operate in isolation—Bank A's lending market doesn't interact with Bank B's market, maintaining regulatory separation and risk boundaries.
+Interest rates adjust automatically based on pool utilization:
 
-Institutions configure collateral acceptance, loan-to-value ratios, liquidation thresholds, and interest rate models per asset type. Gold tokens might accept 75% LTV while real estate tokens require 60% LTV based on volatility expectations.
+$$
+\text{Utilization} = \frac{\text{Total Borrowed}}{\text{Total Deposits}}
+$$
 
-## Integration Options
-
-**Online Banking Integration:** Add "Borrow" buttons directly in digital banking interfaces. Users deposit assets from their wallets and receive loans without leaving your platform. Backend APIs handle all blockchain interactions transparently.
-
-**Standalone Platform:** Deploy dedicated lending interfaces separate from core banking systems. Users access lending markets through white-label platforms that maintain your branding and compliance controls.
-
-**API-Only:** Build custom interfaces using REST APIs while leveraging Trusset's smart contract infrastructure for collateral management, liquidations, and interest calculations.
-
-<Note>
-Operating lending markets requires appropriate regulatory licenses for credit provision. Typically only licensed banks or financial institutions with lending authority can deploy these markets legally.
-</Note>
+Low utilization = lower rates (encouraging borrowing). High utilization = higher rates (encouraging deposits and repayments).
 
 ## Revenue Model
 
-Banks earn the spread between borrowing rates and liquidity provider returns. When users borrow at 8% APR, liquidity providers might earn 6% APR with the 2% spread covering operational costs and generating profit.
+Institutions earn the spread between what borrowers pay and what liquidity providers receive.
 
-Interest accrues continuously with no minimum loan terms or prepayment penalties. Users repay anytime, with excess payments reducing principal immediately. This flexibility increases usage while maintaining predictable returns for institutions.
+<Accordion title="Example Revenue Calculation">
+**Pool Configuration:**
+- Total deposits: $1,000,000
+- Total borrowed: $600,000
+- Utilization: 60%
 
-Liquidation penalties provide additional revenue—when positions liquidate, the bank earns the spread between liquidation threshold and actual liquidation execution price.
+**Rate Structure:**
+- Borrow APY: 8%
+- Supply APY: 5.5%
+- Protocol spread: 2.5%
 
-## Risk Management
+**Annual Revenue:**
+- Interest collected: $600,000 × 8% = $48,000
+- Interest paid to LPs: $1,000,000 × 5.5% = $55,000 (weighted by utilization)
+- Protocol revenue: ~$15,000 annually from this single pool
 
-Overcollateralization protects against borrower defaults. Every loan requires collateral value exceeding debt by configured safety margins—typically 125-150% depending on asset volatility.
+Additional revenue from liquidation penalties (typically 5% of liquidated collateral value).
+</Accordion>
 
-Automated liquidations trigger when positions approach insolvency. Liquidation bots monitor health factors continuously, executing liquidations before losses occur. This removes manual risk assessment and collection processes entirely.
+## Integration Options
 
-Insurance funds absorb rare losses from rapid price movements. A portion of interest revenue flows to insurance reserves that cover bad debt when liquidations fail to recover full loan amounts.
+<Tabs>
+    <Tab title="Borrow Module">
+        Add our Borrow Module to your whitelabel application. It automatically fetches your approved lending markets and provides a complete borrowing interface for your users.
+        
+        Users can:
+        - View available markets and rates
+        - Deposit collateral and borrow
+        - Monitor position health
+        - Repay and withdraw
+    </Tab>
+    <Tab title="Online Banking Integration">
+        Embed "Borrow Against Assets" directly in your digital banking interface using our APIs. Users access lending without leaving your platform.
+        
+        Your backend handles blockchain interactions transparently—users see familiar banking flows.
+    </Tab>
+    <Tab title="API-Only">
+        Build fully custom interfaces using REST APIs while leveraging Trusset's smart contract infrastructure for all on-chain operations.
+        
+        Maximum flexibility for institutions with specific UX requirements.
+    </Tab>
+</Tabs>
 
-<CardGroup cols={3}>
-    <Card title="Lending Frameworks" icon="layer-group" href="/new/learn/lending/frameworks">
-        Asset-specific implementations and configurations
+## Liquidity Sources
+
+Liquidity providers (usually the institution deploying the contracts) deposit stablecoins into lending markets, earning yield on their capital. Providers receive LP shares representing their pool ownership-share value increases as interest accumulates.
+
+<Info>
+Anyone can deposit liquidiy alongside institutional providers and earn a stable yield.
+</Info>
+
+## Instance Isolation
+
+Each lending market operates in complete isolation:
+- Separate smart contracts per market
+- Independent configuration and risk parameters
+- No cross-market exposure
+- Full regulatory separation between institutions
+
+Bank A's lending markets never interact with Bank B's markets, maintaining clean risk boundaries and compliance segregation.
+
+<CardGroup cols={2}>
+    <Card title="Smart Contracts" icon="file-code" href="/new/learn/lending/smart-contracts">
+        Architecture, roles, and security model
     </Card>
-    <Card title="Custom Hooks" icon="webhook" href="/new/learn/lending/hooks">
-        Liquidation automation and advanced integrations
+    <Card title="Setup Guide" icon="rocket" href="/new/learn/lending/setup">
+        Deploy and configure your first market
     </Card>
-    <Card title="Controllers" icon="sliders" href="/new/learn/lending/controllers">
-        Administrative functions and market configuration
+    <Card title="Management" icon="sliders" href="/new/learn/lending/management">
+        Day-to-day operations and monitoring
     </Card>
-    <Card title="Loan Initialization" icon="file-circle-plus" href="/new/learn/lending/initialization">
-        How users open positions and borrow
-    </Card>
-    <Card title="Repayments" icon="money-bill-transfer" href="/new/learn/lending/repayments">
-        Paying down debt and withdrawing collateral
-    </Card>
-    <Card title="Liquidation" icon="triangle-exclamation" href="/new/learn/lending/liquidation">
-        Automated position liquidation process
+    <Card title="Liquidation" icon="gavel" href="/new/learn/lending/liquidation">
+        Automated liquidation and external integrations
     </Card>
 </CardGroup>

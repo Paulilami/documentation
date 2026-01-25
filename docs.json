@@ -207,31 +207,10 @@
             "group": "Lending",
             "pages": [
               "new/learn/lending/lending-overview",
-              {
-                "group": "Architecture",
-                "pages": [
-                  "new/learn/lending/frameworks",
-                  "new/learn/lending/hooks",
-                  "new/learn/lending/controllers"
-                ]
-              },
-              {
-                "group": "Process",
-                "pages": [
-                  "new/learn/lending/initialization",
-                  "new/learn/lending/repayments",
-                  "new/learn/lending/liquidation"
-                ]
-              },
-              {
-                "group": "Advanced",
-                "pages": [
-                  "new/learn/lending/advanced/calculations",
-                  "new/learn/lending/advanced/liquidation-bot",
-                  "new/learn/lending/advanced/adaptive-interface",
-                  "new/learn/lending/advanced/cross-instance"
-                ]
-              }
+              "new/learn/lending/smart-contracts",
+              "new/learn/lending/setup",
+              "new/learn/lending/management",
+              "new/learn/lending/liquidation"
             ]
           },
           {
