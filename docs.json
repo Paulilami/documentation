@@ -223,6 +223,7 @@
           {
             "group": "Research Projects",
             "pages": [
+              "new/learn/independent/kyc-hashing",
               "new/learn/independent/token-studio",
               "new/learn/independent/pari-passu"
             ]
