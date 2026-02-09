@@ -234,9 +234,15 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "API Management",
+            "group": "API-Keys",
             "pages": [
-              "api-key-management",
+              "api-key-management"
+            ]
+          },
+          {
+            "group": "Gold",
+            "pages": [
+              "new/guides/gold/creation",
               "soon-more"
             ]
           }

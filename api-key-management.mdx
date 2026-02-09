@@ -1,5 +1,5 @@
 ---
-title: 'API Key Management'
+title: 'API-Key Management'
 description: 'How to manage your API keys.'
 ---
 
@@ -7,16 +7,16 @@ Your API keys are instance-specific, meaning you have multiple API-keys for each
 
 ## Creation 
 Your first API key is automatically generated as `Default: active` with your instance creation. The key interface looks like following: 
-![API default key of your instance](/images/main-key.png)
+![API default key of your instance](/images/guides/apic2.png)
 
 **Key-format:**
 ```txt
-trusset_c0...
+trusset_v2_c0...
 ```
 
 ## Key-Rotation
 Trusset allows you to securely rotate your keys. A new key will be generated immediately, while the old key will remain valid for 7 days to allow a smooth transition (can be customized).
-![API-key rotation](/images/rotate-key.png)
+![API-key rotation](/images/guides/apic1.png)
 
 ## Key-Revoking
 Revoking your key immediately disables this API key and cannot be undone. The API key, and all operations remain in your database.
