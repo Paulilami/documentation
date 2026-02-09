@@ -1,0 +1,39 @@
+---
+title: 'Trade Stocks'
+description: 'Launch 24/7 trading markets for tokenized stocks and integrate them via REST APIs.'
+---
+
+For tokenized stocks, Trusset only uses the **[Hybrid Order Book](/new/home/integration/modules/orderbook-module)** system. 
+
+<Note>
+Order books use unified liquidity per **underlying** stock. This comes from our sub-issuer (register participant) model where we only use one token address per underlying stock while each sub-issuer operates in their isolated environment.
+</Note>
+
+## 1. Open the Trading Page
+
+Navigate to <Badge color="gray" size="sm">Trading</Badge> in the sidebar and click the <Badge color="gray" size="sm">+</Badge> button to create a new order book.
+
+![Trading interface](/images/guides/stocktrade1.png)
+
+## 2. Configure and Deploy
+
+Choose <Badge color="gray" size="sm">Stocks</Badge> and set your order book parameters. 
+
+![Order book creation interface](/images/guides/stocktrade2.png)
+
+_The creator is automatically assigned as the contract admin._
+
+## 3. Add Price Link
+
+**Soon:** Add a starting base price reference and range to ensure the first trade executes with proper pricing.
+
+![Trading management interface](/images/guides/stocktrade3.png)
+
+## 4. Integrate
+
+Your market is live and handles transactions 24/7. Two options to go live:
+
+- **Whitelabel app**: Click <Badge color="gray" size="sm">Approve for Whitelabel</Badge> to enable trading in your branded app
+- **Custom integration**: Connect the order book directly to your application using our [REST APIs](/endpoints)
+
+![Trading management interface](/images/guides/stocktrade4.png)

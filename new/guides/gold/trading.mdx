@@ -1,0 +1,44 @@
+---
+title: 'Trade Gold'
+description: 'Launch 24/7 trading markets for tokenized commodities and integrate them via REST APIs.'
+---
+
+Trusset offers two trading solutions for tokenized commodities:
+
+1. **[Hybrid Order Book](/new/home/integration/modules/orderbook-module)**: Off-chain matching with on-chain custody. Connect the hybrid order book to our off-chain [balance tracking system](/endpoints/vs/custody/overview) for gasless transactions at zero overhead.
+2. **[Automated Market Maker (AMM)](/new/learn/trading/amm/balancer-pools)**: Balancer-based trading pools customized for tokenized assets, suited for large markets and full decentralization.
+
+Both solutions require the contract admin to hold a [CASP license](https://www.afm.nl/en/sector/cryptopartijen/vereisten-en-vergunningen/casp-vergunning) to legally operate the trading services. The admin role can be assigned to any wallet. Compliance rules are inherited directly from the token contract, see [commodity token documentation](/new/learn/tokenization/categories/commodities) for details.
+
+<Note>
+Browse all MiCA licensed entities in the [MiCA register](https://www.trusset.org/mica-register), synchronized hourly with official EU registers.
+</Note>
+
+## 1. Open the Trading Page
+
+Navigate to <Badge color="gray" size="sm">Trading</Badge> in the sidebar and click the <Badge color="gray" size="sm">+</Badge> button for the market type you want to create (Order Book or AMM).
+
+![Trading interface](/images/guides/trade1.png)
+
+## 2. Configure and Deploy
+
+Choose <Badge color="gray" size="sm">Commodities</Badge> and set your market parameters. The interface automatically calculates the required liquidity based on your token weights to initialze the pool with the correct price.
+
+![Trading market creation interface](/images/guides/trade2.png)
+
+_The creator is automatically assigned as the contract admin._
+
+## 3. Add Liquidity
+
+Click <Badge color="gray" size="sm">Add</Badge> to provide initial liquidity to your pool.
+
+![Trading management interface](/images/guides/trade3.png)
+
+## 4. Integrate
+
+Your market is live and handles transactions 24/7. Two options to go live:
+
+- **Whitelabel app**: Click <Badge color="gray" size="sm">Approve for Whitelabel</Badge> to enable trading in your branded app
+- **Custom integration**: Connect the pool directly to your application using our [REST APIs](/api-intro)
+
+![Trading management interface](/images/guides/trade4.png)
