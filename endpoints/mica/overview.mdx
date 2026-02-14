@@ -1,0 +1,122 @@
+---
+title: 'MiCA Register API'
+description: 'Free API access to the complete EU MiCA Register. All authorized CASPs, ARTs, and EMTs sourced from ESMA.'
+---
+
+The MiCA Register API provides free, programmatic access to the full register of entities authorized under the EU Markets in Crypto-Assets (MiCA) regulation. Data is synced automatically from the European Securities and Markets Authority (ESMA).
+
+## Quick Start
+
+<Steps>
+  <Step title="Get an API Key">
+    Register with your email at [trusset.org/mica-register](https://trusset.org/mica-register) or via the API:
+    ```bash
+    curl -X POST "https://api.trusset.org/api/mica/developer/register" \
+      -H "Content-Type: application/json" \
+      -d '{"name": "Your Name", "email": "dev@company.com"}'
+    ```
+  </Step>
+  <Step title="Save Your Credentials">
+    You'll receive an **API key** (`trusset_mica_...`) and a **management token**. Save both, they cannot be recovered.
+  </Step>
+  <Step title="Query the Register">
+    ```bash
+    curl "https://api.trusset.org/api/mica/v1/issuers?limit=10" \
+      -H "X-API-Key: trusset_mica_your_key_here"
+    ```
+  </Step>
+</Steps>
+
+## Authentication
+
+All `/api/mica/v1/*` endpoints require an API key in the `X-API-Key` header:
+
+```bash
+curl -H "X-API-Key: trusset_mica_..."
+```
+
+Developer management endpoints (`/api/mica/developer/*`) use a Bearer management token:
+
+```bash
+curl -H "Authorization: Bearer your_management_token"
+```
+
+## Rate Limits
+
+| Limit | Value |
+|-------|-------|
+| Per minute | 60 requests |
+| Per day | 5,000 requests |
+| Max API keys | 3 per account |
+
+Rate limit headers are included in every response:
+
+```
+X-RateLimit-Limit-Minute: 60
+X-RateLimit-Remaining-Minute: 58
+X-RateLimit-Limit-Day: 5000
+X-RateLimit-Remaining-Day: 4998
+```
+
+## Response Format
+
+```json
+{
+  "success": true,
+  "data": { ... },
+  "pagination": {
+    "total": 1250,
+    "returned": 100,
+    "limit": 100,
+    "offset": 0,
+    "hasMore": true
+  },
+  "metadata": {
+    "source": "cache",
+    "timestamp": "2025-01-15T10:30:00.000Z"
+  }
+}
+```
+
+## Endpoints
+
+<CardGroup cols={2}>
+  <Card title="List Issuers" icon="list" href="/endpoints/mica/list-issuers">
+    Filter, sort, and paginate all MiCA entities
+  </Card>
+  <Card title="Get Issuer" icon="building-columns" href="/endpoints/mica/get-issuer">
+    Full detail for a single entity
+  </Card>
+  <Card title="Search" icon="magnifying-glass" href="/endpoints/mica/search">
+    Full-text search across names, LEIs, and authorities
+  </Card>
+  <Card title="Statistics" icon="chart-pie" href="/endpoints/mica/statistics">
+    Aggregate stats, breakdowns, and recent authorizations
+  </Card>
+  <Card title="License Types" icon="award" href="/endpoints/mica/license-types">
+    All license categories with counts
+  </Card>
+  <Card title="Countries" icon="globe" href="/endpoints/mica/countries">
+    All countries with entity counts
+  </Card>
+  <Card title="Health" icon="heart-pulse" href="/endpoints/mica/health">
+    API status and data freshness
+  </Card>
+</CardGroup>
+
+### Key Management
+
+<CardGroup cols={2}>
+  <Card title="Register" icon="user-plus" href="/endpoints/mica/register">
+    Create a developer account and get your first API key
+  </Card>
+  <Card title="List Keys" icon="key" href="/endpoints/mica/list-keys">
+    View all your API keys and usage
+  </Card>
+  <Card title="Create Key" icon="plus" href="/endpoints/mica/create-key">
+    Generate additional API keys
+  </Card>
+  <Card title="Revoke Key" icon="trash" href="/endpoints/mica/revoke-key">
+    Permanently revoke an API key
+  </Card>
+</CardGroup>

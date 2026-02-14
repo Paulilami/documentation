@@ -1,0 +1,57 @@
+---
+title: 'Revoke Key'
+api: 'DELETE /api/mica/developer/keys/{keyId}'
+---
+
+Permanently revoke an API key. The key will immediately stop working.
+
+<Warning>
+  This action cannot be undone. The key will be permanently disabled.
+</Warning>
+
+## Path Parameters
+
+<ParamField path="keyId" type="string" required>
+  The ID of the API key to revoke
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://api.trusset.org/api/mica/developer/keys/clx2key1abc" \
+  -H "Authorization: Bearer YOUR_MANAGEMENT_TOKEN"
+```
+```javascript JavaScript
+const response = await fetch('https://api.trusset.org/api/mica/developer/keys/clx2key1abc', {
+  method: 'DELETE',
+  headers: { 'Authorization': 'Bearer YOUR_MANAGEMENT_TOKEN' }
+});
+
+const data = await response.json();
+```
+```python Python
+import requests
+
+response = requests.delete(
+    'https://api.trusset.org/api/mica/developer/keys/clx2key1abc',
+    headers={'Authorization': 'Bearer YOUR_MANAGEMENT_TOKEN'}
+)
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "message": "API key revoked successfully"
+}
+```
+```json Error - Already Revoked
+{
+  "success": false,
+  "error": {
+    "code": "ALREADY_REVOKED",
+    "message": "Key is already revoked"
+  }
+}
+```
+</ResponseExample>

@@ -267,6 +267,33 @@
             ]
           },
           {
+            "group": "MiCA Register API (Free)",
+            "pages": [
+              "endpoints/mica/overview",
+              {
+                "group": "Registry Data",
+                "pages": [
+                  "endpoints/mica/list-issuers",
+                  "endpoints/mica/get-issuer",
+                  "endpoints/mica/search",
+                  "endpoints/mica/statistics",
+                  "endpoints/mica/license-types",
+                  "endpoints/mica/countries",
+                  "endpoints/mica/health"
+                ]
+              },
+              {
+                "group": "Key Management",
+                "pages": [
+                  "endpoints/mica/register",
+                  "endpoints/mica/list-keys",
+                  "endpoints/mica/create-key",
+                  "endpoints/mica/revoke-key"
+                ]
+              }
+            ]
+          },
+          {
             "group": "Instance Gateway (v2)",
             "pages": [
               "endpoints/v2/instance-gateway-overview",

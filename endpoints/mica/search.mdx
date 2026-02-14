@@ -1,0 +1,83 @@
+---
+title: 'Search'
+api: 'GET /api/mica/v1/search'
+---
+
+Full-text search across entity names, LEIs, commercial names, and national authorities.
+
+<ParamField query="q" type="string" required>
+  Search query (min 2 characters, max 200)
+</ParamField>
+
+<ParamField query="limit" type="number" default="20">
+  Maximum results to return (max 100)
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl "https://api.trusset.org/api/mica/v1/search?q=binance&limit=5" \
+  -H "X-API-Key: trusset_mica_your_key_here"
+```
+```javascript JavaScript
+const response = await fetch(
+  'https://api.trusset.org/api/mica/v1/search?q=binance&limit=5',
+  { headers: { 'X-API-Key': 'trusset_mica_your_key_here' } }
+);
+
+const data = await response.json();
+data.data.forEach(issuer => console.log(issuer.entityName));
+```
+```python Python
+import requests
+
+response = requests.get(
+    'https://api.trusset.org/api/mica/v1/search',
+    headers={'X-API-Key': 'trusset_mica_your_key_here'},
+    params={'q': 'binance', 'limit': 5}
+)
+
+data = response.json()
+for issuer in data['data']:
+    print(issuer['entityName'])
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": [
+    {
+      "id": "clx9xyz1234",
+      "entityName": "Binance France SAS",
+      "entityIdentifier": "969500XYZ123456789AB",
+      "licenseType": "CASP",
+      "country": "France",
+      "countryCode": "FR",
+      "nationalAuthority": "AMF",
+      "authorizationDate": "2024-05-01T00:00:00.000Z",
+      "status": "active",
+      "entityType": "provider"
+    }
+  ],
+  "pagination": {
+    "total": 1,
+    "returned": 1,
+    "query": "binance"
+  },
+  "metadata": {
+    "source": "cache",
+    "timestamp": "2025-01-15T10:30:00.000Z"
+  }
+}
+```
+```json Error - Query Too Short
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Search query (q) must be at least 2 characters"
+  }
+}
+```
+</ResponseExample>
