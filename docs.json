@@ -147,7 +147,8 @@
                 "pages": [
                   "new/learn/customers/identity-register",
                   "new/learn/customers/identity-proofs",
-                  "new/learn/customers/smart-wallets"
+                  "new/learn/customers/smart-wallets",
+                  "new/learn/customers/batch-verification-analysis"
                 ]
               }
             ]
