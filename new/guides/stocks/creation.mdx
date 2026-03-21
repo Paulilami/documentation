@@ -3,7 +3,7 @@ title: 'Tokenize Stocks'
 description: 'Tokenize publicly traded stocks using the Trusset issuer app.'
 ---
 
-Stock tokenization under the **eWpG framework** requires a licensed legal structure before minting tokens on mainnet. To start building and testing immediately, create a [development instance](/new/home/infrastructure/instances), it runs on testnet by default. Once your legal framework is in place (prospectus, internal approval, etc.), convert it to a production instance on mainnet. Stock tokens use the official [ERC3643 token standard](https://www.erc3643.org/).
+Stock tokenization under the **eWpG framework** requires a licensed legal structure before minting tokens on mainnet. To start building and testing immediately, create a [development instance](/protocol/infrastructure/instances), it runs on testnet by default. Once your legal framework is in place (prospectus, internal approval, etc.), convert it to a production instance on mainnet. Stock tokens use the official [ERC3643 token standard](https://www.erc3643.org/).
 
 <Note>
 You will need sepolia ethereum to create your tokens. Get free tokens [here](https://cloud.google.com/application/web3/faucet/ethereum/sepolia) 
@@ -15,13 +15,13 @@ All issued stock tokens automatically integrate our [identity register](/new/lea
 
 ## 1. Open the Token Manager
 
-In the [issuer app](https://issuers.trusset.org/), navigate to <Badge color="gray" size="sm">Tokens</Badge> in the sidebar and click <Badge color="gray" size="sm">Create</Badge>.
+In the [issuer app](https://issuers.trusset.org/), navigate to `Tokens` in the sidebar and click `Create`.
 
 ![Token management interface](/images/guides/goldc1.png)
 
 ## 2. Select the Security Token Framework
 
-Choose <Badge color="gray" size="sm">Security Tokens</Badge> → <Badge color="gray" size="sm">Fat Token</Badge> → <Badge color="gray" size="sm">Stock</Badge> to deploy a compliant stock token contract (ERC3643).
+Choose `Security Tokens` → `Fat Token` → `Stock` to deploy a compliant stock token contract (ERC3643).
 
 ![Token creation interface](/images/guides/stock1.png)
 
@@ -51,7 +51,7 @@ Choose an initial token distribution and recipient.
 ![Token creation interface](/images/guides/stock3.png)
 
 - **Initial Supply**: Optionally mint tokens on deployment 
-- **Recipient**: Input any wallet address as recipient or choose from your existing customers by clicking on <Badge color="gray" size="sm">Customers</Badge>, the modal automatically fetches the on-chain identity status
+- **Recipient**: Input any wallet address as recipient or choose from your existing customers by clicking on `Customers`, the modal automatically fetches the on-chain identity status
 
 <Note>
 Tokens can be distributed to any address. Your connected wallet is set as the contract admin by default and can be changed later.

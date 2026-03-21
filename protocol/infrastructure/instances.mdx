@@ -28,7 +28,7 @@ Instances automatically adapt to your institution's regulatory licenses, enablin
     </Card>
 </CardGroup>
 
-The Issuer Platform displays only enabled services based on your verified licenses—preventing access to unauthorized functionality.
+The Issuer Platform displays only enabled services based on your verified licenses - preventing access to unauthorized functionality.
 
 ## Instance Types
 
@@ -44,7 +44,7 @@ Separate development and production environments for safe testing before mainnet
         - Reset anytime without consequences
         - Perfect for integration testing
 
-        Test thoroughly in development before moving to production—bugs in production cost real money.
+        Test thoroughly in development before moving to production - bugs in production cost real money.
     </Tab>
     
     <Tab title="Production Instances">
@@ -56,13 +56,13 @@ Separate development and production environments for safe testing before mainnet
         - Subject to network fees
         - Monitored for security incidents
 
-        Convert development instances to production seamlessly—pays only gas fees for contract migrations.
+        Convert development instances to production seamlessly - pays only gas fees for contract migrations.
     </Tab>
 </Tabs>
 
 ## Target Network
 
-Choose your blockchain network during instance creation—this decision is permanent. The instance adapts all services to the chosen network automatically.
+Choose your blockchain network during instance creation - this decision is permanent. The instance adapts all services to the chosen network automatically.
 
 <Accordion title="Network Selection Considerations">
 Select networks based on your requirements:
@@ -84,7 +84,7 @@ We'll soon launch cross-instance bridges enabling asset migration between networ
 
 | Property | Limit |
 |----------|-------|
-| Total Instances | 5 × verified_services* |
+| Total Instances | 5 x verified_services* |
 | API Calls (Testnet) | Unlimited |
 | API Calls (Mainnet) | Usage-based pricing (coming soon) |
 | API Keys per Instance | 3 maximum |
@@ -98,13 +98,13 @@ Each instance supports up to three API keys with independent permissions and rat
 
 ## Service Isolation
 
-Data never leaks between instances—complete isolation at every level:
+Data never leaks between instances - complete isolation at every level:
 
 - **Database Isolation:** Each instance stores data in separate encrypted databases inaccessible to other instances.
 
-- **Smart Contract Isolation:** Instance-specific contracts deploy independently—no shared state or cross-instance calls.
+- **Smart Contract Isolation:** Instance-specific contracts deploy independently - no shared state or cross-instance calls.
 
-- **API Isolation:** API keys only access their instance's resources—cannot query other instances even accidentally.
+- **API Isolation:** API keys only access their instance's resources - cannot query other instances even accidentally.
 
 - **Network Isolation:** Instances on different blockchains operate completely independently.
 
@@ -162,34 +162,34 @@ Convert development instances to production after testing completes:
   </Step>
 
   <Step title="Initiate Migration">
-    Request migration through Issuer Platform—specify target mainnet and confirm irreversibility.
+    Request migration through Issuer Platform - specify target mainnet and confirm irreversibility.
   </Step>
 
   <Step title="Contract Deployment">
-    System deploys all smart contracts to mainnet with identical configuration—pay gas fees for deployments (one-time fee).
+    System deploys all smart contracts to mainnet with identical configuration - pay gas fees for deployments (one-time fee).
   </Step>
 
   <Step title="Update Integrations">
-    Modify backend API calls to use mainnet instance ID (ID stays the same when converting from dev. to prod. instance and optionally can be roted).
+    Modify backend API calls to use mainnet instance ID (ID stays the same when converting from dev. to prod. instance and optionally can be rotated).
   </Step>
 
   <Step title="Begin Operations">
-    Instance now operates on mainnet—all actions use real assets and incur real costs.
+    Instance now operates on mainnet - all actions use real assets and incur real costs.
   </Step>
 </Steps>
 
 <Warning>
-Instance migration is irreversible. Test exhaustively in development before migrating to production—bugs in production lose real money.
+Instance migration is irreversible. Test exhaustively in development before migrating to production - bugs in production lose real money.
 </Warning>
 
 <CardGroup cols={2}>
-    <Card title="Networks" icon="globe" href="/new/home/infrastructure/networks">
+    <Card title="Networks" icon="globe" href="/protocol/infrastructure/networks">
         Supported blockchain networks
     </Card>
-    <Card title="Automation Vaults" icon="satellite-dish" href="/new/learn/automation/automation-overview">
-        Instance-specific automation configuration
+    <Card title="Relayer" icon="satellite-dish" href="/protocol/infrastructure/relayer">
+        Instance-specific relayer configuration
     </Card>
-    <Card title="Data Storage" icon="database" href="/new/home/infrastructure/data-storage">
+    <Card title="Data Storage" icon="database" href="/protocol/infrastructure/data-storage">
         Instance-based encrypted storage
     </Card>
     <Card title="API Reference" icon="code" href="/api-intro">

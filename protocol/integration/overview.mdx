@@ -1,0 +1,66 @@
+---
+title: "Integration"
+description: "How to integrate Trusset services into your operations"
+---
+
+Financial institutions interact with Trusset through three channels: the Issuer Platform for manual operations and monitoring, REST APIs for backend automation, and white-label deployments for end-user interfaces. Most institutions use all three simultaneously.
+
+## Issuer Platform
+
+The [Issuer Platform](https://issuers.trusset.org/) is the central control system for all Trusset operations. Every configuration, deployment, and management task runs through this interface. It is required for initial setup and serves as the primary dashboard for ongoing operations.
+
+The platform adapts to your instance configuration and regulatory licenses, displaying only the services and controls relevant to your setup.
+
+## API Integration
+
+All Trusset services are accessible through REST APIs authenticated with instance-scoped API keys. Your backend calls standard HTTP endpoints; the [relayer](/protocol/infrastructure/relayer) handles blockchain execution. No blockchain development knowledge is required.
+
+Every endpoint returns a unified response format:
+
+```json
+{
+  "success": true,
+  "data": { ... },
+  "error": null,
+  "metadata": {
+    "timestamp": "2025-01-15T10:30:00.000Z",
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "instanceId": "inst_2hG5kL9mN3oP"
+  }
+}
+```
+
+API keys are created and managed through the Issuer Platform. Each instance supports up to three keys with independent permissions and rate limits. Include the key in every request:
+
+```bash
+curl -H "x-api-key: trusset_ksjsnejwnsbkaqlwsmnsh..."
+```
+
+The API covers the full scope of Trusset services: customer onboarding and KYC, asset tokenization and management, trading and order books, lending and collateral operations, MiCA registry compliance, and webhook configuration. Refer to the [API Reference](/api-intro) for endpoint documentation.
+
+## White-Label Deployment
+
+Deploy a fully branded platform for your token holders directly from the Issuer Platform. Each instance supports one white-label deployment with selectable modules covering asset management, trading, lending, investor dashboards, and capital raising.
+
+White-label configuration, deployment, and ongoing management is handled entirely through the Issuer Platform - no frontend development or code deployment required. The platform provides visual theme editing (colors, typography, border radius), module selection, access control configuration, and custom domain setup. Changes propagate to your live deployment immediately without downtime.
+
+Deployments are wallet-based with no login screens. When users connect their wallet, the system identifies their role and permissions automatically. A standard token holder sees transfer and trading options; an issuer connecting the same interface sees minting, burning, and compliance controls. The blockchain determines access rights.
+
+Your deployment is available at `https://app.trusset.org/{subdomain}` by default, or at your custom domain after DNS configuration.
+
+Access control operates at three levels: overall platform access (`PUBLIC`, `WALLET_RESTRICTED`, or `KYC_REQUIRED`), per-module address whitelisting, and automatic compliance rule enforcement inherited from your token configuration.
+
+<CardGroup cols={2}>
+    <Card title="Core Infrastructure" icon="building" href="/protocol/infrastructure/core-infrastructure">
+        Architecture powering all integration paths
+    </Card>
+    <Card title="Relayer" icon="satellite-dish" href="/protocol/infrastructure/relayer">
+        How API calls become blockchain transactions
+    </Card>
+    <Card title="Licensing" icon="file-contract" href="/licensing/overview">
+        Smart contract licensing and usage terms
+    </Card>
+    <Card title="API Reference" icon="code" href="/api-intro">
+        Full endpoint documentation
+    </Card>
+</CardGroup>

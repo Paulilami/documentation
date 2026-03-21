@@ -3,7 +3,7 @@ title: "Custody"
 description: "Wallet-agnostic infrastructure integrating with any custody solution"
 ---
 
-Trusset is completely **wallet-agnostic**, meaning we integrate with any custody provider that generates valid blockchain addresses. Your existing custody arrangements work seamlessly without modifications.
+Trusset is completely **wallet-agnostic**, meaning we integrate with any custody provider that generates valid blockchain addresses. Your existing custody arrangements work without modifications.
 
 ## Universal Compatibility
 
@@ -26,19 +26,19 @@ Support all custody models without vendor lock-in:
 
 ## Network-Specific Integration
 
-Custody requirements vary by blockchain—Ethereum wallets differ fundamentally from Solana wallets. Trusset handles these differences automatically:
+Custody requirements vary by blockchain - Ethereum wallets differ fundamentally from Solana wallets. Trusset handles these differences automatically:
 
 - **Automatic Detection:** API calls, White Label apps, and the Issuer Platform detect the target network and integrate appropriate wallet providers.
 
-- **Native Support:** Each blockchain's native wallet standards work out-of-the-box—MetaMask for EVM chains, Phantom for Solana, and so on.
+- **Native Support:** Each blockchain's native wallet standards work out-of-the-box - MetaMask for EVM chains, Phantom for Solana, and so on.
 
 - **Unified Interface:** Despite underlying differences, you interact with all networks through identical API endpoints and dashboard interfaces.
 
-## Automation Vault Integration
+## Relayer Integration
 
-Automation Vaults eliminate custody requirements for backend operations. Instead of signing every transaction, fund a vault once and execute operations through API calls.
+The [Relayer](/protocol/infrastructure/relayer) eliminates manual signing for backend operations. Instead of signing every transaction through your custody provider, configure a relayer with a vault-stored private key and execute operations through API calls.
 
-Vaults complement traditional custody by handling routine automated tasks while you maintain custody control over high-value operations and admin functions.
+The relayer complements traditional custody by handling routine automated tasks while you maintain custody control over high-value operations and admin functions.
 
 ## Custody Provider Examples
 
@@ -52,17 +52,17 @@ Common integrations across different custody models:
 | MPC Providers | Dfns, Zengo, Qredo | SDK integration |
 | Smart Contract Wallets | Safe, Argent | Contract interaction |
 
-All providers work identically from Trusset's perspective—we only require valid addresses and transaction signatures.
+All providers work identically from Trusset's perspective - we only require valid addresses and transaction signatures.
 
 <Warning>
-    Never share your wallet private keys with Trusset or any third party. We only need your public address and the ability to submit signed transactions. Legitimate integrations never request direct key access.
+Never share your wallet private keys with Trusset or any third party. We only need your public address and the ability to submit signed transactions. Legitimate integrations never request direct key access.
 </Warning>
 
 <CardGroup cols={2}>
-    <Card title="Automation Vaults" icon="satellite-dish" href="/new/learn/automation/automation-overview">
-        Custody-free backend automation
+    <Card title="Relayer" icon="satellite-dish" href="/protocol/infrastructure/relayer">
+        Automated transaction relay for backend operations
     </Card>
-    <Card title="Instances" icon="layer-group" href="/new/home/infrastructure/instances">
+    <Card title="Instances" icon="layer-group" href="/protocol/infrastructure/instances">
         Instance-level wallet configuration
     </Card>
 </CardGroup>

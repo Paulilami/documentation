@@ -3,7 +3,7 @@ title: "Data Storage"
 description: "Instance-based encrypted storage with zero Trusset access"
 ---
 
-Trusset provides infrastructure for encrypting your instance data while you maintain complete control over encryption keys. We have zero access to your encrypted data—if you lose your key, data becomes permanently unrecoverable.
+Trusset provides infrastructure for encrypting your instance data while you maintain complete control over encryption keys. We have zero access to your encrypted data - if you lose your key, data becomes permanently unrecoverable.
 
 ## Encryption Architecture
 
@@ -12,10 +12,10 @@ Trusset provides infrastructure for encrypting your instance data while you main
         Military-grade encryption standard protecting all instance data at rest
     </Card>
     <Card title="Client-Side Keys" icon="key">
-        Encryption keys never leave your control—Trusset cannot decrypt your data
+        Encryption keys never leave your control - Trusset cannot decrypt your data
     </Card>
     <Card title="Instance Isolation" icon="shield">
-        Each instance encrypts data separately—no cross-instance data access possible
+        Each instance encrypts data separately - no cross-instance data access possible
     </Card>
     <Card title="Public Data Control" icon="eye">
         Mark specific datasets as public for controlled third-party access
@@ -26,16 +26,16 @@ Trusset provides infrastructure for encrypting your instance data while you main
 
 Trusset manages three distinct data categories with different storage approaches:
 
-- **Private Instance Data:** Customer records, internal documents, compliance files—encrypted with your instance key, stored in Trusset infrastructure, inaccessible to Trusset.
+- **Private Instance Data:** Customer records, internal documents, compliance files - encrypted with your instance key, stored in Trusset infrastructure, inaccessible to Trusset.
 
-- **Public Data:** Token metadata, pricing information, public documents—encrypted but marked for controlled sharing via REST endpoints when needed.
+- **Public Data:** Token metadata, pricing information, public documents - encrypted but marked for controlled sharing via REST endpoints when needed.
 
-- **On-Chain Data:** Smart contract state, transaction history, public blockchain records—stored on blockchain, publicly readable by design.
+- **On-Chain Data:** Smart contract state, transaction history, public blockchain records - stored on blockchain, publicly readable by design.
 
 ## Key Management
 
 <Warning>
-    CRITICAL: Losing your encryption key means permanent data loss. Trusset cannot recover lost keys or decrypt data without them. Back up keys securely immediately after instance creation.
+CRITICAL: Losing your encryption key means permanent data loss. Trusset cannot recover lost keys or decrypt data without them. Back up keys securely immediately after instance creation.
 </Warning>
 
 **Current Approach:** You manage encryption keys independently using your preferred secrets management system.
@@ -46,11 +46,11 @@ Trusset manages three distinct data categories with different storage approaches
 
 Personal information never stores on-chain to maintain privacy and comply with regulations like GDPR:
 
-- **Zero-Knowledge Proofs:** Users prove identity attributes (age, accreditation, citizenship) without revealing underlying data. See [Identity Proofs](/new/learn/customers/identity-proofs) for details.
+- **Zero-Knowledge Proofs:** Users prove identity attributes (age, accreditation, citizenship) without revealing underlying data. {/* TODO: link to identity proofs page once learn tab paths are finalized */}
 
 - **IPFS Storage:** Documents, metadata, and public files store on IPFS with content addressing. Only document hashes record on-chain, linking to off-chain content.
 
-- **Minimal On-Chain State:** Smart contracts only store essential information—token balances, ownership records, configuration parameters. Everything else lives off-chain.
+- **Minimal On-Chain State:** Smart contracts only store essential information - token balances, ownership records, configuration parameters. Everything else lives off-chain.
 
 ## Public Data Endpoints <Badge size="md" color="orange">Coming soon</Badge>
 

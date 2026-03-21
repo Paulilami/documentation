@@ -1,15 +1,11 @@
 ---
-title: "Batch Verification Analysis"
+title: "Gas Analysis"
 description: "On-chain stress test results for identity batch verification on Ethereum L1."
 ---
 
 ## Summary
 
 Our `batchVerifyIdentities()` function was stress-tested across 14 batch sizes with 3 iterations each on a Hardhat local network configured to match Ethereum mainnet parameters (30M block gas limit). The test deployed the full UUPS proxy stack identical to production.
-
-<Warning>
-**500 identities per transaction exceeds Ethereum's block gas limit.** Batches of 400+ revert. The proven safe maximum is **300 identities per transaction** (75.5% of block).
-</Warning>
 
 ## Methodology
 

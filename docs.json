@@ -70,163 +70,24 @@
           {
             "group": "Getting Started",
             "pages": [
-              "new/home/intro",
+              "protocol/intro",
               {
                 "group": "Core Infrastructure",
                 "pages": [
-                  "new/home/infrastructure/core-infrastructure",
-                  "new/home/infrastructure/instances",
-                  "new/home/infrastructure/data-storage",
-                  "new/home/infrastructure/automation-vaults",
-                  "new/home/infrastructure/custody",
-                  "new/home/infrastructure/networks"
+                  "protocol/infrastructure/core-infrastructure",
+                  "protocol/infrastructure/instances",
+                  "protocol/infrastructure/data-storage",
+                  "protocol/infrastructure/relayer",
+                  "protocol/infrastructure/custody",
+                  "protocol/infrastructure/networks"
                 ]
               },
               {
                 "group": "Integration",
                 "pages": [
-                  "new/home/integration/integration-overview",
-                  "new/home/integration/api-integration",
-                  "new/home/integration/whitelabel-integration",
-                  {
-                    "group": "Modules",
-                    "pages": [
-                      "new/home/integration/modules/management-module",
-                      "new/home/integration/modules/trading-module",
-                      "new/home/integration/modules/orderbook-module",
-                      "new/home/integration/modules/financing-module",
-                      "new/home/integration/modules/borrow-module",
-                      "new/home/integration/modules/investor-dashboard-module",
-                      "new/home/integration/modules/capital-raise-module"
-                    ]
-                  }
-                ]
-              },
-              "new/home/testing/testing-suite"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Learn",
-        "groups": [
-          {
-            "group": "Governance",
-            "pages": [
-              "new/learn/governance/trusset-governance",
-              "new/learn/governance/contract-updates"
-            ]
-          },
-          {
-            "group": "Automation",
-            "pages": [
-              "new/learn/automation/automation-overview",
-              {
-                "group": "Automation Vaults",
-                "pages": [
-                  "new/learn/automation/architecture",
-                  "new/learn/automation/controllers"
-                ]
-              },
-              {
-                "group": "Advanced",
-                "pages": [
-                  "new/learn/automation/erc-4337-integration",
-                  "new/learn/automation/synchronization-links",
-                  "new/learn/automation/cross-instance-architecture"
+                  "protocol/integration/overview"
                 ]
               }
-            ]
-          },
-          {
-            "group": "Customers",
-            "pages": [
-              "new/learn/customers/customer-management",
-              {
-                "group": "Advanced",
-                "pages": [
-                  "new/learn/customers/identity-register",
-                  "new/learn/customers/identity-proofs",
-                  "new/learn/customers/smart-wallets",
-                  "new/learn/customers/batch-verification-analysis"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Tokenization",
-            "pages": [
-              "new/learn/tokenization/tokenization-overview",
-              {
-                "group": "Architecture",
-                "pages": [
-                  "new/learn/tokenization/light-token",
-                  "new/learn/tokenization/fat-token",
-                  "new/learn/tokenization/roles",
-                  "new/learn/tokenization/proof-of-reserves"
-                ]
-              },
-              {
-                "group": "Asset Categories",
-                "pages": [
-                  "new/learn/tokenization/categories/stocks",
-                  "new/learn/tokenization/categories/commodities",
-                  "new/learn/tokenization/categories/claim-rights",
-                  "new/learn/tokenization/categories/real-estate",
-                  "new/learn/tokenization/categories/private-equity",
-                  "new/learn/tokenization/categories/value-index",
-                  "new/learn/tokenization/categories/debt"
-                ]
-              },
-              "new/learn/tokenization/legal-frameworks"
-            ]
-          },
-          {
-            "group": "Trading",
-            "pages": [
-              "new/learn/trading/trading-overview",
-              {
-                "group": "AMM-Based",
-                "pages": [
-                  "new/learn/trading/amm/balancer-pools",
-                  "new/learn/trading/amm/hooks",
-                  "new/learn/trading/amm/pricing",
-                  "new/learn/trading/amm/controllers"
-                ]
-              },
-              {
-                "group": "Listing-Based",
-                "pages": [
-                  "new/learn/trading/listing/asset-listing",
-                  "new/learn/trading/listing/asset-auctions",
-                  "new/learn/trading/listing/asset-financing"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Lending",
-            "pages": [
-              "new/learn/lending/lending-overview",
-              "new/learn/lending/smart-contracts",
-              "new/learn/lending/setup",
-              "new/learn/lending/management",
-              "new/learn/lending/liquidation"
-            ]
-          },
-          {
-            "group": "References",
-            "pages": [
-              "new/learn/references/contracts",
-              "new/learn/references/audits"
-            ]
-          },
-          {
-            "group": "Research Projects",
-            "pages": [
-              "new/learn/independent/kyc-hashing",
-              "new/learn/independent/token-studio",
-              "new/learn/independent/pari-passu"
             ]
           }
         ]
@@ -259,462 +120,32 @@
         ]
       },
       {
-        "tab": "APIs",
+        "tab": "Licenses",
         "groups": [
           {
             "group": "Overview",
             "pages": [
-              "api-intro"
+              "licenses/introduction",
+              "licenses/audits"
             ]
           },
           {
-            "group": "MiCA Register API (Free)",
+            "group": "Commodity Token License",
             "pages": [
-              "endpoints/mica/overview",
-              {
-                "group": "Registry Data",
-                "pages": [
-                  "endpoints/mica/list-issuers",
-                  "endpoints/mica/get-issuer",
-                  "endpoints/mica/search",
-                  "endpoints/mica/statistics",
-                  "endpoints/mica/license-types",
-                  "endpoints/mica/countries",
-                  "endpoints/mica/health"
-                ]
-              },
-              {
-                "group": "Key Management",
-                "pages": [
-                  "endpoints/mica/register",
-                  "endpoints/mica/list-keys",
-                  "endpoints/mica/create-key",
-                  "endpoints/mica/revoke-key"
-                ]
-              }
+              "licenses/commodities/introduction",
+              "licenses/commodities/contracts",
+              "licenses/commodities/integration",
+              "licenses/commodities/best-practices"
+
             ]
           },
           {
-            "group": "Instance Gateway (v2)",
+            "group": "Stock Token License",
             "pages": [
-              "endpoints/v2/instance-gateway-overview",
-              {
-                "group": "Health",
-                "pages": [
-                  "endpoints/v2/health"
-                ]
-              },
-              {
-                "group": "Instance",
-                "pages": [
-                  "endpoints/v2/instance/get-info",
-                  "endpoints/v2/instance/get-metrics"
-                ]
-              },
-              {
-                "group": "API Keys",
-                "pages": [
-                  "endpoints/v2/instance/list-api-keys",
-                  "endpoints/v2/instance/create-api-key",
-                  "endpoints/v2/instance/rotate-api-key",
-                  "endpoints/v2/instance/revoke-api-key",
-                  "endpoints/v2/instance/delete-api-key"
-                ]
-              },
-              {
-                "group": "Services",
-                "pages": [
-                  "endpoints/v2/services/list-services",
-                  "endpoints/v2/services/get-service"
-                ]
-              },
-              {
-                "group": "Light Tokens",
-                "pages": [
-                  "endpoints/v2/light-tokens/overview",
-                  {
-                    "group": "Token Management",
-                    "pages": [
-                      "endpoints/v2/light-tokens/create-token",
-                      "endpoints/v2/light-tokens/issue-tokens",
-                      "endpoints/v2/light-tokens/batch-issue",
-                      "endpoints/v2/light-tokens/redeem-tokens",
-                      "endpoints/v2/light-tokens/transfer-tokens",
-                      "endpoints/v2/light-tokens/controller-transfer"
-                    ]
-                  },
-                  {
-                    "group": "Access Control",
-                    "pages": [
-                      "endpoints/v2/light-tokens/add-controller",
-                      "endpoints/v2/light-tokens/remove-controller",
-                      "endpoints/v2/light-tokens/freeze-account",
-                      "endpoints/v2/light-tokens/unfreeze-account",
-                      "endpoints/v2/light-tokens/set-transfer-restricted"
-                    ]
-                  },
-                  {
-                    "group": "Documents & Metadata",
-                    "pages": [
-                      "endpoints/v2/light-tokens/set-document",
-                      "endpoints/v2/light-tokens/set-metadata",
-                      "endpoints/v2/light-tokens/update-ivc"
-                    ]
-                  },
-                  {
-                    "group": "Query",
-                    "pages": [
-                      "endpoints/v2/light-tokens/get-token-info",
-                      "endpoints/v2/light-tokens/get-balance",
-                      "endpoints/v2/light-tokens/get-holders",
-                      "endpoints/v2/light-tokens/get-documents",
-                      "endpoints/v2/light-tokens/get-document",
-                      "endpoints/v2/light-tokens/can-transfer",
-                      "endpoints/v2/light-tokens/is-controller",
-                      "endpoints/v2/light-tokens/get-tokens-by-ivc",
-                      "endpoints/v2/light-tokens/get-all-tokens",
-                      "endpoints/v2/light-tokens/get-instance-tokens"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Custodial Balances",
-                "pages": [
-                  "endpoints/v2/custody/overview",
-                  {
-                    "group": "Token Registry",
-                    "pages": [
-                      "endpoints/v2/custody/register-token",
-                      "endpoints/v2/custody/list-tokens",
-                      "endpoints/v2/custody/get-token",
-                      "endpoints/v2/custody/deactivate-token",
-                      "endpoints/v2/custody/get-holders"
-                    ]
-                  },
-                  {
-                    "group": "Balance Operations",
-                    "pages": [
-                      "endpoints/v2/custody/credit-balance",
-                      "endpoints/v2/custody/debit-balance",
-                      "endpoints/v2/custody/transfer-balance",
-                      "endpoints/v2/custody/batch-credit",
-                      "endpoints/v2/custody/lock-balance",
-                      "endpoints/v2/custody/unlock-balance"
-                    ]
-                  },
-                  {
-                    "group": "Balance Queries",
-                    "pages": [
-                      "endpoints/v2/custody/get-customer-balances",
-                      "endpoints/v2/custody/get-balance"
-                    ]
-                  },
-                  {
-                    "group": "Transactions",
-                    "pages": [
-                      "endpoints/v2/custody/get-transactions"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Risk Register",
-                "pages": [
-                  "endpoints/v2/risk-register/overview",
-                  {
-                    "group": "Risk Data",
-                    "pages": [
-                      "endpoints/v2/risk-register/submit-risk",
-                      "endpoints/v2/risk-register/get-risk",
-                      "endpoints/v2/risk-register/list-risks",
-                      "endpoints/v2/risk-register/get-history",
-                      "endpoints/v2/risk-register/delete-risk"
-                    ]
-                  },
-                  {
-                    "group": "Hooks",
-                    "pages": [
-                      "endpoints/v2/risk-register/check-risk"
-                    ]
-                  },
-                  {
-                    "group": "Webhooks",
-                    "pages": [
-                      "endpoints/v2/risk-register/create-webhook",
-                      "endpoints/v2/risk-register/list-webhooks",
-                      "endpoints/v2/risk-register/delete-webhook"
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Identity & KYC (v1)",
-            "pages": [
-              {
-                "group": "Verification",
-                "pages": [
-                  "endpoints/kyc/verify-single",
-                  "endpoints/kyc/batch-verify"
-                ]
-              },
-              {
-                "group": "Management",
-                "pages": [
-                  "endpoints/kyc/update-identity",
-                  "endpoints/kyc/revoke-single",
-                  "endpoints/kyc/batch-revoke"
-                ]
-              },
-              {
-                "group": "Status",
-                "pages": [
-                  "endpoints/kyc/get-status",
-                  "endpoints/kyc/get-batch-status"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Capital Raising (v1)",
-            "pages": [
-              "endpoints/investment/overview",
-              {
-                "group": "Framework",
-                "pages": [
-                  "endpoints/investment/create-framework",
-                  "endpoints/investment/get-framework"
-                ]
-              },
-              {
-                "group": "Token Sales",
-                "pages": [
-                  "endpoints/investment/create-token-sale",
-                  "endpoints/investment/list-token-sales",
-                  "endpoints/investment/get-token-sale",
-                  "endpoints/investment/start-sale"
-                ]
-              },
-              {
-                "group": "Investments",
-                "pages": [
-                  "endpoints/investment/process-investment"
-                ]
-              },
-              {
-                "group": "Secondary Market",
-                "pages": [
-                  "endpoints/investment/create-order",
-                  "endpoints/investment/fill-order",
-                  "endpoints/investment/market-stats"
-                ]
-              },
-              {
-                "group": "Compliance",
-                "pages": [
-                  "endpoints/investment/freeze-accounts",
-                  "endpoints/investment/import-kyc"
-                ]
-              },
-              {
-                "group": "Widget Integration",
-                "pages": [
-                  "endpoints/investment/widget-info",
-                  "endpoints/investment/widget-validate"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Asset Tokenization (v1)",
-            "pages": [
-              {
-                "group": "Token Management",
-                "pages": [
-                  "endpoints/tokenization/create-token",
-                  "endpoints/tokenization/mint-tokens",
-                  "endpoints/tokenization/burn-tokens",
-                  "endpoints/tokenization/transfer-tokens"
-                ]
-              },
-              {
-                "group": "Compliance",
-                "pages": [
-                  "endpoints/tokenization/update-user-status"
-                ]
-              },
-              {
-                "group": "Batch Operations",
-                "pages": [
-                  "endpoints/tokenization/batch-import"
-                ]
-              },
-              {
-                "group": "Data & Analytics",
-                "pages": [
-                  "endpoints/tokenization/get-tokens",
-                  "endpoints/tokenization/get-token-details",
-                  "endpoints/tokenization/get-balances"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Stablecoins (v1)",
-            "pages": [
-              {
-                "group": "Deployment",
-                "pages": [
-                  "endpoints/stablecoin/deploy-stablecoin"
-                ]
-              },
-              {
-                "group": "Supply Management",
-                "pages": [
-                  "endpoints/stablecoin/mint-stablecoin",
-                  "endpoints/stablecoin/burn-stablecoin"
-                ]
-              },
-              {
-                "group": "Role Management",
-                "pages": [
-                  "endpoints/stablecoin/grant-role",
-                  "endpoints/stablecoin/revoke-role",
-                  "endpoints/stablecoin/check-roles"
-                ]
-              },
-              {
-                "group": "Compliance & Security",
-                "pages": [
-                  "endpoints/stablecoin/freeze-account",
-                  "endpoints/stablecoin/unfreeze-account",
-                  "endpoints/stablecoin/recover-funds",
-                  "endpoints/stablecoin/set-mint-limit",
-                  "endpoints/stablecoin/pause-stablecoin",
-                  "endpoints/stablecoin/unpause-stablecoin"
-                ]
-              },
-              {
-                "group": "Configuration",
-                "pages": [
-                  "endpoints/stablecoin/set-transfer-fee",
-                  "endpoints/stablecoin/update-reserves",
-                  "endpoints/stablecoin/sync-reserves"
-                ]
-              },
-              {
-                "group": "Data & Analytics",
-                "pages": [
-                  "endpoints/stablecoin/get-stablecoin-info",
-                  "endpoints/stablecoin/list-stablecoins",
-                  "endpoints/stablecoin/get-transactions"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Stock Tokenization (v1)",
-            "pages": [
-              {
-                "group": "Position Management",
-                "pages": [
-                  "endpoints/stock-exchange/lock-position",
-                  "endpoints/stock-exchange/mint-tokens",
-                  "endpoints/stock-exchange/unlock-position",
-                  "endpoints/stock-exchange/get-status"
-                ]
-              },
-              {
-                "group": "Corporate Actions",
-                "pages": [
-                  "endpoints/stock-exchange/schedule-stock-split",
-                  "endpoints/stock-exchange/schedule-dividend",
-                  "endpoints/stock-exchange/schedule-delisting",
-                  "endpoints/stock-exchange/schedule-trading-halt",
-                  "endpoints/stock-exchange/execute-action",
-                  "endpoints/stock-exchange/execute-batch",
-                  "endpoints/stock-exchange/cancel-action",
-                  "endpoints/stock-exchange/get-pending",
-                  "endpoints/stock-exchange/get-token-actions"
-                ]
-              },
-              {
-                "group": "Dividend Management",
-                "pages": [
-                  "endpoints/stock-exchange/create-dividend-pool",
-                  "endpoints/stock-exchange/fund-pool",
-                  "endpoints/stock-exchange/close-pool",
-                  "endpoints/stock-exchange/get-pool-info"
-                ]
-              },
-              {
-                "group": "Compliance & Controls",
-                "pages": [
-                  "endpoints/stock-exchange/pause-trading",
-                  "endpoints/stock-exchange/resume-trading",
-                  "endpoints/stock-exchange/blacklist-address",
-                  "endpoints/stock-exchange/create-snapshot"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "24/7 Stock Trading (v1)",
-            "pages": [
-              {
-                "group": "Pool Management",
-                "pages": [
-                  "endpoints/balancer-exchange/create-pool",
-                  "endpoints/balancer-exchange/initialize-pool",
-                  "endpoints/balancer-exchange/add-liquidity",
-                  "endpoints/balancer-exchange/remove-liquidity",
-                  "endpoints/balancer-exchange/get-pool-info",
-                  "endpoints/balancer-exchange/get-pools",
-                  "endpoints/balancer-exchange/search-pools"
-                ]
-              },
-              {
-                "group": "Trading",
-                "pages": [
-                  "endpoints/balancer-exchange/execute-swap",
-                  "endpoints/balancer-exchange/get-quote"
-                ]
-              },
-              {
-                "group": "Leveraged Trading",
-                "pages": [
-                  "endpoints/balancer-exchange/open-leverage-position",
-                  "endpoints/balancer-exchange/close-leverage-position",
-                  "endpoints/balancer-exchange/modify-leverage-position",
-                  "endpoints/balancer-exchange/get-leverage-positions"
-                ]
-              },
-              {
-                "group": "Oracle",
-                "pages": [
-                  "endpoints/balancer-exchange/get-pool-price"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "Collateralized Loans (v1)",
-            "pages": [
-              "endpoints/lending/create-pool",
-              "endpoints/lending/batch-create-pools",
-              "endpoints/lending/get-pool-info",
-              "endpoints/lending/deposit",
-              "endpoints/lending/borrow",
-              "endpoints/lending/get-positions",
-              "endpoints/lending/repay",
-              "endpoints/lending/liquidate",
-              "endpoints/lending/update-price",
-              "endpoints/lending/batch-update-prices",
-              "endpoints/lending/get-pool-analytics",
-              "endpoints/lending/get-user-analytics",
-              "endpoints/lending/sync-pool-data"
+              "licenses/stocks/introduction",
+              "licenses/stocks/contracts",
+              "licenses/stocks/integration",
+              "licenses/stocks/best-practices"
             ]
           }
         ]
@@ -730,7 +161,7 @@
         {
           "anchor": "MiCA Register",
           "href": "https://trusset.org/mica-register",
-          "icon": "institution"
+          "icon": "building"
         },
         {
           "anchor": "Demo Call",
