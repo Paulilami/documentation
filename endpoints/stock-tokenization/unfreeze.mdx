@@ -1,0 +1,82 @@
+---
+title: 'Unfreeze Tokens'
+api: 'POST /stocks/api/manage/{tokenAddress}/unfreeze'
+description: 'Release previously frozen tokens, restoring transferability'
+---
+
+Unfreezes a specified amount of tokens for an account, making them transferable again. Requires the `CONTROLLER` role on the token contract.
+
+## Path Parameters
+
+<ParamField path="tokenAddress" type="string" required>
+  Address of the stock token contract.
+</ParamField>
+
+## Request Body
+
+<ParamField body="account" type="string" required>
+  Ethereum address of the holder whose tokens will be unfrozen.
+</ParamField>
+
+<ParamField body="amount" type="string" required>
+  Number of tokens to unfreeze. Must be greater than zero and not exceed the currently frozen amount.
+</ParamField>
+
+<ParamField body="useRelayer" type="boolean" default="false">
+  When `true`, the transaction is signed and submitted by the Trusset relayer.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="success" type="boolean">Request status.</ResponseField>
+<ResponseField name="data" type="object">Unfreeze result including the transaction hash.</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/stocks/api/manage/0x1234.../unfreeze" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: trusset_abc123xy_secret..." \
+  -d '{
+    "account": "0xAbC123dEf456789012345678901234567890AbCd",
+    "amount": "500",
+    "useRelayer": true
+  }'
+```
+```typescript TypeScript
+const response = await fetch(
+  `https://api.trusset.org/stocks/api/manage/${tokenAddress}/unfreeze`,
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': 'trusset_abc123xy_secret...'
+    },
+    body: JSON.stringify({
+      account: '0xAbC123dEf456789012345678901234567890AbCd',
+      amount: '500',
+      useRelayer: true
+    })
+  }
+);
+const { data } = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "transactionHash": "0xdef456...",
+    "tokenAddress": "0x1234567890abcdef1234567890abcdef12345678",
+    "account": "0xAbC123dEf456789012345678901234567890AbCd",
+    "amount": "500"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:00:00.000Z",
+    "instanceId": "inst_abc123"
+  }
+}
+```
+</ResponseExample>

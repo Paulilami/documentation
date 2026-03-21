@@ -1,0 +1,57 @@
+---
+title: 'Get Order'
+description: 'Retrieve details of a specific order'
+api: 'GET /orderbooks/stocks/api/orders/{orderId}'
+---
+
+Returns the current state of a single order, including fill status and timestamps.
+
+## Authentication
+
+Requires an instance API key with the `trading` service enabled.
+
+## Path Parameters
+
+<ParamField path="orderId" type="string" required>
+  The order identifier.
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET "https://api.trusset.org/orderbooks/stocks/api/orders/ord_xyz789" \
+  -H "x-api-key: trusset_{instanceRef}_{secret}"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "success": true,
+  "data": {
+    "id": "ord_xyz789",
+    "orderBookId": "ob_abc123",
+    "userAddress": "0x1111111111111111111111111111111111111111",
+    "side": "BUY",
+    "orderType": "LIMIT",
+    "price": "100000000000000000000",
+    "quantity": "5000000000000000000",
+    "filledQuantity": "2000000000000000000",
+    "status": "PARTIALLY_FILLED",
+    "timeInForce": "GTC",
+    "createdAt": "2025-01-15T10:30:00.000Z",
+    "updatedAt": "2025-01-15T10:32:00.000Z"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-01-15T10:35:00.000Z",
+    "instanceId": "inst_abc"
+  }
+}
+```
+</ResponseExample>
+
+## Error Codes
+
+| Code | Status | Description |
+|------|--------|-------------|
+| `ORDER_NOT_FOUND` | 404 | Order does not exist or does not belong to this instance |

@@ -1,0 +1,55 @@
+---
+title: 'Import Order Book'
+description: 'Import an order book from another instance for cross-instance trading'
+api: 'POST /orderbooks/stocks/api/imports'
+---
+
+Imports an order book from another instance into yours. Once imported, your instance's users can place orders on the remote order book. The source order book must have `allowImport` enabled.
+
+You cannot import your own order books. Use [List Importable Order Books](/endpoints/stock-trading/list-importable) to discover available books.
+
+## Authentication
+
+Requires an instance API key with the `trading` service enabled.
+
+## Request Body
+
+<ParamField body="orderBookId" type="string" required>
+  The ID of the order book to import. Max 100 characters.
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "orderBookId": "ob_ext456"
+}
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "success": true,
+  "data": {
+    "importId": "imp_001",
+    "orderBookId": "ob_ext456",
+    "status": "ACTIVE",
+    "importedAt": "2025-01-15T10:30:00.000Z"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-01-15T10:30:00.000Z",
+    "instanceId": "inst_abc"
+  }
+}
+```
+</ResponseExample>
+
+## Error Codes
+
+| Code | Status | Description |
+|------|--------|-------------|
+| `ORDER_BOOK_NOT_FOUND` | 404 | The target order book does not exist |
+| `IMPORT_NOT_ALLOWED` | 403 | The order book does not allow imports |
+| `ALREADY_IMPORTED` | 409 | This order book is already imported |
+| `IMPORT_OWN` | 400 | Cannot import your own order book |

@@ -1,0 +1,95 @@
+---
+title: 'Identity Status'
+api: 'GET /customers/api/identity/status/{walletAddress}'
+description: 'Query both on-chain and off-chain identity status for a wallet'
+---
+
+Returns the current identity state from two sources: the on-chain identity registry and the off-chain customer database. This dual view lets you detect discrepancies between chain state and your records.
+
+## Path Parameters
+
+<ParamField path="walletAddress" type="string" required>
+  Ethereum wallet address to query.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="success" type="boolean">Request status</ResponseField>
+<ResponseField name="data" type="object">
+  <Expandable>
+    <ResponseField name="walletAddress" type="string">Checksummed address</ResponseField>
+    <ResponseField name="onChain" type="object">
+      Identity data read directly from the on-chain registry contract. Structure depends on the contract implementation. Returns `null` if no on-chain record exists.
+    </ResponseField>
+    <ResponseField name="offChain" type="object">
+      Off-chain customer record. Returns `null` if no matching customer exists in the database.
+      <Expandable>
+        <ResponseField name="status" type="string">Customer status (e.g., `verified`, `revoked`, `pending`)</ResponseField>
+        <ResponseField name="country" type="string">ISO country code</ResponseField>
+        <ResponseField name="investorType" type="string">Investor classification</ResponseField>
+        <ResponseField name="verifiedAt" type="string">ISO 8601 verification timestamp</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://api.trusset.org/customers/api/identity/status/0xAbC123dEf456789012345678901234567890AbCd" \
+  -H "X-API-Key: trusset_abc123xy_secret..."
+```
+```typescript TypeScript
+const address = '0xAbC123dEf456789012345678901234567890AbCd';
+const response = await fetch(
+  `https://api.trusset.org/customers/api/identity/status/${address}`,
+  { headers: { 'X-API-Key': 'trusset_abc123xy_secret...' } }
+);
+const { data } = await response.json();
+
+if (data.onChain && !data.offChain) {
+  console.warn('On-chain record exists but no off-chain customer found');
+}
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "walletAddress": "0xAbC123dEf456789012345678901234567890AbCd",
+    "onChain": {
+      "verified": true,
+      "kycHash": "0xdeadbeef...",
+      "investorType": 1,
+      "softExpiry": 1750000000,
+      "hardExpiry": 1780000000
+    },
+    "offChain": {
+      "status": "verified",
+      "country": "DE",
+      "investorType": "PROFESSIONAL",
+      "verifiedAt": "2025-03-01T10:00:00.000Z"
+    }
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:00:00.000Z"
+  }
+}
+```
+```json Response - No Records
+{
+  "success": true,
+  "data": {
+    "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+    "onChain": null,
+    "offChain": null
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:00:00.000Z"
+  }
+}
+```
+</ResponseExample>

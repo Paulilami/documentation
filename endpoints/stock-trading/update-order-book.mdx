@@ -1,0 +1,86 @@
+---
+title: 'Update Order Book'
+description: 'Modify configuration or status of an existing order book'
+api: 'PATCH /orderbooks/stocks/api/order-books/{orderBookId}'
+---
+
+Updates the configuration of an on-chain order book. Use this to pause or resume trading, adjust fee structure, or modify order size constraints.
+
+## Authentication
+
+Requires an instance API key with the `trading` service enabled.
+
+## Path Parameters
+
+<ParamField path="orderBookId" type="string" required>
+  The order book identifier. Max 100 characters.
+</ParamField>
+
+## Request Body
+
+All fields are optional. Only include fields you want to change.
+
+<ParamField body="status" type="string">
+  Order book status. One of `ACTIVE`, `PAUSED`, or `CLOSED`. Setting to `PAUSED` stops new order submissions. `CLOSED` permanently deactivates the book.
+</ParamField>
+
+<ParamField body="minOrderSize" type="string">
+  Updated minimum order size in base units (wei).
+</ParamField>
+
+<ParamField body="maxOrderSize" type="string | null">
+  Updated maximum order size. Set to `null` to remove the upper limit.
+</ParamField>
+
+<ParamField body="tickSize" type="string">
+  Updated minimum price increment.
+</ParamField>
+
+<ParamField body="makerFeeBps" type="integer">
+  Updated maker fee in basis points. 0-1000.
+</ParamField>
+
+<ParamField body="takerFeeBps" type="integer">
+  Updated taker fee in basis points. 0-1000.
+</ParamField>
+
+<ParamField body="allowImport" type="boolean">
+  Whether other instances can import this order book.
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "status": "PAUSED",
+  "makerFeeBps": 5,
+  "takerFeeBps": 15
+}
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "success": true,
+  "data": {
+    "id": "ob_abc123",
+    "status": "PAUSED",
+    "makerFeeBps": 5,
+    "takerFeeBps": 15
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-01-15T10:30:00.000Z",
+    "instanceId": "inst_abc"
+  }
+}
+```
+</ResponseExample>
+
+## Error Codes
+
+| Code | Status | Description |
+|------|--------|-------------|
+| `ORDER_BOOK_NOT_FOUND` | 404 | No order book found with this ID in your instance |
+| `INVALID_CONFIG` | 400 | Invalid configuration values |
+| `VALIDATION_ERROR` | 400 | Request body failed schema validation |

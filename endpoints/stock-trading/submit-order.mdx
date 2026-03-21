@@ -1,0 +1,104 @@
+---
+title: 'Submit Order'
+description: 'Place a new buy or sell order on an on-chain order book'
+api: 'POST /orderbooks/stocks/api/orders'
+---
+
+Submits a new order to an on-chain order book. Supports limit and market order types with configurable time-in-force policies.
+
+For `LIMIT` orders, the `price` field is required and specifies the maximum (buy) or minimum (sell) acceptable price. `MARKET` orders execute immediately at the best available price.
+
+The `userAddress` must be a verified on-chain identity with sufficient custody balance for sell orders, or sufficient quote token balance for buy orders.
+
+## Authentication
+
+Requires an instance API key with the `trading` service enabled.
+
+## Request Body
+
+<ParamField body="orderBookId" type="string" required>
+  The target order book identifier. Max 100 characters.
+</ParamField>
+
+<ParamField body="userAddress" type="string" required>
+  EVM address of the trading user. Must match `0x[a-fA-F0-9]{40}`.
+</ParamField>
+
+<ParamField body="side" type="string" required>
+  Order side. One of `BUY` or `SELL`.
+</ParamField>
+
+<ParamField body="orderType" type="string" required>
+  Order type. One of `LIMIT` or `MARKET`.
+</ParamField>
+
+<ParamField body="price" type="string">
+  Limit price in quote token base units (wei). Required for `LIMIT` orders. Numeric string.
+</ParamField>
+
+<ParamField body="quantity" type="string" required>
+  Order quantity in base token units (wei). Numeric string.
+</ParamField>
+
+<ParamField body="timeInForce" type="string">
+  Time-in-force policy. One of:
+  - `GTC` - Good Till Cancelled (default). Remains on the book until filled or cancelled.
+  - `IOC` - Immediate or Cancel. Fills what it can immediately, cancels the rest.
+  - `FOK` - Fill or Kill. Must fill entirely or is rejected.
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "orderBookId": "ob_abc123",
+  "userAddress": "0x1111111111111111111111111111111111111111",
+  "side": "BUY",
+  "orderType": "LIMIT",
+  "price": "100000000000000000000",
+  "quantity": "5000000000000000000",
+  "timeInForce": "GTC"
+}
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "success": true,
+  "data": {
+    "id": "ord_xyz789",
+    "orderBookId": "ob_abc123",
+    "userAddress": "0x1111111111111111111111111111111111111111",
+    "side": "BUY",
+    "orderType": "LIMIT",
+    "price": "100000000000000000000",
+    "quantity": "5000000000000000000",
+    "filledQuantity": "0",
+    "status": "OPEN",
+    "timeInForce": "GTC",
+    "createdAt": "2025-01-15T10:30:00.000Z"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-01-15T10:30:00.000Z",
+    "instanceId": "inst_abc"
+  }
+}
+```
+</ResponseExample>
+
+## Error Codes
+
+| Code | Status | Description |
+|------|--------|-------------|
+| `ORDER_BOOK_NOT_FOUND` | 404 | Order book does not exist |
+| `ORDER_BOOK_INACTIVE` | 400 | Order book is paused or closed |
+| `INSUFFICIENT_BALANCE` | 400 | User does not have sufficient balance |
+| `INSUFFICIENT_CUSTODY_BALANCE` | 400 | Insufficient balance in custody contract |
+| `ORDER_TOO_SMALL` | 400 | Order quantity below minimum |
+| `ORDER_TOO_LARGE` | 400 | Order quantity above maximum |
+| `PRICE_REQUIRED` | 400 | Price is required for limit orders |
+| `INVALID_QUANTITY` | 400 | Invalid quantity value |
+| `INVALID_PRICE` | 400 | Price does not align with tick size |
+| `TRANSFER_RESTRICTED` | 400 | User is not eligible to trade this token |
+| `NO_CUSTODY_CONTRACT` | 400 | Order book has no custody contract configured |

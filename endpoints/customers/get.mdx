@@ -1,0 +1,70 @@
+---
+title: 'Get Customer'
+api: 'GET /customers/api/manage/{identifier}'
+description: 'Retrieve a single customer by ID or wallet address'
+---
+
+Returns a customer record by its internal ID or wallet address. The lookup is scoped to the authenticated instance.
+
+## Path Parameters
+
+<ParamField path="identifier" type="string" required>
+  Customer ID (e.g., `cust_abc123`) or Ethereum wallet address.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="success" type="boolean">Request status</ResponseField>
+<ResponseField name="data" type="object">Full customer object</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://api.trusset.org/customers/api/manage/0xAbC123dEf456789012345678901234567890AbCd" \
+  -H "X-API-Key: trusset_abc123xy_secret..."
+```
+```typescript TypeScript
+const response = await fetch(
+  'https://api.trusset.org/customers/api/manage/0xAbC123dEf456789012345678901234567890AbCd',
+  { headers: { 'X-API-Key': 'trusset_abc123xy_secret...' } }
+);
+const { data: customer } = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "id": "cust_abc123",
+    "instanceId": "inst_xyz789",
+    "walletAddress": "0xAbC123dEf456789012345678901234567890AbCd",
+    "country": "DE",
+    "investorType": "PROFESSIONAL",
+    "status": "verified",
+    "verifiedAt": "2025-03-01T10:00:00.000Z",
+    "onChainTxHash": "0x1234...abcd",
+    "kycHash": "0xdeadbeef...",
+    "archived": false,
+    "createdAt": "2025-02-15T08:00:00.000Z"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:00:00.000Z"
+  }
+}
+```
+```json Error - Not Found
+{
+  "success": false,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "Customer not found"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:00:00.000Z"
+  }
+}
+```
+</ResponseExample>

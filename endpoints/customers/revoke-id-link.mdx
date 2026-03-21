@@ -1,0 +1,46 @@
+---
+title: 'Revoke ID Link'
+api: 'PUT /customers/api/id-links/{linkId}/revoke'
+description: 'Invalidate a KYC verification link'
+---
+
+Revokes an active verification link, preventing the customer from completing the KYC process through it. Use this when a link was sent in error or when the customer's onboarding is cancelled.
+
+## Path Parameters
+
+<ParamField path="linkId" type="string" required>
+  ID link identifier.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="success" type="boolean">Request status</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X PUT "https://api.trusset.org/customers/api/id-links/link_abc123/revoke" \
+  -H "X-API-Key: trusset_abc123xy_secret..."
+```
+```typescript TypeScript
+const response = await fetch(
+  'https://api.trusset.org/customers/api/id-links/link_abc123/revoke',
+  {
+    method: 'PUT',
+    headers: { 'X-API-Key': 'trusset_abc123xy_secret...' }
+  }
+);
+const { success } = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:00:00.000Z"
+  }
+}
+```
+</ResponseExample>

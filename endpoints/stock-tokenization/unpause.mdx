@@ -1,0 +1,65 @@
+---
+title: 'Unpause Token'
+api: 'POST /stocks/api/manage/{tokenAddress}/unpause'
+description: 'Resume transfers on a paused stock token contract'
+---
+
+Unpauses a previously paused token contract, restoring normal transfer functionality.
+
+## Path Parameters
+
+<ParamField path="tokenAddress" type="string" required>
+  Address of the stock token contract.
+</ParamField>
+
+## Request Body
+
+<ParamField body="useRelayer" type="boolean" default="false">
+  When `true`, the transaction is signed and submitted by the Trusset relayer.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="success" type="boolean">Request status.</ResponseField>
+<ResponseField name="data" type="object">Unpause result including the transaction hash.</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/stocks/api/manage/0x1234.../unpause" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: trusset_abc123xy_secret..." \
+  -d '{ "useRelayer": true }'
+```
+```typescript TypeScript
+const response = await fetch(
+  `https://api.trusset.org/stocks/api/manage/${tokenAddress}/unpause`,
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': 'trusset_abc123xy_secret...'
+    },
+    body: JSON.stringify({ useRelayer: true })
+  }
+);
+const { data } = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "transactionHash": "0xdef456...",
+    "tokenAddress": "0x1234567890abcdef1234567890abcdef12345678",
+    "paused": false
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:00:00.000Z",
+    "instanceId": "inst_abc123"
+  }
+}
+```
+</ResponseExample>

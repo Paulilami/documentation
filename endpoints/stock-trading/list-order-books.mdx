@@ -1,0 +1,50 @@
+---
+title: 'List Order Books'
+description: 'Retrieve all on-chain order books for the current instance'
+api: 'GET /orderbooks/stocks/api/order-books'
+---
+
+Returns all on-chain order books belonging to the authenticated instance, optionally filtered by status.
+
+## Authentication
+
+Requires an instance API key with the `trading` service enabled.
+
+## Query Parameters
+
+<ParamField query="status" type="string">
+  Filter by order book status. One of `ACTIVE`, `PAUSED`, or `CLOSED`.
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET "https://api.trusset.org/orderbooks/stocks/api/order-books?status=ACTIVE" \
+  -H "x-api-key: trusset_{instanceRef}_{secret}"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "ob_abc123",
+      "tokenAddress": "0x1234567890abcdef1234567890abcdef12345678",
+      "quoteTokenAddress": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+      "name": "ACME Corp Shares / EURC",
+      "symbol": "ACME/EURC",
+      "status": "ACTIVE",
+      "settlementMode": "ON_CHAIN",
+      "makerFeeBps": 10,
+      "takerFeeBps": 25
+    }
+  ],
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-01-15T10:30:00.000Z",
+    "instanceId": "inst_abc"
+  }
+}
+```
+</ResponseExample>

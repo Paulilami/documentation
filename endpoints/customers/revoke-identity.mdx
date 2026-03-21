@@ -1,0 +1,68 @@
+---
+title: 'Revoke Identity'
+api: 'POST /customers/api/identity/revoke'
+description: 'Revoke an on-chain identity verification'
+---
+
+Revokes a previously verified identity on-chain and updates the off-chain customer record to `revoked` status. Use this when a customer fails ongoing compliance checks or when their verification must be invalidated.
+
+## Request Body
+
+<ParamField body="walletAddress" type="string" required>
+  Ethereum wallet address to revoke.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="success" type="boolean">Request status</ResponseField>
+<ResponseField name="data" type="object">
+  <Expandable>
+    <ResponseField name="walletAddress" type="string">Checksummed address</ResponseField>
+    <ResponseField name="status" type="string">Always `revoked` on success</ResponseField>
+    <ResponseField name="txHash" type="string">Revocation transaction hash</ResponseField>
+    <ResponseField name="gasUsed" type="string">Gas consumed</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/customers/api/identity/revoke" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: trusset_abc123xy_secret..." \
+  -d '{ "walletAddress": "0xAbC123dEf456789012345678901234567890AbCd" }'
+```
+```typescript TypeScript
+const response = await fetch(
+  'https://api.trusset.org/customers/api/identity/revoke',
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': 'trusset_abc123xy_secret...'
+    },
+    body: JSON.stringify({
+      walletAddress: '0xAbC123dEf456789012345678901234567890AbCd'
+    })
+  }
+);
+const { data } = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "walletAddress": "0xAbC123dEf456789012345678901234567890AbCd",
+    "status": "revoked",
+    "txHash": "0xabc123def456789012345678901234567890abc123def456789012345678901234",
+    "gasUsed": "42150"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:00:00.000Z"
+  }
+}
+```
+</ResponseExample>

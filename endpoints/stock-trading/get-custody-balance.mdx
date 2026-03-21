@@ -1,0 +1,58 @@
+---
+title: 'Get Custody Balance'
+description: 'Check a user\'s token balance within a custody contract'
+api: 'GET /orderbooks/stocks/api/custody/{custodyContract}/balance/{userAddress}/{tokenAddress}'
+---
+
+Returns the balance of a specific token held by a user within a custody contract. Custody contracts escrow tokens during the trading and settlement lifecycle.
+
+## Authentication
+
+Requires an instance API key with the `trading` service enabled.
+
+## Path Parameters
+
+<ParamField path="custodyContract" type="string" required>
+  EVM address of the custody contract. Must match `0x[a-fA-F0-9]{40}`.
+</ParamField>
+
+<ParamField path="userAddress" type="string" required>
+  EVM address of the user. Must match `0x[a-fA-F0-9]{40}`.
+</ParamField>
+
+<ParamField path="tokenAddress" type="string" required>
+  EVM address of the token. Must match `0x[a-fA-F0-9]{40}`.
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="tokenType" type="string">
+  Token type to query. One of `LIGHT_TOKEN` (default) or `STOCK_TOKEN`.
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET "https://api.trusset.org/orderbooks/stocks/api/custody/0x9876.../balance/0x1111.../0x1234...?tokenType=STOCK_TOKEN" \
+  -H "x-api-key: trusset_{instanceRef}_{secret}"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "success": true,
+  "data": {
+    "custodyContract": "0x9876543210fedcba9876543210fedcba98765432",
+    "userAddress": "0x1111111111111111111111111111111111111111",
+    "tokenAddress": "0x1234567890abcdef1234567890abcdef12345678",
+    "balance": "50000000000000000000",
+    "tokenType": "STOCK_TOKEN"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-01-15T10:35:00.000Z",
+    "instanceId": "inst_abc"
+  }
+}
+```
+</ResponseExample>

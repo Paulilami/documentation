@@ -1,0 +1,79 @@
+---
+title: 'Authentication'
+description: 'API key authentication for the Trusset API'
+icon: 'key'
+---
+
+All API requests require authentication via an API key passed in the `X-API-Key` header. Trusset uses two key systems depending on the API you are accessing.
+
+## Instance API Keys
+
+Instance API keys authenticate requests to the core platform APIs (Customers, Tokenization, Trading, Lending, Custody). Each key is bound to a specific <Tooltip tip="An isolated deployment of Trusset's infrastructure for a single client">instance</Tooltip> and grants access only to that instance's data and services.
+
+The current key format is:
+
+```
+trusset_{instanceRef}_{secret}
+```
+
+`instanceRef` is an 8-character alphanumeric identifier for your instance. `secret` is a 64-character hex string. A complete key is 81 characters long.
+
+Instance API keys are managed through the [API Key Management](/api-key-management) dashboard or via the key management API. Keys support rotation with a configurable overlap period: when you rotate a key, the old key enters a `PENDING_ROTATION` state and remains valid for 7 days, giving you time to update all consumers without downtime. Each instance supports up to 10 active keys.
+
+<Info>
+  Endpoints protected by instance auth also enforce service-level access. If your instance does not have a required service enabled (e.g., `tokenization`), the request returns `403` with code `SERVICE_NOT_ENABLED`.
+</Info>
+
+### Error Responses
+
+| Code | Error | Meaning |
+|------|-------|---------|
+| `401` | `AUTH_REQUIRED` | No `X-API-Key` header provided |
+| `401` | `AUTH_FAILED` | Key is malformed, not found, expired, or the instance is archived |
+| `403` | `SERVICE_NOT_ENABLED` | The requested service is not activated for this instance |
+| `500` | `AUTH_ERROR` | Internal authentication failure |
+
+## MiCA Register API Keys
+
+The MiCA Register API uses its own key system with the prefix `trusset_mica_`. These keys are free and provide access exclusively to the [MiCA Register](/endpoints/mica-register/list-issuers) endpoints.
+
+Register at [trusset.org/mica-register](https://www.trusset.org/mica-register) to generate your key. After registration you receive two credentials:
+
+- **API Key** (`trusset_mica_...`) - used in `X-API-Key` for data requests
+- **Management Token** - used in `Authorization: Bearer ...` for key management operations (rotating, revoking)
+
+<Warning>
+  Store both credentials securely. They cannot be retrieved after initial generation.
+</Warning>
+
+### Error Responses
+
+| Code | Error | Meaning |
+|------|-------|---------|
+| `401` | `UNAUTHORIZED` | No API key provided or key does not start with the expected prefix |
+| `401` | `INVALID_KEY` | Key is malformed, revoked, or not found |
+| `500` | `AUTH_ERROR` | Internal authentication failure |
+
+## Making Requests
+
+Both key types use the same header:
+
+<CodeGroup>
+```bash cURL
+curl -H "X-API-Key: your_key_here" \
+  https://api.trusset.org/customers/api/manage
+```
+```typescript TypeScript
+const response = await fetch('https://api.trusset.org/customers/api/manage', {
+  headers: { 'X-API-Key': 'your_key_here' }
+});
+```
+```python Python
+import requests
+
+response = requests.get(
+    'https://api.trusset.org/customers/api/manage',
+    headers={'X-API-Key': 'your_key_here'}
+)
+```
+</CodeGroup>

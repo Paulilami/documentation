@@ -1,0 +1,127 @@
+---
+title: 'Create Order Book'
+description: 'Deploy a new on-chain order book for a token pair'
+api: 'POST /orderbooks/stocks/api/order-books'
+---
+
+Creates a new on-chain order book that pairs a stock token with a quote token. The order book settles trades through a custody contract on-chain.
+
+Both `tokenAddress` and `quoteTokenAddress` must reference deployed, registered tokens within the instance. The custody contract handles escrow during the settlement lifecycle.
+
+## Authentication
+
+Requires an instance API key with the `trading` service enabled. Pass the key as `x-api-key` header in the format `trusset_{instanceRef}_{secret}`.
+
+## Request Body
+
+<ParamField body="tokenAddress" type="string" required>
+  EVM address of the base token (the asset being traded). Must match `0x[a-fA-F0-9]{40}`.
+</ParamField>
+
+<ParamField body="quoteTokenAddress" type="string" required>
+  EVM address of the quote token (the currency used for pricing). Must match `0x[a-fA-F0-9]{40}`.
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  Display name of the order book. 1-64 characters.
+</ParamField>
+
+<ParamField body="symbol" type="string" required>
+  Short symbol for the trading pair. 1-16 characters.
+</ParamField>
+
+<ParamField body="custodyContract" type="string">
+  EVM address of the custody contract for on-chain settlement. If omitted, trades require manual settlement coordination.
+</ParamField>
+
+<ParamField body="minOrderSize" type="string">
+  Minimum order size in base units (wei). Numeric string.
+</ParamField>
+
+<ParamField body="maxOrderSize" type="string">
+  Maximum order size in base units (wei). Numeric string. Omit for no upper limit.
+</ParamField>
+
+<ParamField body="tickSize" type="string">
+  Minimum price increment in quote token base units. Numeric string.
+</ParamField>
+
+<ParamField body="makerFeeBps" type="integer">
+  Fee charged to makers in basis points. 0-1000 (0%-10%).
+</ParamField>
+
+<ParamField body="takerFeeBps" type="integer">
+  Fee charged to takers in basis points. 0-1000 (0%-10%).
+</ParamField>
+
+<ParamField body="tokenType" type="string">
+  Type of the base token. One of `LIGHT_TOKEN` or `STOCK_TOKEN`. Defaults to `LIGHT_TOKEN`.
+</ParamField>
+
+<ParamField body="stockTokenId" type="string">
+  Reference ID for stock tokens. Required when `tokenType` is `STOCK_TOKEN`. Max 100 characters.
+</ParamField>
+
+<ParamField body="allowImport" type="boolean">
+  Whether other instances can import this order book for cross-instance trading. Defaults to `false`.
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "tokenAddress": "0x1234567890abcdef1234567890abcdef12345678",
+  "quoteTokenAddress": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+  "name": "ACME Corp Shares / EURC",
+  "symbol": "ACME/EURC",
+  "custodyContract": "0x9876543210fedcba9876543210fedcba98765432",
+  "minOrderSize": "1000000000000000000",
+  "tickSize": "100000000000000",
+  "makerFeeBps": 10,
+  "takerFeeBps": 25,
+  "tokenType": "STOCK_TOKEN",
+  "stockTokenId": "acme-corp-001",
+  "allowImport": true
+}
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "success": true,
+  "data": {
+    "id": "ob_abc123",
+    "tokenAddress": "0x1234567890abcdef1234567890abcdef12345678",
+    "quoteTokenAddress": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+    "name": "ACME Corp Shares / EURC",
+    "symbol": "ACME/EURC",
+    "status": "ACTIVE",
+    "settlementMode": "ON_CHAIN",
+    "custodyContract": "0x9876543210fedcba9876543210fedcba98765432",
+    "minOrderSize": "1000000000000000000",
+    "maxOrderSize": null,
+    "tickSize": "100000000000000",
+    "makerFeeBps": 10,
+    "takerFeeBps": 25,
+    "tokenType": "STOCK_TOKEN",
+    "stockTokenId": "acme-corp-001",
+    "allowImport": true
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-01-15T10:30:00.000Z",
+    "instanceId": "inst_abc"
+  }
+}
+```
+</ResponseExample>
+
+## Error Codes
+
+| Code | Status | Description |
+|------|--------|-------------|
+| `ORDER_BOOK_EXISTS` | 409 | An order book for this token pair already exists |
+| `INVALID_CONFIG` | 400 | Invalid order book configuration |
+| `INVALID_PAIR` | 400 | Invalid token pair (e.g. same token for both sides) |
+| `TOKEN_NOT_REGISTERED` | 400 | One or both tokens are not registered in this instance |
+| `VALIDATION_ERROR` | 400 | Request body failed schema validation |

@@ -149,6 +149,181 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "endpoints/introduction",
+              "endpoints/authentication",
+              "endpoints/rate-limits"
+            ]
+          },
+          {
+            "group": "Customers",
+            "pages": [
+              {
+                "group": "Management",
+                "pages": [
+                  "endpoints/customers/list",
+                  "endpoints/customers/create",
+                  "endpoints/customers/get",
+                  "endpoints/customers/update",
+                  "endpoints/customers/archive",
+                  "endpoints/customers/batch-countries"
+                ]
+              },
+              {
+                "group": "Identity Verification",
+                "pages": [
+                  "endpoints/customers/verify-identity",
+                  "endpoints/customers/batch-verify",
+                  "endpoints/customers/revoke-identity",
+                  "endpoints/customers/identity-status",
+                  "endpoints/customers/can-transfer"
+                ]
+              },
+              {
+                "group": "ID Links",
+                "pages": [
+                  "endpoints/customers/create-id-link",
+                  "endpoints/customers/list-id-links",
+                  "endpoints/customers/revoke-id-link",
+                  "endpoints/customers/resend-id-link"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Stock Tokenization",
+            "pages": [
+              {
+                "group": "Issuance",
+                "pages": [
+                  "endpoints/stock-tokenization/deploy",
+                  "endpoints/stock-tokenization/log-deploy",
+                  "endpoints/stock-tokenization/issue",
+                  "endpoints/stock-tokenization/batch-issue",
+                  "endpoints/stock-tokenization/redeem",
+                  "endpoints/stock-tokenization/stock-split"
+                ]
+              },
+              {
+                "group": "Queries",
+                "pages": [
+                  "endpoints/stock-tokenization/list-tokens",
+                  "endpoints/stock-tokenization/get-token",
+                  "endpoints/stock-tokenization/get-holder-tokens",
+                  "endpoints/stock-tokenization/list-holders",
+                  "endpoints/stock-tokenization/get-balance",
+                  "endpoints/stock-tokenization/list-transactions",
+                  "endpoints/stock-tokenization/can-transfer",
+                  "endpoints/stock-tokenization/check-role"
+                ]
+              },
+              {
+                "group": "Management",
+                "pages": [
+                  "endpoints/stock-tokenization/update-token",
+                  "endpoints/stock-tokenization/add-sub-issuer",
+                  "endpoints/stock-tokenization/remove-sub-issuer",
+                  "endpoints/stock-tokenization/add-controller",
+                  "endpoints/stock-tokenization/remove-controller",
+                  "endpoints/stock-tokenization/freeze",
+                  "endpoints/stock-tokenization/unfreeze",
+                  "endpoints/stock-tokenization/force-transfer",
+                  "endpoints/stock-tokenization/pause",
+                  "endpoints/stock-tokenization/unpause"
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "pages": [
+                  "endpoints/stock-tokenization/register-webhook",
+                  "endpoints/stock-tokenization/list-webhook-partners",
+                  "endpoints/stock-tokenization/update-webhook-partner",
+                  "endpoints/stock-tokenization/list-webhook-events",
+                  "endpoints/stock-tokenization/test-webhook"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Stock Trading",
+            "pages": [
+              {
+                "group": "On-Chain Order Books",
+                "pages": [
+                  "endpoints/stock-trading/create-order-book",
+                  "endpoints/stock-trading/update-order-book",
+                  "endpoints/stock-trading/list-order-books",
+                  "endpoints/stock-trading/get-order-book",
+                  "endpoints/stock-trading/get-order-book-snapshot",
+                  "endpoints/stock-trading/list-importable",
+                  "endpoints/stock-trading/get-order-book-trades"
+                ]
+              },
+              {
+                "group": "On-Chain Orders",
+                "pages": [
+                  "endpoints/stock-trading/submit-order",
+                  "endpoints/stock-trading/submit-priority-order",
+                  "endpoints/stock-trading/cancel-order",
+                  "endpoints/stock-trading/get-order",
+                  "endpoints/stock-trading/get-user-orders",
+                  "endpoints/stock-trading/get-user-trades"
+                ]
+              },
+              {
+                "group": "On-Chain Imports",
+                "pages": [
+                  "endpoints/stock-trading/import-order-book",
+                  "endpoints/stock-trading/remove-import"
+                ]
+              },
+              {
+                "group": "On-Chain Settlements & Custody",
+                "pages": [
+                  "endpoints/stock-trading/get-settlement",
+                  "endpoints/stock-trading/get-custody-balance"
+                ]
+              },
+              {
+                "group": "Off-Chain Order Books",
+                "pages": [
+                  "endpoints/stock-trading/offchain-create-order-book",
+                  "endpoints/stock-trading/offchain-list-order-books",
+                  "endpoints/stock-trading/offchain-get-order-book",
+                  "endpoints/stock-trading/offchain-get-snapshot",
+                  "endpoints/stock-trading/offchain-get-trades"
+                ]
+              },
+              {
+                "group": "Off-Chain Orders & Trades",
+                "pages": [
+                  "endpoints/stock-trading/offchain-submit-order",
+                  "endpoints/stock-trading/offchain-cancel-order",
+                  "endpoints/stock-trading/offchain-get-customer-orders",
+                  "endpoints/stock-trading/offchain-get-customer-trades"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "MiCA Register",
+            "pages": [
+              "endpoints/mica-register/list-issuers",
+              "endpoints/mica-register/get-issuer",
+              "endpoints/mica-register/search",
+              "endpoints/mica-register/statistics",
+              "endpoints/mica-register/license-types",
+              "endpoints/mica-register/countries",
+              "endpoints/mica-register/health"
+            ]
+          }
+        ]
       }
     ],
     "global": {

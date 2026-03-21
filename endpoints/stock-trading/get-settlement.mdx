@@ -1,0 +1,50 @@
+---
+title: 'Get Settlement'
+description: 'Retrieve details of a specific trade settlement'
+api: 'GET /orderbooks/stocks/api/settlements/{settlementId}'
+---
+
+Returns the status and details of an on-chain settlement. Settlements represent the atomic swap of tokens that occurs after a trade is matched.
+
+## Authentication
+
+Requires an instance API key with the `trading` service enabled.
+
+## Path Parameters
+
+<ParamField path="settlementId" type="string" required>
+  The settlement identifier.
+</ParamField>
+
+<RequestExample>
+```bash
+curl -X GET "https://api.trusset.org/orderbooks/stocks/api/settlements/stl_001" \
+  -H "x-api-key: trusset_{instanceRef}_{secret}"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "success": true,
+  "data": {
+    "id": "stl_001",
+    "tradeId": "trade_001",
+    "status": "SETTLED",
+    "txHash": "0xabc123...",
+    "settledAt": "2025-01-15T10:31:00.000Z"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-01-15T10:35:00.000Z",
+    "instanceId": "inst_abc"
+  }
+}
+```
+</ResponseExample>
+
+## Error Codes
+
+| Code | Status | Description |
+|------|--------|-------------|
+| `SETTLEMENT_NOT_FOUND` | 404 | No settlement found with this ID |

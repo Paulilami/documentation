@@ -1,0 +1,40 @@
+---
+title: 'List Importable Order Books'
+description: 'Retrieve order books from other instances that are available for import'
+api: 'GET /orderbooks/stocks/api/order-books/importable'
+---
+
+Returns order books from other instances that have `allowImport` enabled. Importing an order book lets your instance's users trade on another instance's market without creating a separate book.
+
+## Authentication
+
+Requires an instance API key with the `trading` service enabled.
+
+<RequestExample>
+```bash
+curl -X GET "https://api.trusset.org/orderbooks/stocks/api/order-books/importable" \
+  -H "x-api-key: trusset_{instanceRef}_{secret}"
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "ob_ext456",
+      "name": "ACME Corp Shares / EURC",
+      "symbol": "ACME/EURC",
+      "status": "ACTIVE",
+      "settlementMode": "ON_CHAIN"
+    }
+  ],
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-01-15T10:30:00.000Z",
+    "instanceId": "inst_abc"
+  }
+}
+```
+</ResponseExample>

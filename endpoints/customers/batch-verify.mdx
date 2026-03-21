@@ -1,0 +1,105 @@
+---
+title: 'Batch Verify Identities'
+api: 'POST /customers/api/identity/batch-verify'
+description: 'Verify multiple customer identities on-chain in a single transaction'
+---
+
+Submits a batch of identity verifications to the on-chain registry. Invalid entries (malformed addresses, missing country) are silently filtered out. The remaining valid entries are verified in a single transaction and their off-chain records are created or updated.
+
+## Request Body
+
+<ParamField body="entries" type="array" required>
+  Array of identity objects to verify. Minimum 1, maximum 500 entries. Each entry accepts the same fields as [Verify Identity](/endpoints/customers/verify-identity).
+  <Expandable>
+    <ParamField body="entries[].walletAddress" type="string" required>
+      Ethereum wallet address.
+    </ParamField>
+    <ParamField body="entries[].country" type="string" required>
+      ISO country code.
+    </ParamField>
+    <ParamField body="entries[].investorType" type="string" default="RETAIL">
+      Investor classification.
+    </ParamField>
+    <ParamField body="entries[].softExpiryDays" type="integer">
+      Days until soft expiry.
+    </ParamField>
+    <ParamField body="entries[].hardExpiryDays" type="integer">
+      Days until hard expiry.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="success" type="boolean">Request status</ResponseField>
+<ResponseField name="data" type="object">
+  <Expandable>
+    <ResponseField name="totalEntries" type="integer">Number of valid entries processed</ResponseField>
+    <ResponseField name="txHash" type="string">On-chain transaction hash</ResponseField>
+    <ResponseField name="gasUsed" type="string">Gas consumed by the batch transaction</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/customers/api/identity/batch-verify" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: trusset_abc123xy_secret..." \
+  -d '{
+    "entries": [
+      { "walletAddress": "0xAbC123...", "country": "DE", "investorType": "PROFESSIONAL" },
+      { "walletAddress": "0xDef456...", "country": "FR", "investorType": "RETAIL" }
+    ]
+  }'
+```
+```typescript TypeScript
+const response = await fetch(
+  'https://api.trusset.org/customers/api/identity/batch-verify',
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': 'trusset_abc123xy_secret...'
+    },
+    body: JSON.stringify({
+      entries: [
+        { walletAddress: '0xAbC123...', country: 'DE', investorType: 'PROFESSIONAL' },
+        { walletAddress: '0xDef456...', country: 'FR', investorType: 'RETAIL' }
+      ]
+    })
+  }
+);
+const { data } = await response.json();
+console.log(`Verified ${data.totalEntries} identities: ${data.txHash}`);
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": {
+    "totalEntries": 2,
+    "txHash": "0xabc123def456789012345678901234567890abc123def456789012345678901234",
+    "gasUsed": "168042"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:00:00.000Z"
+  }
+}
+```
+```json Error - Invalid Input
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_INPUT",
+    "message": "Provide 1-500 entries"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:00:00.000Z"
+  }
+}
+```
+</ResponseExample>

@@ -1,0 +1,74 @@
+---
+title: 'API Introduction'
+description: 'Unified REST API for the Trusset Protocol'
+icon: 'code'
+---
+
+The Trusset API provides programmatic access to tokenization infrastructure, custody operations, trading, lending, and the MiCA Register. All endpoints follow REST conventions and return JSON responses.
+
+## Base URL
+
+```
+https://api.trusset.org
+```
+
+## Response Format
+
+Every response follows a consistent envelope:
+
+```json
+{
+  "success": true,
+  "data": { ... },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-01-15T10:30:00.000Z"
+  }
+}
+```
+
+Error responses include a machine-readable `code` and human-readable `message`:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Search query too long (max 200 chars)"
+  }
+}
+```
+
+## Available APIs
+
+<CardGroup cols={2}>
+  <Card title="Customers" icon="users" href="/endpoints/customers/list">
+    Customer lifecycle management, on-chain identity verification, transfer compliance checks, and KYC verification links. Requires an instance API key with the `tokenization` service enabled.
+  </Card>
+  <Card title="MiCA Register" icon="building" href="/endpoints/mica-register/list-issuers">
+    Query the EU MiCA registry. Search licensed CASPs, ART issuers, EMT issuers, and non-compliant entities sourced from ESMA. Free access with a MiCA API key.
+  </Card>
+  <Card title="Stock Tokenization" icon="chart-mixed" href="/endpoints/stock-tokenization/deploy">
+    Deploy, issue, redeem, and manage ERC-3643 stock tokens. Includes holder queries, balance lookups, role management, compliance checks, and webhook integrations.
+  </Card>
+  <Card title="Stock Trading" icon="chart-line" href="/endpoints/stock-trading/create-order-book">
+    On-chain and off-chain order book trading for tokenized stocks. Manage order books, submit limit and market orders, query trades and settlements, and check custody balances.
+  </Card>
+</CardGroup>
+
+## HTTP Status Codes
+
+The API uses standard HTTP status codes:
+
+| Code | Meaning |
+|------|---------|
+| `200` | Request succeeded |
+| `201` | Resource created |
+| `400` | Invalid request parameters |
+| `401` | Missing or invalid API key |
+| `403` | Service not enabled for this instance |
+| `404` | Resource not found |
+| `409` | Resource already exists |
+| `429` | Rate limit exceeded |
+| `500` | Internal server error |
+| `503` | Service temporarily unavailable |

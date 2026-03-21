@@ -1,0 +1,64 @@
+---
+title: 'Submit Priority Order'
+description: 'Submit a liquidation or forced-execution order that bypasses the normal queue'
+api: 'POST /orderbooks/stocks/api/orders/priority'
+---
+
+Submits a priority order that takes precedence over standard orders. Designed for liquidation scenarios where a user's collateral position must be unwound.
+
+Priority orders execute ahead of the regular order queue. The `reason` field should document the liquidation trigger for audit purposes.
+
+## Authentication
+
+Requires an instance API key with the `trading` service enabled.
+
+## Request Body
+
+<ParamField body="orderBookId" type="string" required>
+  The target order book identifier. Max 100 characters.
+</ParamField>
+
+<ParamField body="liquidatedUser" type="string" required>
+  EVM address of the user being liquidated. Must match `0x[a-fA-F0-9]{40}`.
+</ParamField>
+
+<ParamField body="amount" type="string" required>
+  Amount to liquidate in base token units (wei). Numeric string.
+</ParamField>
+
+<ParamField body="reason" type="string">
+  Human-readable reason for the liquidation. Max 256 characters.
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "orderBookId": "ob_abc123",
+  "liquidatedUser": "0x1111111111111111111111111111111111111111",
+  "amount": "10000000000000000000",
+  "reason": "Collateral ratio below minimum threshold"
+}
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "success": true,
+  "data": {
+    "id": "pord_liq001",
+    "orderBookId": "ob_abc123",
+    "liquidatedUser": "0x1111111111111111111111111111111111111111",
+    "amount": "10000000000000000000",
+    "reason": "Collateral ratio below minimum threshold",
+    "status": "EXECUTED",
+    "createdAt": "2025-01-15T10:30:00.000Z"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-01-15T10:30:00.000Z",
+    "instanceId": "inst_abc"
+  }
+}
+```
+</ResponseExample>

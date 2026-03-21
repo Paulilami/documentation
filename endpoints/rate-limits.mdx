@@ -1,0 +1,78 @@
+---
+title: 'Rate Limits'
+description: 'Request limits and throttling for the Trusset API'
+icon: 'gauge'
+---
+
+The API enforces per-key and per-IP rate limits to ensure fair usage. Limits vary by API and endpoint sensitivity.
+
+## Instance API Limits
+
+Instance API endpoints (Customers, Tokenization, Trading, etc.) apply layered rate limiting.
+
+| Limiter | Window | Limit | Scope |
+|---------|--------|-------|-------|
+| Global | 1 minute | 100 requests | Per IP |
+| API Key | 1 minute | 200 requests | Per API key |
+| Auth | 15 minutes | 15 requests | Per IP (auth endpoints only) |
+| Key Management | 1 minute | 30 requests | Per user/issuer |
+| Strict | 1 minute | 10 requests | Per IP (sensitive operations) |
+
+The global and API key limiters run on every request. The stricter limiters apply only to specific endpoint groups. When multiple limiters apply, the most restrictive active limit governs.
+
+### Response Headers
+
+| Header | Description |
+|--------|-------------|
+| `X-RateLimit-Limit` | Maximum requests in the current window |
+| `X-RateLimit-Remaining` | Remaining requests in the current window |
+| `X-RateLimit-Reset` | Unix timestamp when the window resets |
+| `Retry-After` | Seconds until the next request is allowed (only on `429` responses) |
+
+### 429 Response
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "RATE_LIMIT_EXCEEDED",
+    "message": "Too many requests, please try again later"
+  },
+  "metadata": {
+    "retryAfter": 42,
+    "timestamp": "2025-06-15T12:00:00.000Z"
+  }
+}
+```
+
+## MiCA Register API Limits
+
+The MiCA Register API enforces separate per-key limits.
+
+| Window | Limit |
+|--------|-------|
+| Per minute | 60 requests |
+| Per day | 5,000 requests (resets at midnight UTC) |
+
+MiCA rate limit headers use a different format:
+
+| Header | Description |
+|--------|-------------|
+| `X-RateLimit-Limit-Minute` | Maximum requests per minute |
+| `X-RateLimit-Remaining-Minute` | Remaining requests in the current minute |
+| `X-RateLimit-Limit-Day` | Maximum requests per day |
+| `X-RateLimit-Remaining-Day` | Remaining requests for the current day |
+
+## Caching
+
+Most read endpoints return `Cache-Control` headers. Respecting these headers reduces unnecessary requests against your quota.
+
+| Endpoint group | Cache TTL |
+|----------------|-----------|
+| MiCA list/detail | 300s (5 min) |
+| MiCA statistics, license types, countries | 600s (10 min) |
+| MiCA search | 120s (2 min) |
+
+<Tip>
+  Use the `X-RateLimit-Remaining` (or `X-RateLimit-Remaining-Minute`) header to implement client-side throttling before hitting the limit.
+</Tip>
