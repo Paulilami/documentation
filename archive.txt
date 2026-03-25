@@ -97,3 +97,41 @@
           }
         ]
       },
+
+
+
+
+
+
+
+
+      
+
+
+       {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "API-Keys",
+            "pages": [
+              "api-key-management"
+            ]
+          },
+          {
+            "group": "Gold",
+            "pages": [
+              "new/guides/gold/creation",
+              "new/guides/gold/trading",
+              "soon-more"
+            ]
+          },
+          {
+            "group": "Stocks",
+            "pages": [
+              "new/guides/stocks/creation",
+              "new/guides/stocks/trading",
+              "new/guides/stocks/lending"
+            ]
+          }
+        ]
+      },
