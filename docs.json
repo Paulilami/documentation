@@ -120,6 +120,24 @@
               "licenses/stocks/integration",
               "licenses/stocks/best-practices"
             ]
+          },
+          {
+            "group": "Stock Orderbook License",
+            "pages": [
+              "licenses/stock-orderbook/introduction",
+              "licenses/stock-orderbook/contracts",
+              "licenses/stock-orderbook/integration",
+              "licenses/stock-orderbook/best-practices"
+            ]
+          },
+          {
+            "group": "Commodity Orderbook License",
+            "pages": [
+              "licenses/commodity-orderbook/introduction",
+              "licenses/commodity-orderbook/contracts",
+              "licenses/commodity-orderbook/integration",
+              "licenses/commodity-orderbook/best-practices"
+            ]
           }
         ]
       },

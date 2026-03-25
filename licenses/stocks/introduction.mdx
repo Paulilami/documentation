@@ -54,7 +54,3 @@ The contract suite is built for two regulatory regimes:
 **MiCA** (Markets in Crypto-Assets Regulation) governs the issuance and trading of crypto-assets across the EU. The identity registry's claim system, investor type classification (retail, professional, eligible counterparty), and machine-readable rejection codes map directly to MiCA reporting requirements.
 
 **eWpG** (Gesetz uber elektronische Wertpapiere) is the German Electronic Securities Act. It requires that changes to the securities register are authorized by the register operator. This is why `redeem` is restricted to `ISSUER_ROLE` and `SUB_ISSUER_ROLE` rather than being open to any holder - regular holders must request redemption off-chain, and the issuer executes it.
-
-<Info>
-The identity system contracts (`IdentityRegistryUpgradeable`, `BasicComplianceModule`) are shared infrastructure included with every Trusset license. They deploy once per instance and serve all token contracts within that instance.
-</Info>

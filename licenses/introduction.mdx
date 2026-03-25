@@ -18,24 +18,20 @@ Every license includes the **Identity System** - a MiCA/eWpG-compliant KYC/AML r
     ERC-3643 compliant security tokens for equity instruments. Corporate actions, dividend distribution, and regulated transfer controls.
   </Card>
   <Card title="Commodity Orderbook" icon="arrow-right-arrow-left" href="/licenses/commodity-orderbook/introduction">
-    On-chain order matching for commodity token pairs. Limit and market orders with settlement against commodity tokens.
+    Hybrid orderbook custody for commodity token trading. Off-chain matching with on-chain settlement, batch trades, liquidation routing, and token-enforced compliance.
   </Card>
   <Card title="Stock Orderbook" icon="arrow-right-arrow-left" href="/licenses/stock-orderbook/introduction">
-    Regulated orderbook for security token trading. Compliance-checked order matching with identity registry integration.
-  </Card>
-  <Card title="Commodity Lending" icon="hand-holding-dollar" href="/licenses/commodity-lending/introduction">
-    Overcollateralized lending against commodity token positions. Liquidation engine, interest accrual, and collateral management.
-  </Card>
-  <Card title="Stock Lending" icon="hand-holding-dollar" href="/licenses/stock-lending/introduction">
-    Securities lending with regulatory controls. Collateral requirements, recall mechanisms, and compliance-enforced borrowing.
+    Hybrid orderbook custody for security token trading. Off-chain matching with on-chain settlement, batch trades, liquidation routing, and compliance-boundary enforcement.
   </Card>
 </CardGroup>
+
+<Note>
+**Coming soon** - Commodity Lending and Stock Lending license documentation is in progress. [Contact us](https://www.trusset.org/contact) for early access to these contract suites.
+</Note>
 
 ## What a License Includes
 
 Each license provides the full smart contract source code, deployment scripts, and integration documentation for one product vertical. Contracts are UUPS-upgradeable with a governance model that separates platform authority (TrussetDAO) from issuer control - upgrades require both parties to agree.
-
-The identity system contracts (`IdentityRegistryUpgradeable`, `BasicComplianceModule`) are shared infrastructure included with every license. They deploy once per instance and serve all token contracts within that instance.
 
 ## Audits
 
