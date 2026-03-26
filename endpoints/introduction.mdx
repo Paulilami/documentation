@@ -3,19 +3,13 @@ title: 'API Introduction'
 description: 'Unified REST API for the Trusset Protocol'
 icon: 'code'
 ---
-
 The Trusset API provides programmatic access to tokenization infrastructure, custody operations, trading, lending, and the MiCA Register. All endpoints follow REST conventions and return JSON responses.
-
 ## Base URL
-
 ```
 https://api.trusset.org
 ```
-
 ## Response Format
-
 Every response follows a consistent envelope:
-
 ```json
 {
   "success": true,
@@ -26,9 +20,7 @@ Every response follows a consistent envelope:
   }
 }
 ```
-
 Error responses include a machine-readable `code` and human-readable `message`:
-
 ```json
 {
   "success": false,
@@ -38,9 +30,7 @@ Error responses include a machine-readable `code` and human-readable `message`:
   }
 }
 ```
-
 ## Available APIs
-
 <CardGroup cols={2}>
   <Card title="Customers" icon="users" href="/endpoints/customers/list">
     Customer lifecycle management, on-chain identity verification, transfer compliance checks, and KYC verification links. Requires an instance API key with the `tokenization` service enabled.
@@ -55,20 +45,35 @@ Error responses include a machine-readable `code` and human-readable `message`:
     On-chain and off-chain order book trading for tokenized stocks. Manage order books, submit limit and market orders, query trades and settlements, and check custody balances.
   </Card>
 </CardGroup>
-
 ## HTTP Status Codes
-
 The API uses standard HTTP status codes:
-
 | Code | Meaning |
 |------|---------|
 | `200` | Request succeeded |
 | `201` | Resource created |
 | `400` | Invalid request parameters |
 | `401` | Missing or invalid API key |
-| `403` | Service not enabled for this instance |
+| `403` | Service not enabled or resource access denied |
 | `404` | Resource not found |
 | `409` | Resource already exists |
-| `429` | Rate limit exceeded |
+| `429` | Rate limit or transaction limit exceeded |
 | `500` | Internal server error |
+| `502` | Upstream service error (e.g. vault provider unreachable) |
 | `503` | Service temporarily unavailable |
+
+## Relayer Errors
+Endpoints that submit blockchain transactions (identity verification, token issuance, redemptions, freezes, force transfers, and similar write operations) require a configured relayer. The relayer is a per-instance wallet whose private key is fetched from your vault provider (Doppler or HashiCorp Vault) at transaction time. If the relayer is not set up or is unavailable, the API returns one of the following errors:
+| Code | HTTP | Meaning |
+|------|------|---------|
+| `RELAYER_NOT_CONFIGURED` | `400` | No relayer has been configured for this instance. Set one up in the dashboard under Wallets > Configure Relayer. |
+| `RELAYER_FROZEN` | `403` | The relayer has been manually frozen. Unfreeze it in the dashboard to resume transactions. |
+| `RELAYER_LIMIT_EXCEEDED` | `429` | The daily transaction limit has been reached. The limit resets at midnight UTC. You can increase it in the dashboard. |
+| `RELAYER_CONFIG_ERROR` | `500` | The stored vault configuration could not be decrypted. Reconfigure the relayer in the dashboard. |
+| `RELAYER_VAULT_ERROR` | `502` | The private key could not be fetched from your vault provider. Verify your vault credentials and connectivity. |
+| `RELAYER_KEY_MISMATCH` | `500` | The key returned by your vault does not match the wallet address on file. Reconfigure the relayer. |
+<Info>
+  Read-only endpoints (balance queries, holder lookups, transfer compliance checks, status lookups) do not require a relayer and will work without one configured.
+</Info>
+<Tip>
+  When `useRelayer` is set to `false` or omitted on write endpoints, the API returns unsigned transaction data (`txData`) that you can sign and submit client-side. This path does not require a relayer.
+</Tip>
