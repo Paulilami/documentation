@@ -160,6 +160,7 @@
                 "pages": [
                   "endpoints/customers/list",
                   "endpoints/customers/create",
+                  "endpoints/customers/link-wallet",
                   "endpoints/customers/get",
                   "endpoints/customers/update",
                   "endpoints/customers/archive",

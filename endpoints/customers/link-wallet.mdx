@@ -1,0 +1,130 @@
+---
+title: 'Link Wallet'
+api: 'POST /customers/api/manage/link-wallet'
+description: 'Link a wallet address to a customer created with a reference key'
+---
+
+Links an Ethereum wallet address to an existing customer that was created without a wallet. This is the second step of the deferred wallet flow: first [create a customer](/endpoints/customers/create) without a `walletAddress` to receive a `referenceKey`, then call this endpoint when the end-customer connects their wallet in your application.
+
+The endpoint validates that the reference key exists, the customer does not already have a wallet, and the wallet is not already assigned to another customer in the same instance.
+
+## Request Body
+
+<ParamField body="referenceKey" type="string" required>
+  The reference key returned when the customer was created without a wallet address. Format: `ref_` followed by 32 hex characters.
+</ParamField>
+
+<ParamField body="walletAddress" type="string" required>
+  Ethereum wallet address to link. Must be a valid checksummed or lowercased address.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="success" type="boolean">Request status</ResponseField>
+<ResponseField name="data" type="object">The updated customer object with the linked wallet address</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/customers/api/manage/link-wallet" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: trusset_abc123xy_secret..." \
+  -d '{
+    "referenceKey": "ref_a1b2c3d4e5f67890abcdef12345678",
+    "walletAddress": "0xAbC123dEf456789012345678901234567890AbCd"
+  }'
+```
+```typescript TypeScript
+const response = await fetch('https://api.trusset.org/customers/api/manage/link-wallet', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Key': 'trusset_abc123xy_secret...'
+  },
+  body: JSON.stringify({
+    referenceKey: 'ref_a1b2c3d4e5f67890abcdef12345678',
+    walletAddress: '0xAbC123dEf456789012345678901234567890AbCd'
+  })
+});
+const { data: customer } = await response.json();
+```
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.trusset.org/customers/api/manage/link-wallet',
+    headers={
+        'Content-Type': 'application/json',
+        'X-API-Key': 'trusset_abc123xy_secret...'
+    },
+    json={
+        'referenceKey': 'ref_a1b2c3d4e5f67890abcdef12345678',
+        'walletAddress': '0xAbC123dEf456789012345678901234567890AbCd'
+    }
+)
+customer = response.json()['data']
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 Response
+{
+  "success": true,
+  "data": {
+    "id": "cust_abc123",
+    "instanceId": "inst_xyz789",
+    "walletAddress": "0xAbC123dEf456789012345678901234567890AbCd",
+    "referenceKey": "ref_a1b2c3d4e5f67890abcdef12345678",
+    "name": "Acme Corp",
+    "country": "DE",
+    "investorType": "PROFESSIONAL",
+    "status": "pending",
+    "archived": false,
+    "createdAt": "2025-06-15T12:00:00.000Z",
+    "updatedAt": "2025-06-15T12:05:00.000Z"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:05:00.000Z"
+  }
+}
+```
+```json Error - Customer not found
+{
+  "success": false,
+  "error": {
+    "code": "CUSTOMER_NOT_FOUND",
+    "message": "No customer found with this reference key"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:05:00.000Z"
+  }
+}
+```
+```json Error - Wallet already linked
+{
+  "success": false,
+  "error": {
+    "code": "WALLET_ALREADY_LINKED",
+    "message": "This customer already has a linked wallet"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:05:00.000Z"
+  }
+}
+```
+```json Error - Wallet in use
+{
+  "success": false,
+  "error": {
+    "code": "WALLET_IN_USE",
+    "message": "This wallet address is already assigned to another customer"
+  },
+  "metadata": {
+    "requestId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2025-06-15T12:05:00.000Z"
+  }
+}
+```
+</ResponseExample>
