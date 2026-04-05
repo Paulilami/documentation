@@ -153,6 +153,19 @@
             ]
           },
           {
+            "group": "MiCA Register",
+            "pages": [
+              "endpoints/mica-register/introduction",
+              "endpoints/mica-register/list-issuers",
+              "endpoints/mica-register/get-issuer",
+              "endpoints/mica-register/search",
+              "endpoints/mica-register/statistics",
+              "endpoints/mica-register/license-types",
+              "endpoints/mica-register/countries",
+              "endpoints/mica-register/health"
+            ]
+          },
+          {
             "group": "Customers",
             "pages": [
               {
@@ -301,18 +314,6 @@
                   "endpoints/stock-trading/offchain-get-customer-trades"
                 ]
               }
-            ]
-          },
-          {
-            "group": "MiCA Register",
-            "pages": [
-              "endpoints/mica-register/list-issuers",
-              "endpoints/mica-register/get-issuer",
-              "endpoints/mica-register/search",
-              "endpoints/mica-register/statistics",
-              "endpoints/mica-register/license-types",
-              "endpoints/mica-register/countries",
-              "endpoints/mica-register/health"
             ]
           }
         ]

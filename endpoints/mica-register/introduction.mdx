@@ -1,0 +1,33 @@
+## Rate Limits
+
+MiCA API keys are rate-limited per key. Exceeding the limit returns `429` with a `Retry-After` header. See [Rate Limits](/endpoints/rate-limits) for current thresholds.
+
+## Caching
+
+All responses include `Cache-Control` headers. List and statistics endpoints cache for 5 minutes, detail endpoints for 10 minutes. The `X-Data-Source` response header indicates whether the result was served from `cache`, `database`, or is `empty`.
+
+## Endpoints
+
+<CardGroup cols={2}>
+  <Card title="List Issuers" icon="list" href="/endpoints/mica-register/list-issuers">
+    Retrieve all registered entities with filtering by license type, country, status, and entity type. Supports search, sorting, pagination, and field projection.
+  </Card>
+  <Card title="Get Issuer" icon="building" href="/endpoints/mica-register/get-issuer">
+    Fetch full details for a single entity by ID.
+  </Card>
+  <Card title="Search" icon="magnifying-glass" href="/endpoints/mica-register/search">
+    Full-text search across entity names, LEIs, commercial names, and national authorities.
+  </Card>
+  <Card title="Statistics" icon="chart-pie" href="/endpoints/mica-register/statistics">
+    Aggregate breakdowns by license type, country, and status, plus the 10 most recently authorized entities.
+  </Card>
+  <Card title="License Types" icon="id-badge" href="/endpoints/mica-register/license-types">
+    List all license categories with entity counts.
+  </Card>
+  <Card title="Countries" icon="globe" href="/endpoints/mica-register/countries">
+    List all countries with registered entities.
+  </Card>
+  <Card title="Health" icon="heart-pulse" href="/endpoints/mica-register/health">
+    Operational status check for uptime monitoring.
+  </Card>
+</CardGroup>
