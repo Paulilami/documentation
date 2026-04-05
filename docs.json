@@ -98,8 +98,7 @@
           {
             "group": "Overview",
             "pages": [
-              "licenses/introduction",
-              "licenses/audits"
+              "licenses/introduction"
             ]
           },
           {
