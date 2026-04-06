@@ -314,6 +314,72 @@
                 ]
               }
             ]
+          },
+          {
+            "group": "Stock Lending",
+            "pages": [
+              {
+                "group": "Markets",
+                "pages": [
+                  "endpoints/stock-lending/list-markets",
+                  "endpoints/stock-lending/get-market",
+                  "endpoints/stock-lending/get-metrics",
+                  "endpoints/stock-lending/get-config",
+                  "endpoints/stock-lending/get-configuration-status",
+                  "endpoints/stock-lending/get-supply-caps",
+                  "endpoints/stock-lending/list-transactions"
+                ]
+              },
+              {
+                "group": "Oracle",
+                "pages": [
+                  "endpoints/stock-lending/get-oracle-status",
+                  "endpoints/stock-lending/sync-oracle",
+                  "endpoints/stock-lending/sign-price"
+                ]
+              },
+              {
+                "group": "Positions & Liquidity",
+                "pages": [
+                  "endpoints/stock-lending/list-positions",
+                  "endpoints/stock-lending/get-position",
+                  "endpoints/stock-lending/get-loan",
+                  "endpoints/stock-lending/get-user-loans",
+                  "endpoints/stock-lending/get-user-collateral",
+                  "endpoints/stock-lending/list-providers",
+                  "endpoints/stock-lending/get-provider-balance",
+                  "endpoints/stock-lending/get-price-history"
+                ]
+              },
+              {
+                "group": "Liquidations",
+                "pages": [
+                  "endpoints/stock-lending/get-liquidation-config",
+                  "endpoints/stock-lending/get-liquidatable-loans",
+                  "endpoints/stock-lending/liquidate",
+                  "endpoints/stock-lending/settle-liquidation",
+                  "endpoints/stock-lending/get-pending-liquidations",
+                  "endpoints/stock-lending/get-liquidation-stats",
+                  "endpoints/stock-lending/list-auctions",
+                  "endpoints/stock-lending/get-auction",
+                  "endpoints/stock-lending/get-loan-auction",
+                  "endpoints/stock-lending/get-router-stats"
+                ]
+              },
+              {
+                "group": "Hooks",
+                "pages": [
+                  "endpoints/stock-lending/list-hooks",
+                  "endpoints/stock-lending/get-hook",
+                  "endpoints/stock-lending/create-hook",
+                  "endpoints/stock-lending/update-hook",
+                  "endpoints/stock-lending/delete-hook",
+                  "endpoints/stock-lending/toggle-hook",
+                  "endpoints/stock-lending/execute-hook",
+                  "endpoints/stock-lending/get-hook-executions"
+                ]
+              }
+            ]
           }
         ]
       }
