@@ -1,0 +1,35 @@
+---
+title: 'Add Collateral'
+api: 'POST /lending-stocks/api/positions/{marketId}/add-collateral'
+description: 'Top up collateral on an existing loan'
+---
+
+Deposits additional stock tokens into an active loan to improve its health factor.
+
+## Path Parameters
+
+<ParamField path="marketId" type="string" required>Market ID.</ParamField>
+
+## Body Parameters
+
+<ParamField body="loanId" type="integer" required>On-chain loan ID.</ParamField>
+<ParamField body="amount" type="string" required>Stock tokens to add (e.g. `"25"`).</ParamField>
+<ParamField body="useRelayer" type="boolean" default="false">Execute via relayer or return calldata.</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.trusset.org/lending-stocks/api/positions/{marketId}/add-collateral" \
+  -H "X-API-Key: trusset_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"loanId": 5, "amount": "25", "useRelayer": true}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+{
+  "success": true,
+  "data": { "txHash": "0xabc...def", "loanId": 5, "amount": "25" }
+}
+```
+</ResponseExample>

@@ -324,10 +324,13 @@
                   "endpoints/stock-lending/list-markets",
                   "endpoints/stock-lending/get-market",
                   "endpoints/stock-lending/get-metrics",
+                  "endpoints/stock-lending/get-max-borrow",
                   "endpoints/stock-lending/get-config",
                   "endpoints/stock-lending/get-configuration-status",
                   "endpoints/stock-lending/get-supply-caps",
-                  "endpoints/stock-lending/list-transactions"
+                  "endpoints/stock-lending/list-transactions",
+                  "endpoints/stock-lending/deploy-market",
+                  "endpoints/stock-lending/update-config"
                 ]
               },
               {
@@ -339,15 +342,34 @@
                 ]
               },
               {
-                "group": "Positions & Liquidity",
+                "group": "Liquidity",
+                "pages": [
+                  "endpoints/stock-lending/list-providers",
+                  "endpoints/stock-lending/get-provider-balance",
+                  "endpoints/stock-lending/add-liquidity",
+                  "endpoints/stock-lending/remove-liquidity"
+                ]
+              },
+              {
+                "group": "Borrowing",
+                "pages": [
+                  "endpoints/stock-lending/open-loan",
+                  "endpoints/stock-lending/borrow-more",
+                  "endpoints/stock-lending/repay",
+                  "endpoints/stock-lending/close-loan",
+                  "endpoints/stock-lending/add-collateral",
+                  "endpoints/stock-lending/withdraw-collateral",
+                  "endpoints/stock-lending/claim-escrowed-collateral"
+                ]
+              },
+              {
+                "group": "Positions & Queries",
                 "pages": [
                   "endpoints/stock-lending/list-positions",
                   "endpoints/stock-lending/get-position",
                   "endpoints/stock-lending/get-loan",
                   "endpoints/stock-lending/get-user-loans",
                   "endpoints/stock-lending/get-user-collateral",
-                  "endpoints/stock-lending/list-providers",
-                  "endpoints/stock-lending/get-provider-balance",
                   "endpoints/stock-lending/get-price-history"
                 ]
               },
@@ -360,10 +382,17 @@
                   "endpoints/stock-lending/settle-liquidation",
                   "endpoints/stock-lending/get-pending-liquidations",
                   "endpoints/stock-lending/get-liquidation-stats",
+                  "endpoints/stock-lending/get-router-stats"
+                ]
+              },
+              {
+                "group": "Dutch Auctions",
+                "pages": [
                   "endpoints/stock-lending/list-auctions",
                   "endpoints/stock-lending/get-auction",
                   "endpoints/stock-lending/get-loan-auction",
-                  "endpoints/stock-lending/get-router-stats"
+                  "endpoints/stock-lending/bid-on-auction",
+                  "endpoints/stock-lending/settle-expired-auction"
                 ]
               },
               {
