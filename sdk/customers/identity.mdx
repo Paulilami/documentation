@@ -1,0 +1,124 @@
+---
+title: "Identity Verification"
+description: "On-chain KYC verification, status queries, and transfer compliance checks"
+icon: "shield-check"
+---
+
+The `identity` sub-module interacts with the <Tooltip tip="UUPS-upgradeable, MiCA/eWpG-compliant smart contract that stores KYC state and enforces transfer restrictions">IdentityRegistry</Tooltip> contract through the [API relayer](/protocol/infrastructure/relayer). All write operations (`verify`, `batchVerify`, `revoke`) execute on-chain transactions and require a configured relayer wallet on your instance.
+
+## Verify an identity
+
+Registers an address as KYC-verified on the IdentityRegistry. The address can then participate in compliant token transfers.
+
+```typescript
+const result = await trusset.customers.identity.verify({
+  walletAddress: '0x1234...abcd',
+  country: 'DE',
+  investorType: 'RETAIL',
+  softExpiryDays: 365,
+  hardExpiryDays: 730,
+})
+
+// result.txHash     - on-chain transaction hash
+// result.gasUsed    - gas consumed
+// result.kycHash    - keccak256 hash of KYC data stored on-chain
+```
+
+<Expandable title="VerifyIdentityInput fields">
+  <ParamField body="walletAddress" type="string" required>
+    Ethereum address to verify.
+  </ParamField>
+  <ParamField body="country" type="string" required>
+    ISO country code (2-3 characters).
+  </ParamField>
+  <ParamField body="investorType" type="string" default="RETAIL">
+    `RETAIL`, `PROFESSIONAL`, or `ELIGIBLE_COUNTERPARTY`.
+  </ParamField>
+  <ParamField body="softExpiryDays" type="number">
+    Days until KYC status changes to `soft_expired`. The address can still transfer, but a renewal reminder is appropriate.
+  </ParamField>
+  <ParamField body="hardExpiryDays" type="number">
+    Days until KYC status changes to `hard_expired`. Transfers are blocked until re-verification.
+  </ParamField>
+  <ParamField body="kycData" type="object">
+    Optional additional data included in the KYC hash. If omitted, a default hash is computed from the address, country, and timestamp.
+  </ParamField>
+</Expandable>
+
+## Batch verify
+
+Verify up to 500 addresses in a single on-chain transaction. Significantly more gas-efficient than individual calls for bulk onboarding.
+
+```typescript
+const result = await trusset.customers.identity.batchVerify([
+  { walletAddress: '0xaaa...', country: 'DE' },
+  { walletAddress: '0xbbb...', country: 'FR', investorType: 'PROFESSIONAL' },
+  { walletAddress: '0xccc...', country: 'AT', softExpiryDays: 365, hardExpiryDays: 730 },
+])
+
+// result.totalEntries - number of addresses processed
+// result.txHash       - single transaction hash
+// result.gasUsed      - total gas consumed
+```
+
+<Warning>
+  Batch verification executes in a single transaction. If gas runs out mid-batch, remaining entries are recorded as failed on-chain. Size your batches according to your gas limits.
+</Warning>
+
+## Revoke an identity
+
+Permanently marks an address as revoked on the IdentityRegistry. Revoked addresses cannot send or receive compliant tokens.
+
+```typescript
+const result = await trusset.customers.identity.revoke('0x1234...abcd')
+// result.txHash, result.gasUsed
+```
+
+## Get identity status
+
+Returns combined on-chain and off-chain status for an address. The on-chain data comes from the IdentityRegistry contract; the off-chain data comes from the Trusset database.
+
+```typescript
+const status = await trusset.customers.identity.getStatus('0x1234...abcd')
+
+// On-chain state
+status.onChain.isVerified   // true/false
+status.onChain.status       // 'active' | 'soft_expired' | 'hard_expired' | 'revoked'
+status.onChain.frozen       // regulatory freeze
+status.onChain.kycHash
+status.onChain.investorType
+status.onChain.timestamp    // unix timestamp of last verification
+
+// Off-chain record
+status.offChain.status      // 'pending' | 'verified' | 'revoked'
+status.offChain.country
+status.offChain.investorType
+status.offChain.verifiedAt
+```
+
+If no customer record exists in the database, `offChain` is `null`. If the address was never verified on-chain, `onChain.isVerified` is `false` with a status of `none`.
+
+## Check transfer compliance
+
+Validates whether a token transfer between two addresses would be allowed. This runs the full compliance pipeline: identity checks for both parties, KYC expiry validation, freeze checks, and all registered [compliance modules](/endpoints/customers/can-transfer).
+
+```typescript
+const check = await trusset.customers.identity.canTransfer({
+  from: '0xaaa...',
+  to: '0xbbb...',
+  amount: '1000000000000000000',      // 1 token in wei
+  fromBalance: '5000000000000000000', // sender's current balance
+  toBalance: '0',                     // receiver's current balance
+})
+
+check.allowed         // true or false
+check.reason          // numeric rejection code (0 = none)
+check.senderStatus    // 'active', 'soft_expired', etc.
+check.receiverStatus  // 'active', 'soft_expired', etc.
+```
+
+<Tip>
+  Call `canTransfer` before submitting transfer transactions to get a specific rejection reason rather than a generic revert.
+</Tip>
+
+This is a read-only operation - it does not require a relayer and does not cost gas.

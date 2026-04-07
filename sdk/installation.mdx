@@ -1,0 +1,98 @@
+---
+title: "Installation"
+description: "Install the SDK, initialize a client, and configure options"
+icon: "download"
+---
+
+## Install
+
+<CodeGroup>
+```bash npm
+npm install @trusset/sdk
+```
+
+```bash yarn
+yarn add @trusset/sdk
+```
+
+```bash pnpm
+pnpm add @trusset/sdk
+```
+</CodeGroup>
+
+Requires Node.js 18 or later. The package ships dual CJS/ESM builds with full TypeScript declarations.
+
+## Initialize
+
+```typescript
+import { TrussetClient } from '@trusset/sdk'
+
+const trusset = new TrussetClient({
+  apiKey: 'tsk_live_...',
+})
+```
+
+The API key determines which [instance](/protocol/infrastructure/instances) the client operates against. Create and manage keys in the [Issuer Platform](https://issuers.trusset.org) under your instance settings.
+
+<Warning>
+  Store API keys in environment variables or a secrets manager. Never commit them to source control.
+</Warning>
+
+## Configuration
+
+All options beyond `apiKey` are optional.
+
+<ParamField body="apiKey" type="string" required>
+  Instance API key from the Issuer Platform. Minimum 20 characters.
+</ParamField>
+
+<ParamField body="baseUrl" type="string" default="https://api.trusset.org">
+  API base URL. Override only if directed by Trusset support.
+</ParamField>
+
+<ParamField body="timeoutMs" type="number" default={30000}>
+  Request timeout in milliseconds. Increase for batch operations or slow networks.
+</ParamField>
+
+<ParamField body="maxRetries" type="number" default={3}>
+  Maximum retry attempts on transient failures (5xx, 408, 429, network errors). Set to `0` to disable retries.
+</ParamField>
+
+<ParamField body="logger" type="Logger">
+  Custom logger implementing `debug`, `info`, `warn`, and `error` methods. Defaults to silent. Pass `console` for quick debugging.
+</ParamField>
+
+```typescript
+const trusset = new TrussetClient({
+  apiKey: process.env.TRUSSET_API_KEY!,
+  timeoutMs: 60_000,
+  maxRetries: 5,
+  logger: console,
+})
+```
+
+## CommonJS usage
+
+The SDK works with `require` for Node.js backends that don't use ES modules.
+
+```javascript
+const { TrussetClient } = require('@trusset/sdk')
+
+const trusset = new TrussetClient({
+  apiKey: process.env.TRUSSET_API_KEY,
+})
+```
+
+## Module structure
+
+After initialization, product modules are available as properties on the client. Each module groups related operations.
+
+```typescript
+trusset.customers          // Customer lifecycle
+trusset.customers.manage   // CRUD, search, wallet linking
+trusset.customers.identity // On-chain KYC verification
+trusset.customers.idLinks  // KYC verification links
+trusset.customers.sync     // Bulk database import/export
+```
+
+Additional modules (`tokenization`, `trading`, `lending`) will follow the same pattern as they become available.

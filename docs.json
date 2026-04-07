@@ -141,6 +141,29 @@
         ]
       },
       {
+        "tab": "SDK",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "sdk/introduction",
+              "sdk/installation"
+            ]
+          },
+          {
+            "group": "Customers",
+            "pages": [
+              "sdk/customers/overview",
+              "sdk/customers/management",
+              "sdk/customers/identity",
+              "sdk/customers/id-links",
+              "sdk/customers/sync",
+              "sdk/customers/errors"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API Reference",
         "groups": [
           {

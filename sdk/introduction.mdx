@@ -1,0 +1,35 @@
+---
+title: "Trusset SDK"
+description: "TypeScript SDK for integrating Trusset tokenization infrastructure into your backend"
+icon: "cube"
+---
+
+The Trusset SDK is a typed client library for the Trusset REST API. It handles authentication, retries, input validation, and error mapping so your integration code stays minimal and reliable.
+
+The SDK is structured by product module. Each module maps directly to a group of [API endpoints](/endpoints/introduction) and exposes the same operations with full type safety and client-side validation before any request hits the wire.
+
+| Module | Status | Description |
+|---|---|---|
+| `customers` | Available | Customer management, on-chain identity verification, KYC links, database sync |
+| `tokenization` | Planned | Token deployment, issuance, redemption, management |
+| `trading` | Planned | Order book creation, order submission, settlement |
+| `lending` | Planned | Market deployment, liquidity, borrowing, liquidations |
+
+## Design principles
+
+**Zero dependencies.** The SDK uses native `fetch` and ships no runtime dependencies. It works in Node.js 18+ and any runtime with a standard `fetch` implementation.
+
+**Fail early.** Inputs are validated before requests are sent. Invalid addresses, missing fields, and out-of-range values throw a `ValidationError` immediately rather than producing a 400 from the server.
+
+**Retry by default.** Transient failures (5xx, 408, 429, network errors) are retried with exponential backoff. Non-retryable errors (4xx auth/validation) throw immediately. Both behaviors are configurable.
+
+**Instance-scoped.** Each `TrussetClient` is bound to one API key, which is scoped to one [instance](/protocol/infrastructure/instances). If you operate multiple instances, create one client per instance.
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/sdk/installation">
+    Install the SDK and initialize a client
+  </Card>
+  <Card title="Customers" icon="users" href="/sdk/customers/overview">
+    Customer management, verification, and database sync
+  </Card>
+</CardGroup>

@@ -1,0 +1,94 @@
+---
+title: "ID Links"
+description: "Generate and manage KYC verification links for investors"
+icon: "link"
+---
+
+The `idLinks` sub-module manages KYC verification links powered by <Tooltip tip="Third-party identity verification provider integrated with Trusset for automated KYC/AML checks">Sumsub</Tooltip>. Each link directs an investor to a hosted verification flow where they complete identity checks and optionally connect a wallet.
+
+## Create a verification link
+
+```typescript
+const link = await trusset.customers.idLinks.create({
+  recipientEmail: 'investor@example.com',
+  investorType: 'RETAIL',
+  country: 'DE',
+  expiryDays: 30,
+  sendVia: ['email'],
+  note: 'Series A allocation',
+})
+
+link.id               // internal link ID
+link.token            // unique token in the verification URL
+link.verificationUrl  // full URL to send to the investor
+link.status           // 'PENDING'
+link.delivery         // { email: { sent: true } }
+```
+
+At least one of `recipientEmail`, `recipientWallet`, or `recipientPhone` is required. If `recipientWallet` is set, the investor must verify from that specific address. If omitted, any wallet can be connected during verification.
+
+<Expandable title="CreateIdLinkInput fields">
+  <ParamField body="recipientEmail" type="string">
+    Investor's email address.
+  </ParamField>
+  <ParamField body="recipientWallet" type="string">
+    Lock the link to a specific Ethereum address.
+  </ParamField>
+  <ParamField body="recipientPhone" type="string">
+    Investor's phone number for SMS delivery.
+  </ParamField>
+  <ParamField body="sendVia" type="string[]">
+    Delivery channels: `email`, `sms`, or both. If omitted, the link is created but not sent.
+  </ParamField>
+  <ParamField body="expiryDays" type="number" default={30}>
+    Days until the link expires. Range: 1-365.
+  </ParamField>
+  <ParamField body="investorType" type="string" default="RETAIL">
+    MiFID II classification assigned on completion.
+  </ParamField>
+  <ParamField body="country" type="string">
+    ISO country code.
+  </ParamField>
+  <ParamField body="note" type="string">
+    Internal note visible only in the Issuer Platform.
+  </ParamField>
+  <ParamField body="customMessage" type="string">
+    Custom message included in the email or SMS sent to the investor.
+  </ParamField>
+  <ParamField body="customRedirectUrl" type="string">
+    URL to redirect the investor after successful verification.
+  </ParamField>
+</Expandable>
+
+## List links
+
+```typescript
+const result = await trusset.customers.idLinks.list({
+  status: 'PENDING',  // 'PENDING' | 'COMPLETED' | 'EXPIRED'
+  limit: 50,
+  offset: 0,
+})
+
+// result.links: IdLinkListItem[]
+// result.total: number
+```
+
+## Revoke a link
+
+Expires a link immediately so it can no longer be used. Completed links cannot be revoked.
+
+```typescript
+await trusset.customers.idLinks.revoke('link-id')
+```
+
+## Resend a link
+
+Re-sends an existing pending link via the specified channels.
+
+```typescript
+const result = await trusset.customers.idLinks.resend('link-id', ['email', 'sms'])
+// result.verificationUrl
+// result.delivery: { email: { sent: true }, sms: { sent: true } }
+```
+
+Only links with status `PENDING` can be resent. Completed or expired links throw a `TrussetError`.

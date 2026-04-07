@@ -1,0 +1,114 @@
+---
+title: "Error Handling"
+description: "Error types, codes, and retry behavior in the Trusset SDK"
+icon: "triangle-exclamation"
+---
+
+All SDK errors extend `TrussetError` and carry a machine-readable `code`, HTTP `statusCode`, and the server's `requestId` when available. Catch specific subclasses to handle different failure modes.
+
+## Error hierarchy
+
+```typescript
+import {
+  TrussetError,      // Base class - all errors extend this
+  AuthError,         // 401 - invalid or expired API key
+  ValidationError,   // 400 - bad input caught client-side
+  NetworkError,      // 0   - timeout, DNS failure, connection refused
+} from '@trusset/sdk'
+```
+
+## Catching errors
+
+```typescript
+try {
+  await trusset.customers.manage.get('0xinvalid')
+} catch (err) {
+  if (err instanceof ValidationError) {
+    // Input rejected before hitting the API
+    console.error(err.message) // "walletAddress must be a valid Ethereum address"
+    return
+  }
+
+  if (err instanceof AuthError) {
+    // API key is invalid, expired, or the instance is archived
+    console.error(err.message, err.requestId)
+    return
+  }
+
+  if (err instanceof NetworkError) {
+    // Request timed out or network is unreachable
+    console.error(err.message)
+    return
+  }
+
+  if (err instanceof TrussetError) {
+    // Server returned a non-success response (4xx/5xx)
+    console.error(err.code, err.statusCode, err.message, err.requestId)
+  }
+}
+```
+
+## Error properties
+
+Every `TrussetError` instance exposes:
+
+| Property | Type | Description |
+|---|---|---|
+| `message` | `string` | Human-readable error description |
+| `code` | `string` | Machine-readable error code (e.g. `NOT_FOUND`, `RELAYER_FROZEN`) |
+| `statusCode` | `number` | HTTP status code. `0` for network errors. |
+| `requestId` | `string \| null` | Server-assigned request ID for support inquiries |
+
+## Common error codes
+
+| Code | Status | Meaning |
+|---|---|---|
+| `AUTH_REQUIRED` | 401 | No API key provided |
+| `AUTH_FAILED` | 401 | Invalid or expired API key |
+| `NOT_FOUND` | 404 | Resource does not exist |
+| `CUSTOMER_EXISTS` | 409 | Duplicate wallet or externalId |
+| `WALLET_IN_USE` | 409 | Wallet already assigned to another customer |
+| `SERVICE_NOT_ENABLED` | 403 | Required service not enabled on this instance |
+| `RELAYER_NOT_CONFIGURED` | 400 | No relayer wallet set up for this instance |
+| `RELAYER_FROZEN` | 403 | Relayer is frozen - unfreeze in the Issuer Platform |
+| `RELAYER_LIMIT_EXCEEDED` | 429 | Daily transaction limit reached |
+| `VALIDATION_ERROR` | 400 | Client-side input validation failure |
+
+## Retry behavior
+
+The HTTP layer automatically retries requests that fail with transient errors:
+
+| Status | Retried |
+|---|---|
+| 408 Request Timeout | Yes |
+| 429 Too Many Requests | Yes |
+| 500 Internal Server Error | Yes |
+| 502 Bad Gateway | Yes |
+| 503 Service Unavailable | Yes |
+| 504 Gateway Timeout | Yes |
+| Network errors (DNS, connection) | Yes |
+| Timeouts (AbortError) | Yes |
+| 400, 401, 403, 404, 409 | No |
+
+Retries use exponential backoff: 1s, 2s, 4s, capped at 10s. Configure via `maxRetries` in the client constructor. Set to `0` to disable.
+
+```typescript
+const trusset = new TrussetClient({
+  apiKey: '...',
+  maxRetries: 5,   // up to 5 retries
+  timeoutMs: 60_000, // 60s timeout per attempt
+})
+```
+
+## Logging
+
+Pass a logger to surface retry attempts and request metadata during development:
+
+```typescript
+const trusset = new TrussetClient({
+  apiKey: '...',
+  logger: console,
+})
+```
+
+The logger receives `debug` calls for retry attempts, including the URL and attempt number. No sensitive data (API keys, request bodies) is logged.
